@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CONEXIONES_SIMULADAS, NODOS_SIMULADOS } from '../data/mapa-simulado.data';
+import {
+  CONEXIONES_SIMULADAS,
+  NODOS_SIMULADOS
+} from '../data/mapa-simulado.data';
 import { Conexion, Nodo } from '../models/nodo.model';
 
 @Injectable({
@@ -11,72 +14,135 @@ export class RutaService {
   private conexiones: Conexion[] = CONEXIONES_SIMULADAS;
 
   calcularRuta(origenId: string, destinoId: string): Nodo[] {
-    const pendientes = new Set(this.nodos.map(nodo => nodo.id));
-    const distancias = new Map<string, number>();
+    const abiertos = new Set<string>([origenId]);
+
     const anteriores = new Map<string, string | null>();
+    const costoReal = new Map<string, number>();
+    const costoEstimado = new Map<string, number>();
 
     for (const nodo of this.nodos) {
-      distancias.set(nodo.id, Infinity);
       anteriores.set(nodo.id, null);
+      costoReal.set(nodo.id, Infinity);
+      costoEstimado.set(nodo.id, Infinity);
     }
 
-    distancias.set(origenId, 0);
+    costoReal.set(origenId, 0);
+    costoEstimado.set(
+      origenId,
+      this.calcularHeuristica(origenId, destinoId)
+    );
 
-    while (pendientes.size > 0) {
-      const actual = this.obtenerNodoMasCercano(
-        pendientes,
-        distancias
+    while (abiertos.size > 0) {
+      const actual = this.obtenerMenorCostoEstimado(
+        abiertos,
+        costoEstimado
       );
 
-      if (!actual || distancias.get(actual) === Infinity) {
+      if (!actual) {
         break;
       }
-
-      pendientes.delete(actual);
 
       if (actual === destinoId) {
-        break;
+        return this.reconstruirRuta(
+          origenId,
+          destinoId,
+          anteriores
+        );
       }
+
+      abiertos.delete(actual);
 
       const vecinos = this.obtenerVecinos(actual);
 
       for (const vecino of vecinos) {
-        if (!pendientes.has(vecino.id)) {
-          continue;
-        }
-
-        const nuevaDistancia =
-          (distancias.get(actual) ?? Infinity) + vecino.distancia;
+        const nuevoCosto =
+          (costoReal.get(actual) ?? Infinity) +
+          vecino.distancia;
 
         if (
-          nuevaDistancia <
-          (distancias.get(vecino.id) ?? Infinity)
+          nuevoCosto <
+          (costoReal.get(vecino.id) ?? Infinity)
         ) {
-          distancias.set(vecino.id, nuevaDistancia);
           anteriores.set(vecino.id, actual);
+          costoReal.set(vecino.id, nuevoCosto);
+
+          const heuristica = this.calcularHeuristica(
+            vecino.id,
+            destinoId
+          );
+
+          costoEstimado.set(
+            vecino.id,
+            nuevoCosto + heuristica
+          );
+
+          abiertos.add(vecino.id);
         }
       }
     }
 
-    return this.reconstruirRuta(
-      origenId,
-      destinoId,
-      anteriores
+    return [];
+  }
+
+  calcularDistanciaTotal(ruta: Nodo[]): number {
+    let distanciaTotal = 0;
+
+    for (let i = 0; i < ruta.length - 1; i++) {
+      const origenId = ruta[i].id;
+      const destinoId = ruta[i + 1].id;
+
+      const conexion = this.conexiones.find(conexion =>
+        (
+          conexion.origen === origenId &&
+          conexion.destino === destinoId
+        ) ||
+        (
+          conexion.origen === destinoId &&
+          conexion.destino === origenId
+        )
+      );
+
+      if (!conexion) {
+        return Infinity;
+      }
+
+      distanciaTotal += conexion.distancia;
+    }
+
+    return distanciaTotal;
+  }
+
+  private calcularHeuristica(
+    origenId: string,
+    destinoId: string
+  ): number {
+    const origen = this.obtenerNodo(origenId);
+    const destino = this.obtenerNodo(destinoId);
+
+    if (!origen || !destino) {
+      return Infinity;
+    }
+
+    const diferenciaX = destino.x - origen.x;
+    const diferenciaY = destino.y - origen.y;
+
+    return Math.sqrt(
+      diferenciaX ** 2 + diferenciaY ** 2
     );
   }
 
-  private obtenerNodoMasCercano(
-    pendientes: Set<string>,
-    distancias: Map<string, number>
+  private obtenerMenorCostoEstimado(
+    abiertos: Set<string>,
+    costos: Map<string, number>
   ): string | null {
     let seleccionado: string | null = null;
-    let distanciaMenor = Infinity;
+    let menorCosto = Infinity;
 
-    for (const id of pendientes) {
-      const distancia = distancias.get(id) ?? Infinity;
+    for (const id of abiertos) {
+      const costo = costos.get(id) ?? Infinity;
 
-      if (distancia < distanciaMenor) {
-        distanciaMenor = distancia;
+      if (costo < menorCosto) {
+        menorCosto = costo;
         seleccionado = id;
       }
     }
@@ -108,6 +174,10 @@ export class RutaService {
     return vecinos;
   }
 
+  private obtenerNodo(id: string): Nodo | undefined {
+    return this.nodos.find(nodo => nodo.id === id);
+  }
+
   private reconstruirRuta(
     origenId: string,
     destinoId: string,
@@ -131,7 +201,7 @@ export class RutaService {
     }
 
     return idsRuta
-      .map(id => this.nodos.find(nodo => nodo.id === id))
+      .map(id => this.obtenerNodo(id))
       .filter((nodo): nodo is Nodo => nodo !== undefined);
   }
 }

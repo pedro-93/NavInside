@@ -14,14 +14,13 @@
       <ion-select
         label="Origen"
         placeholder="Seleccionar origen"
-        [(ngModel)]="origen">
-
+        [(ngModel)]="origen"
+      >
         @for (lugar of lugares; track lugar) {
           <ion-select-option [value]="lugar">
             {{ lugar }}
           </ion-select-option>
         }
-
       </ion-select>
     </ion-item>
 
@@ -29,14 +28,13 @@
       <ion-select
         label="Destino"
         placeholder="Seleccionar destino"
-        [(ngModel)]="destino">
-
+        [(ngModel)]="destino"
+      >
         @for (lugar of lugares; track lugar) {
           <ion-select-option [value]="lugar">
             {{ lugar }}
           </ion-select-option>
         }
-
       </ion-select>
     </ion-item>
   </ion-list>
@@ -44,18 +42,27 @@
   <ion-button
     expand="block"
     [disabled]="!origen || !destino"
-    (click)="calcularRuta()">
+    (click)="calcularRuta()"
+  >
     Calcular ruta
   </ion-button>
-  @if (resultado) {
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Ruta calculada</ion-card-title>
-    </ion-card-header>
 
-    <ion-card-content>
-      {{ resultado }}
-    </ion-card-content>
-  </ion-card>
-}
+  @if (resultado) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Ruta calculada</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        {{ resultado }}
+
+        @if (distanciaTotal !== null) {
+          <p>
+            <strong>Distancia simulada:</strong>
+            {{ distanciaTotal }} unidades
+          </p>
+        }
+      </ion-card-content>
+    </ion-card>
+  }
 </ion-content>

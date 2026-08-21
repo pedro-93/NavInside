@@ -50,10 +50,12 @@ export class HomePage {
   origen: string = '';
   destino: string = '';
   resultado: string = '';
+  distanciaTotal: number | null = null;
 
   constructor(private rutaService: RutaService) {}
 
   calcularRuta(): void {
+    this.distanciaTotal = null;
     if (this.origen === this.destino) {
       this.resultado =
         'El origen y el destino deben ser diferentes.';
@@ -86,5 +88,7 @@ export class HomePage {
     this.resultado = ruta
       .map(nodo => nodo.nombre)
       .join(' → ');
+      this.distanciaTotal =
+        this.rutaService.calcularDistanciaTotal(ruta);
   }
 }
