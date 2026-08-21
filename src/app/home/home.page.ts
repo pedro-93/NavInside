@@ -18,6 +18,7 @@ import {
 
 import { NODOS_SIMULADOS } from '../data/mapa-simulado.data';
 import { RutaService } from '../services/ruta.service';
+import { QrService } from '../services/qr.service';
 
 @Component({
   selector: 'app-home',
@@ -52,7 +53,30 @@ export class HomePage {
   resultado: string = '';
   distanciaTotal: number | null = null;
 
-  constructor(private rutaService: RutaService) {}
+  constructor(
+    private rutaService: RutaService,
+    private qrService: QrService
+  ) { }
+
+  simularLecturaQr(): void {
+    const contenidoQr = JSON.stringify({
+      sistema: 'navinside',
+      version: 1,
+      nodoId: 'recepcion'
+    });
+
+    const nodoDetectado = this.qrService.procesarCodigo(contenidoQr);
+
+    if (!nodoDetectado) {
+      this.resultado = 'El código QR no es válido.';
+      this.distanciaTotal = null;
+      return;
+    }
+
+    this.origen = nodoDetectado.nombre;
+    this.resultado = `Ubicación detectada: ${nodoDetectado.nombre}`;
+    this.distanciaTotal = null;
+  }
 
   calcularRuta(): void {
     this.distanciaTotal = null;
@@ -88,7 +112,7 @@ export class HomePage {
     this.resultado = ruta
       .map(nodo => nodo.nombre)
       .join(' → ');
-      this.distanciaTotal =
-        this.rutaService.calcularDistanciaTotal(ruta);
+    this.distanciaTotal =
+      this.rutaService.calcularDistanciaTotal(ruta);
   }
 }
