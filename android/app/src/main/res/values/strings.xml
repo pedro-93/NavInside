@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NavInside</string>
+    <string name="title_activity_main">NavInside</string>
+    <string name="package_name">cl.pedro.navinside</string>
+    <string name="custom_url_scheme">cl.pedro.navinside</string>
+</resources>
