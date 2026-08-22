@@ -7,54 +7,81 @@
 <ion-content class="ion-padding">
   <h1>Navegación interior</h1>
 
-  <p>Selecciona tu punto de origen y destino.</p>
+  <p>
+    Selecciona tu punto de origen y destino.
+  </p>
 
   <ion-list>
     <ion-item>
-      <ion-select label="Origen" placeholder="Seleccionar origen" [(ngModel)]="origen">
+      <ion-select
+        label="Origen"
+        placeholder="Seleccionar origen"
+        [(ngModel)]="origen"
+      >
         @for (lugar of lugares; track lugar) {
-        <ion-select-option [value]="lugar">
-          {{ lugar }}
-        </ion-select-option>
+          <ion-select-option [value]="lugar">
+            {{ lugar }}
+          </ion-select-option>
         }
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-select label="Destino" placeholder="Seleccionar destino" [(ngModel)]="destino">
+      <ion-select
+        label="Destino"
+        placeholder="Seleccionar destino"
+        [(ngModel)]="destino"
+      >
         @for (lugar of lugares; track lugar) {
-        <ion-select-option [value]="lugar">
-          {{ lugar }}
-        </ion-select-option>
+          <ion-select-option [value]="lugar">
+            {{ lugar }}
+          </ion-select-option>
         }
       </ion-select>
     </ion-item>
   </ion-list>
 
-  <ion-button expand="block" fill="outline" (click)="simularLecturaQr()">
+  <ion-button
+    expand="block"
+    (click)="leerQrReal()"
+  >
+    Leer QR con cámara
+  </ion-button>
+
+  <ion-button
+    expand="block"
+    fill="outline"
+    (click)="simularLecturaQr()"
+  >
     Simular lectura QR
   </ion-button>
 
-  <ion-button expand="block" [disabled]="!origen || !destino" (click)="calcularRuta()">
+  <ion-button
+    expand="block"
+    [disabled]="!origen || !destino"
+    (click)="calcularRuta()"
+  >
     Calcular ruta
   </ion-button>
 
   @if (resultado) {
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Ruta calculada</ion-card-title>
-    </ion-card-header>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          Resultado
+        </ion-card-title>
+      </ion-card-header>
 
-    <ion-card-content>
-      {{ resultado }}
+      <ion-card-content>
+        {{ resultado }}
 
-      @if (distanciaTotal !== null) {
-      <p>
-        <strong>Distancia simulada:</strong>
-        {{ distanciaTotal }} unidades
-      </p>
-      }
-    </ion-card-content>
-  </ion-card>
+        @if (distanciaTotal !== null) {
+          <p>
+            <strong>Distancia simulada:</strong>
+            {{ distanciaTotal }} unidades
+          </p>
+        }
+      </ion-card-content>
+    </ion-card>
   }
 </ion-content>
