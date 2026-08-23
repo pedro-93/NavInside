@@ -54,6 +54,7 @@ export class HomePage {
 
   origen: string = '';
   destino: string = '';
+  mensajeUbicacion: string = '';
   resultado: string = '';
   distanciaTotal: number | null = null;
 
@@ -63,8 +64,8 @@ export class HomePage {
   ) {}
 
   async leerQrReal(): Promise<void> {
-    this.resultado = '';
-    this.distanciaTotal = null;
+    this.limpiarRuta();
+    this.mensajeUbicacion = '';
 
     try {
       const lectura =
@@ -79,61 +80,45 @@ export class HomePage {
         });
 
       if (!lectura.ScanResult) {
-        this.resultado =
-          'No se detectó ningún código QR.';
+        this.mensajeUbicacion =
+          'La lectura fue cancelada o no se detectó un código QR.';
         return;
       }
 
-      const nodoDetectado =
-        this.qrService.procesarCodigo(
-          lectura.ScanResult
-        );
-
-      if (!nodoDetectado) {
-        this.resultado =
-          'El código QR no pertenece a NavInside.';
-        return;
-      }
-
-      this.origen = nodoDetectado.nombre;
-      this.resultado =
-        `Ubicación detectada: ${nodoDetectado.nombre}`;
+      this.procesarLecturaQr(lectura.ScanResult);
     } catch (error) {
       console.error(
         'Error al leer el código QR:',
         error
       );
 
-      this.resultado =
+      this.mensajeUbicacion =
         'No fue posible abrir o utilizar la cámara.';
     }
   }
 
   simularLecturaQr(): void {
+    this.limpiarRuta();
+    this.mensajeUbicacion = '';
+
     const contenidoQr = JSON.stringify({
       sistema: 'navinside',
       version: 1,
       nodoId: 'recepcion'
     });
 
-    const nodoDetectado =
-      this.qrService.procesarCodigo(contenidoQr);
-
-    if (!nodoDetectado) {
-      this.resultado =
-        'El código QR no es válido.';
-      this.distanciaTotal = null;
-      return;
-    }
-
-    this.origen = nodoDetectado.nombre;
-    this.resultado =
-      `Ubicación detectada: ${nodoDetectado.nombre}`;
-    this.distanciaTotal = null;
+    this.procesarLecturaQr(contenidoQr);
   }
 
   calcularRuta(): void {
+    this.resultado = '';
     this.distanciaTotal = null;
+
+    if (!this.origen || !this.destino) {
+      this.resultado =
+        'Debes seleccionar un origen y un destino.';
+      return;
+    }
 
     if (this.origen === this.destino) {
       this.resultado =
@@ -172,5 +157,27 @@ export class HomePage {
 
     this.distanciaTotal =
       this.rutaService.calcularDistanciaTotal(ruta);
+  }
+
+  private procesarLecturaQr(
+    contenidoQr: string
+  ): void {
+    const nodoDetectado =
+      this.qrService.procesarCodigo(contenidoQr);
+
+    if (!nodoDetectado) {
+      this.mensajeUbicacion =
+        'El código QR no pertenece a NavInside o la ubicación no existe.';
+      return;
+    }
+
+    this.origen = nodoDetectado.nombre;
+    this.mensajeUbicacion =
+      `Ubicación detectada: ${nodoDetectado.nombre}`;
+  }
+
+  private limpiarRuta(): void {
+    this.resultado = '';
+    this.distanciaTotal = null;
   }
 }

@@ -56,6 +56,20 @@
     Simular lectura QR
   </ion-button>
 
+  @if (mensajeUbicacion) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          Estado de ubicación
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        {{ mensajeUbicacion }}
+      </ion-card-content>
+    </ion-card>
+  }
+
   <ion-button
     expand="block"
     [disabled]="!origen || !destino"
@@ -68,7 +82,7 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          Resultado
+          Resultado de la ruta
         </ion-card-title>
       </ion-card-header>
 
