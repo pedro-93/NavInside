@@ -26,11 +26,41 @@ export class RutaService {
 
   calcularRuta(
     origenId: string,
-    destinoId: string
+    destinoId: string,
+    modoAccesible: boolean = false
   ): Nodo[] {
-    const abiertos = new Set<string>([
-      origenId
-    ]);
+    const origen = this.obtenerNodo(origenId);
+    const destino = this.obtenerNodo(destinoId);
+
+    if (!origen || !destino) {
+      return [];
+    }
+
+    if (
+      origen.restringido === true ||
+      destino.restringido === true
+    ) {
+      return [];
+    }
+
+    if (
+      modoAccesible &&
+      (
+        origen.accesible === false ||
+        destino.accesible === false
+      )
+    ) {
+      return [];
+    }
+
+    const conexionesDisponibles =
+      this.mapaService
+        .obtenerConexionesHabilitadas(
+          modoAccesible
+        );
+
+    const abiertos =
+      new Set<string>([origenId]);
 
     const anteriores =
       new Map<string, string | null>();
@@ -78,8 +108,11 @@ export class RutaService {
 
       abiertos.delete(actual);
 
-      const vecinos =
-        this.obtenerVecinos(actual);
+      const vecinos = this.obtenerVecinos(
+        actual,
+        conexionesDisponibles,
+        modoAccesible
+      );
 
       for (const vecino of vecinos) {
         const nuevoCosto =
@@ -139,17 +172,17 @@ export class RutaService {
 
       const conexion =
         this.conexiones.find(
-          conexion =>
+          conexionActual =>
             (
-              conexion.origen ===
+              conexionActual.origen ===
                 origenId &&
-              conexion.destino ===
+              conexionActual.destino ===
                 destinoId
             ) ||
             (
-              conexion.origen ===
+              conexionActual.origen ===
                 destinoId &&
-              conexion.destino ===
+              conexionActual.destino ===
                 origenId
             )
         );
@@ -214,7 +247,9 @@ export class RutaService {
   }
 
   private obtenerVecinos(
-    nodoId: string
+    nodoId: string,
+    conexionesDisponibles: Conexion[],
+    modoAccesible: boolean
   ): {
     id: string;
     distancia: number;
@@ -225,27 +260,45 @@ export class RutaService {
     }[] = [];
 
     for (
-      const conexion of this.conexiones
+      const conexion of
+        conexionesDisponibles
     ) {
-      if (
-        conexion.origen === nodoId
-      ) {
-        vecinos.push({
-          id: conexion.destino,
-          distancia:
-            conexion.distancia
-        });
+      let vecinoId: string | null = null;
+
+      if (conexion.origen === nodoId) {
+        vecinoId = conexion.destino;
+      }
+
+      if (conexion.destino === nodoId) {
+        vecinoId = conexion.origen;
+      }
+
+      if (!vecinoId) {
+        continue;
+      }
+
+      const nodoVecino =
+        this.obtenerNodo(vecinoId);
+
+      if (!nodoVecino) {
+        continue;
+      }
+
+      if (nodoVecino.restringido === true) {
+        continue;
       }
 
       if (
-        conexion.destino === nodoId
+        modoAccesible &&
+        nodoVecino.accesible === false
       ) {
-        vecinos.push({
-          id: conexion.origen,
-          distancia:
-            conexion.distancia
-        });
+        continue;
       }
+
+      vecinos.push({
+        id: vecinoId,
+        distancia: conexion.distancia
+      });
     }
 
     return vecinos;

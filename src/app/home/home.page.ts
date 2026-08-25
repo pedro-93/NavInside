@@ -18,10 +18,13 @@ import {
   IonSelect,
   IonSelectOption,
   IonTitle,
+  IonToggle,
   IonToolbar
 } from '@ionic/angular';
 
-import { NODOS_SIMULADOS } from '../data/mapa-simulado.data';
+import {
+  NODOS_SIMULADOS
+} from '../data/mapa-simulado.data';
 import { QrService } from '../services/qr.service';
 import { RutaService } from '../services/ruta.service';
 
@@ -44,16 +47,23 @@ import { RutaService } from '../services/ruta.service';
     IonSelect,
     IonSelectOption,
     IonTitle,
+    IonToggle,
     IonToolbar
   ]
 })
 export class HomePage {
-  lugares: string[] = NODOS_SIMULADOS.map(
-    nodo => nodo.nombre
-  );
+  lugares: string[] = NODOS_SIMULADOS
+    .filter(
+      nodo =>
+        nodo.restringido !== true
+    )
+    .map(
+      nodo => nodo.nombre
+    );
 
   origen: string = '';
   destino: string = '';
+  modoAccesible: boolean = false;
   mensajeUbicacion: string = '';
   resultado: string = '';
   distanciaTotal: number | null = null;
@@ -70,7 +80,8 @@ export class HomePage {
     try {
       const lectura =
         await CapacitorBarcodeScanner.scanBarcode({
-          hint: CapacitorBarcodeScannerTypeHint.QR_CODE,
+          hint:
+            CapacitorBarcodeScannerTypeHint.QR_CODE,
           cameraDirection:
             CapacitorBarcodeScannerCameraDirection.BACK,
           scanInstructions:
@@ -85,7 +96,9 @@ export class HomePage {
         return;
       }
 
-      this.procesarLecturaQr(lectura.ScanResult);
+      this.procesarLecturaQr(
+        lectura.ScanResult
+      );
     } catch (error) {
       console.error(
         'Error al leer el código QR:',
@@ -107,12 +120,13 @@ export class HomePage {
       nodoId: 'recepcion'
     });
 
-    this.procesarLecturaQr(contenidoQr);
+    this.procesarLecturaQr(
+      contenidoQr
+    );
   }
 
   calcularRuta(): void {
-    this.resultado = '';
-    this.distanciaTotal = null;
+    this.limpiarRuta();
 
     if (!this.origen || !this.destino) {
       this.resultado =
@@ -126,13 +140,17 @@ export class HomePage {
       return;
     }
 
-    const nodoOrigen = NODOS_SIMULADOS.find(
-      nodo => nodo.nombre === this.origen
-    );
+    const nodoOrigen =
+      NODOS_SIMULADOS.find(
+        nodo =>
+          nodo.nombre === this.origen
+      );
 
-    const nodoDestino = NODOS_SIMULADOS.find(
-      nodo => nodo.nombre === this.destino
-    );
+    const nodoDestino =
+      NODOS_SIMULADOS.find(
+        nodo =>
+          nodo.nombre === this.destino
+      );
 
     if (!nodoOrigen || !nodoDestino) {
       this.resultado =
@@ -140,14 +158,18 @@ export class HomePage {
       return;
     }
 
-    const ruta = this.rutaService.calcularRuta(
-      nodoOrigen.id,
-      nodoDestino.id
-    );
+    const ruta =
+      this.rutaService.calcularRuta(
+        nodoOrigen.id,
+        nodoDestino.id,
+        this.modoAccesible
+      );
 
     if (ruta.length === 0) {
       this.resultado =
-        'No existe una ruta disponible.';
+        this.modoAccesible
+          ? 'No existe una ruta accesible disponible.'
+          : 'No existe una ruta disponible.';
       return;
     }
 
@@ -156,14 +178,21 @@ export class HomePage {
       .join(' → ');
 
     this.distanciaTotal =
-      this.rutaService.calcularDistanciaTotal(ruta);
+      this.rutaService
+        .calcularDistanciaTotal(ruta);
+  }
+
+  cambiarModoAccesible(): void {
+    this.limpiarRuta();
   }
 
   private procesarLecturaQr(
     contenidoQr: string
   ): void {
     const nodoDetectado =
-      this.qrService.procesarCodigo(contenidoQr);
+      this.qrService.procesarCodigo(
+        contenidoQr
+      );
 
     if (!nodoDetectado) {
       this.mensajeUbicacion =
@@ -172,6 +201,7 @@ export class HomePage {
     }
 
     this.origen = nodoDetectado.nombre;
+
     this.mensajeUbicacion =
       `Ubicación detectada: ${nodoDetectado.nombre}`;
   }

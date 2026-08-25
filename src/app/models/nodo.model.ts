@@ -15,6 +15,8 @@ export type TipoNodo =
   | 'recepcion'
   | 'pasillo'
   | 'ascensor'
+  | 'escalera'
+  | 'rampa'
   | 'baño'
   | 'habitacion'
   | 'estacionamiento'
@@ -32,7 +34,17 @@ export interface Conexion {
   origen: string;
   destino: string;
   distancia: number;
+  tipo?: TipoConexion;
+  accesible?: boolean;
+  restringida?: boolean;
+  habilitada?: boolean;
 }
+
+export type TipoConexion =
+  | 'pasillo'
+  | 'ascensor'
+  | 'escalera'
+  | 'rampa';
 
 export interface LugarPlano {
   id: string;

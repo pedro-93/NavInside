@@ -10,42 +10,110 @@ export const NODOS_SIMULADOS: Nodo[] = [
     nombre: 'Entrada',
     x: 0,
     y: 0,
-    tipo: 'entrada'
+    tipo: 'entrada',
+    nivel: 1,
+    accesible: true,
+    restringido: false
   },
   {
     id: 'recepcion',
     nombre: 'Recepción',
     x: 2,
     y: 0,
-    tipo: 'recepcion'
+    tipo: 'recepcion',
+    nivel: 1,
+    accesible: true,
+    restringido: false
   },
   {
     id: 'pasillo',
     nombre: 'Pasillo principal',
     x: 5,
     y: 0,
-    tipo: 'pasillo'
+    tipo: 'pasillo',
+    nivel: 1,
+    accesible: true,
+    restringido: false
   },
   {
     id: 'habitacion-101',
     nombre: 'Habitación 101',
     x: 9,
     y: 0,
-    tipo: 'habitacion'
+    tipo: 'habitacion',
+    nivel: 1,
+    accesible: true,
+    restringido: false
   },
   {
     id: 'baño',
     nombre: 'Baño',
     x: 5,
     y: 3,
-    tipo: 'baño'
+    tipo: 'baño',
+    nivel: 1,
+    accesible: true,
+    restringido: false
   },
   {
     id: 'ascensor',
-    nombre: 'Ascensor',
+    nombre: 'Ascensor nivel 1',
     x: 5,
     y: 6,
-    tipo: 'ascensor'
+    tipo: 'ascensor',
+    nivel: 1,
+    accesible: true,
+    restringido: false
+  },
+  {
+    id: 'escalera-nivel-1',
+    nombre: 'Escalera nivel 1',
+    x: 7,
+    y: 0,
+    tipo: 'escalera',
+    nivel: 1,
+    accesible: false,
+    restringido: false
+  },
+  {
+    id: 'ascensor-nivel-3',
+    nombre: 'Ascensor nivel 3',
+    x: 5,
+    y: 6,
+    tipo: 'ascensor',
+    nivel: 3,
+    accesible: true,
+    restringido: false
+  },
+  {
+    id: 'escalera-nivel-3',
+    nombre: 'Escalera nivel 3',
+    x: 7,
+    y: 0,
+    tipo: 'escalera',
+    nivel: 3,
+    accesible: false,
+    restringido: false
+  },
+  {
+    id: 'pasillo-nivel-3',
+    nombre: 'Pasillo nivel 3',
+    x: 5,
+    y: 3,
+    tipo: 'pasillo',
+    nivel: 3,
+    accesible: true,
+    restringido: false
+  },
+  {
+    id: 'salon-nivel-3',
+    nombre: 'Salón nivel 3',
+    x: 9,
+    y: 3,
+    tipo: 'salon',
+    nivel: 3,
+    accesible: true,
+    restringido: false
   }
 ];
 
@@ -53,32 +121,110 @@ export const CONEXIONES_SIMULADAS: Conexion[] = [
   {
     origen: 'entrada',
     destino: 'recepcion',
-    distancia: 2
+    distancia: 2,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
   },
   {
     origen: 'recepcion',
     destino: 'pasillo',
-    distancia: 3
+    distancia: 3,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
   },
   {
     origen: 'pasillo',
     destino: 'habitacion-101',
-    distancia: 4
+    distancia: 4,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
   },
   {
     origen: 'pasillo',
     destino: 'baño',
-    distancia: 3
+    distancia: 3,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
   },
   {
     origen: 'baño',
     destino: 'ascensor',
-    distancia: 3
+    distancia: 3,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
   },
   {
     origen: 'recepcion',
     destino: 'baño',
-    distancia: 5
+    distancia: 5,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'pasillo',
+    destino: 'escalera-nivel-1',
+    distancia: 1,
+    tipo: 'pasillo',
+    accesible: false,
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'escalera-nivel-1',
+    destino: 'escalera-nivel-3',
+    distancia: 2,
+    tipo: 'escalera',
+    accesible: false,
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'escalera-nivel-3',
+    destino: 'pasillo-nivel-3',
+    distancia: 1,
+    tipo: 'pasillo',
+    accesible: false,
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'ascensor',
+    destino: 'ascensor-nivel-3',
+    distancia: 3,
+    tipo: 'ascensor',
+    accesible: true,
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'ascensor-nivel-3',
+    destino: 'pasillo-nivel-3',
+    distancia: 1,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'pasillo-nivel-3',
+    destino: 'salon-nivel-3',
+    distancia: 4,
+    tipo: 'pasillo',
+    accesible: true,
+    restringida: false,
+    habilitada: true
   }
 ];
 

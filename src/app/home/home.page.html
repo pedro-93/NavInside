@@ -39,6 +39,24 @@
         }
       </ion-select>
     </ion-item>
+
+    <ion-item>
+      <div>
+        <strong>Ruta accesible</strong>
+
+        <p>
+          Evita escaleras y utiliza conexiones aptas.
+        </p>
+      </div>
+
+      <ion-toggle
+        slot="end"
+        aria-label="Activar ruta accesible"
+        [(ngModel)]="modoAccesible"
+        (ionChange)="cambiarModoAccesible()"
+      >
+      </ion-toggle>
+    </ion-item>
   </ion-list>
 
   <ion-button
@@ -87,9 +105,21 @@
       </ion-card-header>
 
       <ion-card-content>
-        {{ resultado }}
+        <p>
+          {{ resultado }}
+        </p>
 
         @if (distanciaTotal !== null) {
+          <p>
+            <strong>Tipo de ruta:</strong>
+
+            @if (modoAccesible) {
+              Accesible, sin escaleras
+            } @else {
+              Normal
+            }
+          </p>
+
           <p>
             <strong>Distancia simulada:</strong>
             {{ distanciaTotal }} unidades
