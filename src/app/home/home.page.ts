@@ -25,6 +25,10 @@ import {
 import {
   NODOS_SIMULADOS
 } from '../data/mapa-simulado.data';
+import {
+  Idioma,
+  IdiomaService
+} from '../services/idioma.service';
 import { QrService } from '../services/qr.service';
 import { RutaService } from '../services/ruta.service';
 
@@ -64,14 +68,41 @@ export class HomePage {
   origen: string = '';
   destino: string = '';
   modoAccesible: boolean = false;
+  idiomaSeleccionado: Idioma;
   mensajeUbicacion: string = '';
   resultado: string = '';
   distanciaTotal: number | null = null;
 
   constructor(
     private rutaService: RutaService,
-    private qrService: QrService
-  ) {}
+    private qrService: QrService,
+    private idiomaService: IdiomaService
+  ) {
+    this.idiomaSeleccionado =
+      this.idiomaService.idiomaActual;
+  }
+
+  traducir(
+    clave: string,
+    parametros: Record<
+      string,
+      string | number
+    > = {}
+  ): string {
+    return this.idiomaService.traducir(
+      clave,
+      parametros
+    );
+  }
+
+  cambiarIdioma(): void {
+    this.idiomaService.establecerIdioma(
+      this.idiomaSeleccionado
+    );
+
+    this.mensajeUbicacion = '';
+    this.limpiarRuta();
+  }
 
   async leerQrReal(): Promise<void> {
     this.limpiarRuta();
@@ -85,14 +116,19 @@ export class HomePage {
           cameraDirection:
             CapacitorBarcodeScannerCameraDirection.BACK,
           scanInstructions:
-            'Apunta la cámara al código QR',
+            this.traducir(
+              'apuntarCamara'
+            ),
           scanButton: true,
-          scanText: 'Escanear'
+          scanText:
+            this.traducir('escanear')
         });
 
       if (!lectura.ScanResult) {
         this.mensajeUbicacion =
-          'La lectura fue cancelada o no se detectó un código QR.';
+          this.traducir(
+            'lecturaCancelada'
+          );
         return;
       }
 
@@ -106,7 +142,7 @@ export class HomePage {
       );
 
       this.mensajeUbicacion =
-        'No fue posible abrir o utilizar la cámara.';
+        this.traducir('errorCamara');
     }
   }
 
@@ -130,13 +166,17 @@ export class HomePage {
 
     if (!this.origen || !this.destino) {
       this.resultado =
-        'Debes seleccionar un origen y un destino.';
+        this.traducir(
+          'seleccionarOrigenDestino'
+        );
       return;
     }
 
     if (this.origen === this.destino) {
       this.resultado =
-        'El origen y el destino deben ser diferentes.';
+        this.traducir(
+          'origenDestinoIguales'
+        );
       return;
     }
 
@@ -154,7 +194,9 @@ export class HomePage {
 
     if (!nodoOrigen || !nodoDestino) {
       this.resultado =
-        'No se encontraron los lugares seleccionados.';
+        this.traducir(
+          'lugaresNoEncontrados'
+        );
       return;
     }
 
@@ -168,8 +210,12 @@ export class HomePage {
     if (ruta.length === 0) {
       this.resultado =
         this.modoAccesible
-          ? 'No existe una ruta accesible disponible.'
-          : 'No existe una ruta disponible.';
+          ? this.traducir(
+              'rutaAccesibleNoDisponible'
+            )
+          : this.traducir(
+              'rutaNoDisponible'
+            );
       return;
     }
 
@@ -196,14 +242,19 @@ export class HomePage {
 
     if (!nodoDetectado) {
       this.mensajeUbicacion =
-        'El código QR no pertenece a NavInside o la ubicación no existe.';
+        this.traducir('qrInvalido');
       return;
     }
 
     this.origen = nodoDetectado.nombre;
 
     this.mensajeUbicacion =
-      `Ubicación detectada: ${nodoDetectado.nombre}`;
+      this.traducir(
+        'ubicacionDetectada',
+        {
+          nombre: nodoDetectado.nombre
+        }
+      );
   }
 
   private limpiarRuta(): void {

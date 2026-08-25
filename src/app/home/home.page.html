@@ -1,21 +1,47 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>NavInside</ion-title>
+    <ion-title>
+      {{ traducir('tituloAplicacion') }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h1>Navegación interior</h1>
+  <h1>
+    {{ traducir('tituloPagina') }}
+  </h1>
 
   <p>
-    Selecciona tu punto de origen y destino.
+    {{ traducir('instrucciones') }}
   </p>
 
   <ion-list>
     <ion-item>
       <ion-select
-        label="Origen"
-        placeholder="Seleccionar origen"
+        [label]="traducir('idioma')"
+        [(ngModel)]="idiomaSeleccionado"
+        (ionChange)="cambiarIdioma()"
+      >
+        <ion-select-option value="es">
+          {{ traducir('espanol') }}
+        </ion-select-option>
+
+        <ion-select-option value="en">
+          {{ traducir('ingles') }}
+        </ion-select-option>
+
+        <ion-select-option value="pt">
+          {{ traducir('portugues') }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-select
+        [label]="traducir('origen')"
+        [placeholder]="
+          traducir('seleccionarOrigen')
+        "
         [(ngModel)]="origen"
       >
         @for (lugar of lugares; track lugar) {
@@ -28,8 +54,10 @@
 
     <ion-item>
       <ion-select
-        label="Destino"
-        placeholder="Seleccionar destino"
+        [label]="traducir('destino')"
+        [placeholder]="
+          traducir('seleccionarDestino')
+        "
         [(ngModel)]="destino"
       >
         @for (lugar of lugares; track lugar) {
@@ -42,18 +70,28 @@
 
     <ion-item>
       <div>
-        <strong>Ruta accesible</strong>
+        <strong>
+          {{ traducir('rutaAccesible') }}
+        </strong>
 
         <p>
-          Evita escaleras y utiliza conexiones aptas.
+          {{
+            traducir(
+              'descripcionRutaAccesible'
+            )
+          }}
         </p>
       </div>
 
       <ion-toggle
         slot="end"
-        aria-label="Activar ruta accesible"
+        [attr.aria-label]="
+          traducir('rutaAccesible')
+        "
         [(ngModel)]="modoAccesible"
-        (ionChange)="cambiarModoAccesible()"
+        (ionChange)="
+          cambiarModoAccesible()
+        "
       >
       </ion-toggle>
     </ion-item>
@@ -63,7 +101,7 @@
     expand="block"
     (click)="leerQrReal()"
   >
-    Leer QR con cámara
+    {{ traducir('leerQr') }}
   </ion-button>
 
   <ion-button
@@ -71,14 +109,18 @@
     fill="outline"
     (click)="simularLecturaQr()"
   >
-    Simular lectura QR
+    {{ traducir('simularQr') }}
   </ion-button>
 
   @if (mensajeUbicacion) {
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          Estado de ubicación
+          {{
+            traducir(
+              'estadoUbicacion'
+            )
+          }}
         </ion-card-title>
       </ion-card-header>
 
@@ -93,14 +135,18 @@
     [disabled]="!origen || !destino"
     (click)="calcularRuta()"
   >
-    Calcular ruta
+    {{ traducir('calcularRuta') }}
   </ion-button>
 
   @if (resultado) {
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          Resultado de la ruta
+          {{
+            traducir(
+              'resultadoRuta'
+            )
+          }}
         </ion-card-title>
       </ion-card-header>
 
@@ -111,18 +157,32 @@
 
         @if (distanciaTotal !== null) {
           <p>
-            <strong>Tipo de ruta:</strong>
+            <strong>
+              {{ traducir('tipoRuta') }}:
+            </strong>
 
             @if (modoAccesible) {
-              Accesible, sin escaleras
+              {{
+                traducir(
+                  'rutaAccesibleSinEscaleras'
+                )
+              }}
             } @else {
-              Normal
+              {{ traducir('rutaNormal') }}
             }
           </p>
 
           <p>
-            <strong>Distancia simulada:</strong>
-            {{ distanciaTotal }} unidades
+            <strong>
+              {{
+                traducir(
+                  'distanciaSimulada'
+                )
+              }}:
+            </strong>
+
+            {{ distanciaTotal }}
+            {{ traducir('unidades') }}
           </p>
         }
       </ion-card-content>
