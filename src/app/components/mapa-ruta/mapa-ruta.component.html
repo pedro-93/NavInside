@@ -1,0 +1,168 @@
+<section class="mapa-contenedor">
+  <header class="mapa-encabezado">
+    <div>
+      <p class="mapa-etiqueta">
+        Mapa navegable preliminar
+      </p>
+
+      <h2>
+        Nivel {{ nivel }}
+      </h2>
+    </div>
+
+    <span class="mapa-estado">
+      Datos simulados
+    </span>
+  </header>
+
+  <div
+    *ngIf="hayDatosNivel; else sinDatos"
+    class="mapa-superficie"
+  >
+    <svg
+      [attr.viewBox]="
+        '0 0 ' +
+        anchoVista +
+        ' ' +
+        altoVista
+      "
+      role="img"
+      [attr.aria-label]="
+        'Grafo navegable del nivel ' +
+        nivel
+      "
+    >
+      <defs>
+        <filter
+          id="brilloRuta"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+        >
+          <feGaussianBlur
+            stdDeviation="7"
+            result="desenfoque"
+          />
+
+          <feMerge>
+            <feMergeNode
+              in="desenfoque"
+            />
+
+            <feMergeNode
+              in="SourceGraphic"
+            />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <g class="conexiones">
+        <line
+          *ngFor="
+            let conexion of conexionesVisuales;
+            trackBy: identificarConexion
+          "
+          [attr.x1]="
+            conexion.origen.xVisual
+          "
+          [attr.y1]="
+            conexion.origen.yVisual
+          "
+          [attr.x2]="
+            conexion.destino.xVisual
+          "
+          [attr.y2]="
+            conexion.destino.yVisual
+          "
+          [ngClass]="{
+            'conexion-ruta':
+              conexion.perteneceRuta,
+            'conexion-base':
+              !conexion.perteneceRuta,
+            'conexion-accesible':
+              conexion.accesible
+          }"
+        />
+      </g>
+
+      <g
+        *ngFor="
+          let nodoVisual of nodosVisuales;
+          trackBy: identificarNodo
+        "
+        class="nodo"
+        [attr.transform]="
+          'translate(' +
+          nodoVisual.xVisual +
+          ' ' +
+          nodoVisual.yVisual +
+          ')'
+        "
+      >
+        <circle
+          r="18"
+          [ngClass]="{
+            'nodo-base':
+              !nodoVisual.perteneceRuta,
+            'nodo-ruta':
+              nodoVisual.perteneceRuta,
+            'nodo-origen':
+              nodoVisual.esOrigen,
+            'nodo-destino':
+              nodoVisual.esDestino
+          }"
+        />
+
+        <circle
+          *ngIf="
+            nodoVisual.esOrigen ||
+            nodoVisual.esDestino
+          "
+          r="28"
+          class="nodo-pulso"
+        />
+
+        <text
+          x="0"
+          y="-34"
+          text-anchor="middle"
+          class="nodo-nombre"
+        >
+          {{ nodoVisual.nodo.nombre }}
+        </text>
+      </g>
+    </svg>
+  </div>
+
+  <ng-template #sinDatos>
+    <div class="mapa-vacio">
+      <p>
+        No existen nodos disponibles para
+        el nivel {{ nivel }}.
+      </p>
+    </div>
+  </ng-template>
+
+  <footer class="mapa-leyenda">
+    <span>
+      <i class="leyenda-nodo"></i>
+      Nodo
+    </span>
+
+    <span>
+      <i class="leyenda-ruta"></i>
+      Ruta calculada
+    </span>
+
+    <span>
+      <i class="leyenda-origen"></i>
+      Origen
+    </span>
+
+    <span>
+      <i class="leyenda-destino"></i>
+      Destino
+    </span>
+  </footer>
+</section>

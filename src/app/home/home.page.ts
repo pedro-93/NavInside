@@ -23,14 +23,25 @@ import {
 } from '@ionic/angular';
 
 import {
+  MapaRutaComponent
+} from '../components/mapa-ruta/mapa-ruta.component';
+import {
+  CONEXIONES_SIMULADAS,
   NODOS_SIMULADOS
 } from '../data/mapa-simulado.data';
+import {
+  Nodo
+} from '../models/nodo.model';
 import {
   Idioma,
   IdiomaService
 } from '../services/idioma.service';
-import { QrService } from '../services/qr.service';
-import { RutaService } from '../services/ruta.service';
+import {
+  QrService
+} from '../services/qr.service';
+import {
+  RutaService
+} from '../services/ruta.service';
 
 @Component({
   selector: 'app-home',
@@ -39,6 +50,7 @@ import { RutaService } from '../services/ruta.service';
   standalone: true,
   imports: [
     FormsModule,
+    MapaRutaComponent,
     IonButton,
     IonCard,
     IonCardContent,
@@ -56,6 +68,12 @@ import { RutaService } from '../services/ruta.service';
   ]
 })
 export class HomePage {
+  readonly nodosMapa =
+    NODOS_SIMULADOS;
+
+  readonly conexionesMapa =
+    CONEXIONES_SIMULADAS;
+
   lugares: string[] = NODOS_SIMULADOS
     .filter(
       nodo =>
@@ -72,6 +90,8 @@ export class HomePage {
   mensajeUbicacion: string = '';
   resultado: string = '';
   distanciaTotal: number | null = null;
+  rutaCalculada: Nodo[] = [];
+  nivelVisualizado = 1;
 
   constructor(
     private rutaService: RutaService,
@@ -80,6 +100,24 @@ export class HomePage {
   ) {
     this.idiomaSeleccionado =
       this.idiomaService.idiomaActual;
+  }
+
+  get origenId(): string | null {
+    return (
+      NODOS_SIMULADOS.find(
+        nodo =>
+          nodo.nombre === this.origen
+      )?.id ?? null
+    );
+  }
+
+  get destinoId(): string | null {
+    return (
+      NODOS_SIMULADOS.find(
+        nodo =>
+          nodo.nombre === this.destino
+      )?.id ?? null
+    );
   }
 
   traducir(
@@ -211,13 +249,17 @@ export class HomePage {
       this.resultado =
         this.modoAccesible
           ? this.traducir(
-              'rutaAccesibleNoDisponible'
-            )
+            'rutaAccesibleNoDisponible'
+          )
           : this.traducir(
-              'rutaNoDisponible'
-            );
+            'rutaNoDisponible'
+          );
       return;
     }
+
+    this.rutaCalculada = ruta;
+    this.nivelVisualizado =
+      nodoOrigen.nivel ?? 1;
 
     this.resultado = ruta
       .map(nodo => nodo.nombre)
@@ -247,6 +289,8 @@ export class HomePage {
     }
 
     this.origen = nodoDetectado.nombre;
+    this.nivelVisualizado =
+      nodoDetectado.nivel ?? 1;
 
     this.mensajeUbicacion =
       this.traducir(
@@ -260,5 +304,6 @@ export class HomePage {
   private limpiarRuta(): void {
     this.resultado = '';
     this.distanciaTotal = null;
+    this.rutaCalculada = [];
   }
 }
