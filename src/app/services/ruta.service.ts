@@ -2,9 +2,29 @@ import { Injectable } from '@angular/core';
 
 import {
   Conexion,
-  Nodo
+  Nodo,
+  TipoConexion
 } from '../models/nodo.model';
 import { MapaService } from './mapa.service';
+
+export type TipoPasoRuta =
+  | 'inicio'
+  | 'avance'
+  | 'cambio-nivel'
+  | 'llegada';
+
+export type DireccionNivel =
+  | 'subir'
+  | 'bajar';
+
+export interface PasoRuta {
+  orden: number;
+  tipo: TipoPasoRuta;
+  nodo: Nodo;
+  desde?: Nodo;
+  medio?: TipoConexion;
+  direccionNivel?: DireccionNivel;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -167,35 +187,89 @@ export class RutaService {
       i < ruta.length - 1;
       i++
     ) {
-      const origenId = ruta[i].id;
-      const destinoId = ruta[i + 1].id;
-
       const conexion =
-        this.conexiones.find(
-          conexionActual =>
-            (
-              conexionActual.origen ===
-                origenId &&
-              conexionActual.destino ===
-                destinoId
-            ) ||
-            (
-              conexionActual.origen ===
-                destinoId &&
-              conexionActual.destino ===
-                origenId
-            )
+        this.obtenerConexionEntre(
+          ruta[i].id,
+          ruta[i + 1].id
         );
 
       if (!conexion) {
         return Infinity;
       }
 
-      distanciaTotal +=
-        conexion.distancia;
+      distanciaTotal += conexion.distancia;
     }
 
     return distanciaTotal;
+  }
+
+  generarPasos(
+    ruta: Nodo[]
+  ): PasoRuta[] {
+    if (ruta.length === 0) {
+      return [];
+    }
+
+    const pasos: PasoRuta[] = [
+      {
+        orden: 1,
+        tipo: 'inicio',
+        nodo: ruta[0]
+      }
+    ];
+
+    for (
+      let i = 0;
+      i < ruta.length - 1;
+      i++
+    ) {
+      const nodoActual = ruta[i];
+      const nodoSiguiente = ruta[i + 1];
+
+      const conexion =
+        this.obtenerConexionEntre(
+          nodoActual.id,
+          nodoSiguiente.id
+        );
+
+      const cambioNivel =
+        nodoActual.nivel !== undefined &&
+        nodoSiguiente.nivel !== undefined &&
+        nodoActual.nivel !== nodoSiguiente.nivel;
+
+      if (cambioNivel) {
+        pasos.push({
+          orden: pasos.length + 1,
+          tipo: 'cambio-nivel',
+          desde: nodoActual,
+          nodo: nodoSiguiente,
+          medio: conexion?.tipo,
+          direccionNivel:
+            nodoSiguiente.nivel! >
+            nodoActual.nivel!
+              ? 'subir'
+              : 'bajar'
+        });
+
+        continue;
+      }
+
+      pasos.push({
+        orden: pasos.length + 1,
+        tipo: 'avance',
+        desde: nodoActual,
+        nodo: nodoSiguiente,
+        medio: conexion?.tipo
+      });
+    }
+
+    pasos.push({
+      orden: pasos.length + 1,
+      tipo: 'llegada',
+      nodo: ruta[ruta.length - 1]
+    });
+
+    return pasos;
   }
 
   private calcularHeuristica(
@@ -309,6 +383,23 @@ export class RutaService {
   ): Nodo | undefined {
     return this.nodos.find(
       nodo => nodo.id === id
+    );
+  }
+
+  private obtenerConexionEntre(
+    origenId: string,
+    destinoId: string
+  ): Conexion | undefined {
+    return this.conexiones.find(
+      conexion =>
+        (
+          conexion.origen === origenId &&
+          conexion.destino === destinoId
+        ) ||
+        (
+          conexion.origen === destinoId &&
+          conexion.destino === origenId
+        )
     );
   }
 

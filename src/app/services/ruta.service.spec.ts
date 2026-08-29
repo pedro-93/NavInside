@@ -189,4 +189,131 @@ describe('RutaService', () => {
       );
     }
   );
+
+  it(
+    'debe devolver pasos vacíos cuando no existe una ruta',
+    () => {
+      const pasos =
+        servicio.generarPasos([]);
+
+      expect(pasos).toEqual([]);
+    }
+  );
+
+  it(
+    'debe generar un paso inicial y uno de llegada',
+    () => {
+      const ruta = servicio.calcularRuta(
+        'entrada',
+        'baño'
+      );
+
+      const pasos =
+        servicio.generarPasos(ruta);
+
+      expect(pasos[0].tipo).toBe(
+        'inicio'
+      );
+
+      expect(pasos[0].nodo.id).toBe(
+        'entrada'
+      );
+
+      expect(
+        pasos[pasos.length - 1].tipo
+      ).toBe('llegada');
+
+      expect(
+        pasos[pasos.length - 1].nodo.id
+      ).toBe('baño');
+    }
+  );
+
+  it(
+    'debe numerar los pasos correlativamente',
+    () => {
+      const ruta = servicio.calcularRuta(
+        'entrada',
+        'baño'
+      );
+
+      const pasos =
+        servicio.generarPasos(ruta);
+
+      const ordenes = pasos.map(
+        paso => paso.orden
+      );
+
+      expect(ordenes).toEqual(
+        pasos.map(
+          (_, indice) => indice + 1
+        )
+      );
+    }
+  );
+
+  it(
+    'debe detectar una subida mediante escalera',
+    () => {
+      const ruta = servicio.calcularRuta(
+        'entrada',
+        'salon-nivel-3'
+      );
+
+      const pasos =
+        servicio.generarPasos(ruta);
+
+      const cambioNivel = pasos.find(
+        paso =>
+          paso.tipo === 'cambio-nivel'
+      );
+
+      expect(cambioNivel).toBeDefined();
+
+      expect(
+        cambioNivel?.direccionNivel
+      ).toBe('subir');
+
+      expect(
+        cambioNivel?.medio
+      ).toBe('escalera');
+
+      expect(
+        cambioNivel?.nodo.nivel
+      ).toBe(3);
+    }
+  );
+
+  it(
+    'debe detectar una subida accesible mediante ascensor',
+    () => {
+      const ruta = servicio.calcularRuta(
+        'entrada',
+        'salon-nivel-3',
+        true
+      );
+
+      const pasos =
+        servicio.generarPasos(ruta);
+
+      const cambioNivel = pasos.find(
+        paso =>
+          paso.tipo === 'cambio-nivel'
+      );
+
+      expect(cambioNivel).toBeDefined();
+
+      expect(
+        cambioNivel?.direccionNivel
+      ).toBe('subir');
+
+      expect(
+        cambioNivel?.medio
+      ).toBe('ascensor');
+
+      expect(
+        cambioNivel?.nodo.nivel
+      ).toBe(3);
+    }
+  );
 });
