@@ -17,7 +17,11 @@
 
   <ion-list>
     <ion-item>
-      <ion-select [label]="traducir('idioma')" [(ngModel)]="idiomaSeleccionado" (ionChange)="cambiarIdioma()">
+      <ion-select
+        [label]="traducir('idioma')"
+        [(ngModel)]="idiomaSeleccionado"
+        (ionChange)="cambiarIdioma()"
+      >
         <ion-select-option value="es">
           {{ traducir('espanol') }}
         </ion-select-option>
@@ -33,25 +37,43 @@
     </ion-item>
 
     <ion-item>
-      <ion-select [label]="traducir('origen')" [placeholder]="
+      <ion-select
+        [label]="traducir('origen')"
+        [placeholder]="
           traducir('seleccionarOrigen')
-        " [(ngModel)]="origen">
-        @for (lugar of lugares; track lugar) {
-        <ion-select-option [value]="lugar">
-          {{ lugar }}
-        </ion-select-option>
+        "
+        [(ngModel)]="origen"
+      >
+        @for (
+          lugar of lugares;
+          track lugar.id
+        ) {
+          <ion-select-option
+            [value]="lugar.id"
+          >
+            {{ nombreNodo(lugar) }}
+          </ion-select-option>
         }
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-select [label]="traducir('destino')" [placeholder]="
+      <ion-select
+        [label]="traducir('destino')"
+        [placeholder]="
           traducir('seleccionarDestino')
-        " [(ngModel)]="destino">
-        @for (lugar of lugares; track lugar) {
-        <ion-select-option [value]="lugar">
-          {{ lugar }}
-        </ion-select-option>
+        "
+        [(ngModel)]="destino"
+      >
+        @for (
+          lugar of lugares;
+          track lugar.id
+        ) {
+          <ion-select-option
+            [value]="lugar.id"
+          >
+            {{ nombreNodo(lugar) }}
+          </ion-select-option>
         }
       </ion-select>
     </ion-item>
@@ -64,102 +86,149 @@
 
         <p>
           {{
-          traducir(
-          'descripcionRutaAccesible'
-          )
+            traducir(
+              'descripcionRutaAccesible'
+            )
           }}
         </p>
       </div>
 
-      <ion-toggle slot="end" [attr.aria-label]="
+      <ion-toggle
+        slot="end"
+        [attr.aria-label]="
           traducir('rutaAccesible')
-        " [(ngModel)]="modoAccesible" (ionChange)="
+        "
+        [(ngModel)]="modoAccesible"
+        (ionChange)="
           cambiarModoAccesible()
-        ">
+        "
+      >
       </ion-toggle>
     </ion-item>
   </ion-list>
 
-  <ion-button expand="block" (click)="leerQrReal()">
+  <ion-button
+    expand="block"
+    (click)="leerQrReal()"
+  >
     {{ traducir('leerQr') }}
   </ion-button>
 
-  <ion-button expand="block" fill="outline" (click)="simularLecturaQr()">
+  <ion-button
+    expand="block"
+    fill="outline"
+    (click)="simularLecturaQr()"
+  >
     {{ traducir('simularQr') }}
   </ion-button>
 
   @if (mensajeUbicacion) {
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        {{
-        traducir(
-        'estadoUbicacion'
-        )
-        }}
-      </ion-card-title>
-    </ion-card-header>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          {{
+            traducir(
+              'estadoUbicacion'
+            )
+          }}
+        </ion-card-title>
+      </ion-card-header>
 
-    <ion-card-content>
-      {{ mensajeUbicacion }}
-    </ion-card-content>
-  </ion-card>
+      <ion-card-content>
+        {{ mensajeUbicacion }}
+      </ion-card-content>
+    </ion-card>
   }
 
-  <ion-button expand="block" [disabled]="!origen || !destino" (click)="calcularRuta()">
+  <ion-button
+    expand="block"
+    [disabled]="!origen || !destino"
+    (click)="calcularRuta()"
+  >
     {{ traducir('calcularRuta') }}
   </ion-button>
 
   @if (resultado) {
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        {{
-        traducir(
-        'resultadoRuta'
-        )
-        }}
-      </ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <p>
-        {{ resultado }}
-      </p>
-
-      @if (distanciaTotal !== null) {
-      <p>
-        <strong>
-          {{ traducir('tipoRuta') }}:
-        </strong>
-
-        @if (modoAccesible) {
-        {{
-        traducir(
-        'rutaAccesibleSinEscaleras'
-        )
-        }}
-        } @else {
-        {{ traducir('rutaNormal') }}
-        }
-      </p>
-
-      <p>
-        <strong>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
           {{
-          traducir(
-          'distanciaSimulada'
-          )
-          }}:
-        </strong>
+            traducir(
+              'resultadoRuta'
+            )
+          }}
+        </ion-card-title>
+      </ion-card-header>
 
-        {{ distanciaTotal }}
-        {{ traducir('unidades') }}
-      </p>
-      }
-    </ion-card-content>
-  </ion-card>
+      <ion-card-content>
+        <p>
+          {{ resultado }}
+        </p>
+
+        @if (distanciaTotal !== null) {
+          <p>
+            <strong>
+              {{ traducir('tipoRuta') }}:
+            </strong>
+
+            @if (modoAccesible) {
+              {{
+                traducir(
+                  'rutaAccesibleSinEscaleras'
+                )
+              }}
+            } @else {
+              {{ traducir('rutaNormal') }}
+            }
+          </p>
+
+          <p>
+            <strong>
+              {{
+                traducir(
+                  'distanciaSimulada'
+                )
+              }}:
+            </strong>
+
+            {{ distanciaTotal }}
+            {{ traducir('unidades') }}
+          </p>
+        }
+      </ion-card-content>
+    </ion-card>
   }
-  <app-mapa-ruta [nodos]="nodosMapa" [conexiones]="conexionesMapa" [ruta]="rutaCalculada" [nivel]="nivelVisualizado"
-    [origenId]="origenId" [destinoId]="destinoId"></app-mapa-ruta>
+
+  @if (instruccionesRuta.length > 0) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          {{ traducir('guiaRuta') }}
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ol>
+          @for (
+            instruccion of instruccionesRuta;
+            track $index
+          ) {
+            <li>
+              {{ instruccion }}
+            </li>
+          }
+        </ol>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  <app-mapa-ruta
+    [nodos]="nodosMapa"
+    [conexiones]="conexionesMapa"
+    [ruta]="rutaCalculada"
+    [nivel]="nivelVisualizado"
+    [origenId]="origenId"
+    [destinoId]="destinoId"
+  >
+  </app-mapa-ruta>
 </ion-content>

@@ -30,6 +30,9 @@ import {
   NODOS_SIMULADOS
 } from '../data/mapa-simulado.data';
 import {
+  obtenerNombreNodo
+} from '../data/nombres-nodos.data';
+import {
   Nodo
 } from '../models/nodo.model';
 import {
@@ -40,6 +43,7 @@ import {
   QrService
 } from '../services/qr.service';
 import {
+  PasoRuta,
   RutaService
 } from '../services/ruta.service';
 
@@ -68,20 +72,16 @@ import {
   ]
 })
 export class HomePage {
-  readonly nodosMapa =
-    NODOS_SIMULADOS;
-
   readonly conexionesMapa =
     CONEXIONES_SIMULADAS;
 
-  lugares: string[] = NODOS_SIMULADOS
-    .filter(
+  readonly lugares: Nodo[] =
+    NODOS_SIMULADOS.filter(
       nodo =>
         nodo.restringido !== true
-    )
-    .map(
-      nodo => nodo.nombre
     );
+
+  nodosMapa: Nodo[] = [];
 
   origen: string = '';
   destino: string = '';
@@ -91,6 +91,7 @@ export class HomePage {
   resultado: string = '';
   distanciaTotal: number | null = null;
   rutaCalculada: Nodo[] = [];
+  pasosRuta: PasoRuta[] = [];
   nivelVisualizado = 1;
 
   constructor(
@@ -100,23 +101,22 @@ export class HomePage {
   ) {
     this.idiomaSeleccionado =
       this.idiomaService.idiomaActual;
+
+    this.actualizarNodosMapa();
   }
 
   get origenId(): string | null {
-    return (
-      NODOS_SIMULADOS.find(
-        nodo =>
-          nodo.nombre === this.origen
-      )?.id ?? null
-    );
+    return this.origen || null;
   }
 
   get destinoId(): string | null {
-    return (
-      NODOS_SIMULADOS.find(
-        nodo =>
-          nodo.nombre === this.destino
-      )?.id ?? null
+    return this.destino || null;
+  }
+
+  get instruccionesRuta(): string[] {
+    return this.pasosRuta.map(
+      paso =>
+        this.traducirPaso(paso)
     );
   }
 
@@ -133,13 +133,31 @@ export class HomePage {
     );
   }
 
+  nombreNodo(
+    nodo: Nodo
+  ): string {
+    return obtenerNombreNodo(
+      nodo.id,
+      this.idiomaSeleccionado,
+      nodo.nombre
+    );
+  }
+
   cambiarIdioma(): void {
     this.idiomaService.establecerIdioma(
       this.idiomaSeleccionado
     );
 
+    this.actualizarNodosMapa();
     this.mensajeUbicacion = '';
-    this.limpiarRuta();
+
+    if (this.rutaCalculada.length > 0) {
+      this.actualizarResultadoRuta();
+      return;
+    }
+
+    this.resultado = '';
+    this.distanciaTotal = null;
   }
 
   async leerQrReal(): Promise<void> {
@@ -221,13 +239,13 @@ export class HomePage {
     const nodoOrigen =
       NODOS_SIMULADOS.find(
         nodo =>
-          nodo.nombre === this.origen
+          nodo.id === this.origen
       );
 
     const nodoDestino =
       NODOS_SIMULADOS.find(
         nodo =>
-          nodo.nombre === this.destino
+          nodo.id === this.destino
       );
 
     if (!nodoOrigen || !nodoDestino) {
@@ -258,16 +276,20 @@ export class HomePage {
     }
 
     this.rutaCalculada = ruta;
+
+    this.pasosRuta =
+      this.rutaService.generarPasos(
+        ruta
+      );
+
     this.nivelVisualizado =
       nodoOrigen.nivel ?? 1;
-
-    this.resultado = ruta
-      .map(nodo => nodo.nombre)
-      .join(' → ');
 
     this.distanciaTotal =
       this.rutaService
         .calcularDistanciaTotal(ruta);
+
+    this.actualizarResultadoRuta();
   }
 
   cambiarModoAccesible(): void {
@@ -288,7 +310,8 @@ export class HomePage {
       return;
     }
 
-    this.origen = nodoDetectado.nombre;
+    this.origen = nodoDetectado.id;
+
     this.nivelVisualizado =
       nodoDetectado.nivel ?? 1;
 
@@ -296,14 +319,107 @@ export class HomePage {
       this.traducir(
         'ubicacionDetectada',
         {
-          nombre: nodoDetectado.nombre
+          nombre:
+            this.nombreNodo(
+              nodoDetectado
+            )
         }
       );
+  }
+
+  private actualizarNodosMapa(): void {
+    this.nodosMapa =
+      NODOS_SIMULADOS.map(
+        nodo => ({
+          ...nodo,
+          nombre:
+            this.nombreNodo(nodo)
+        })
+      );
+  }
+
+  private actualizarResultadoRuta(): void {
+    this.resultado =
+      this.rutaCalculada
+        .map(
+          nodo =>
+            this.nombreNodo(nodo)
+        )
+        .join(' → ');
+  }
+
+  private traducirPaso(
+    paso: PasoRuta
+  ): string {
+    const nombre =
+      this.nombreNodo(paso.nodo);
+
+    if (paso.tipo === 'inicio') {
+      return this.traducir(
+        'inicioRuta',
+        { nombre }
+      );
+    }
+
+    if (paso.tipo === 'llegada') {
+      return this.traducir(
+        'llegadaRuta',
+        { nombre }
+      );
+    }
+
+    if (paso.tipo === 'avance') {
+      return this.traducir(
+        'continuarHacia',
+        { nombre }
+      );
+    }
+
+    const nivel =
+      paso.nodo.nivel ?? '';
+
+    if (paso.medio === 'ascensor') {
+      return this.traducir(
+        paso.direccionNivel === 'subir'
+          ? 'subirAscensor'
+          : 'bajarAscensor',
+        { nivel }
+      );
+    }
+
+    if (paso.medio === 'escalera') {
+      return this.traducir(
+        paso.direccionNivel === 'subir'
+          ? 'subirEscalera'
+          : 'bajarEscalera',
+        { nivel }
+      );
+    }
+
+    if (paso.medio === 'rampa') {
+      return this.traducir(
+        paso.direccionNivel === 'subir'
+          ? 'subirRampa'
+          : 'bajarRampa',
+        { nivel }
+      );
+    }
+
+    return this.traducir(
+      paso.direccionNivel === 'subir'
+        ? 'cambiarNivelSubir'
+        : 'cambiarNivelBajar',
+      {
+        nivel,
+        nombre
+      }
+    );
   }
 
   private limpiarRuta(): void {
     this.resultado = '';
     this.distanciaTotal = null;
     this.rutaCalculada = [];
+    this.pasosRuta = [];
   }
 }

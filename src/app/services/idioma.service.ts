@@ -52,6 +52,30 @@ const TRADUCCIONES: Record<
       'Distancia simulada',
     unidades: 'unidades',
 
+    guiaRuta: 'Guía paso a paso',
+    inicioRuta:
+      'Comienza en {nombre}.',
+    continuarHacia:
+      'Continúa hacia {nombre}.',
+    subirAscensor:
+      'Utiliza el ascensor para subir al nivel {nivel}.',
+    bajarAscensor:
+      'Utiliza el ascensor para bajar al nivel {nivel}.',
+    subirEscalera:
+      'Utiliza la escalera para subir al nivel {nivel}.',
+    bajarEscalera:
+      'Utiliza la escalera para bajar al nivel {nivel}.',
+    subirRampa:
+      'Utiliza la rampa para subir al nivel {nivel}.',
+    bajarRampa:
+      'Utiliza la rampa para bajar al nivel {nivel}.',
+    cambiarNivelSubir:
+      'Sube al nivel {nivel} y continúa hacia {nombre}.',
+    cambiarNivelBajar:
+      'Baja al nivel {nivel} y continúa hacia {nombre}.',
+    llegadaRuta:
+      'Has llegado a {nombre}.',
+
     apuntarCamara:
       'Apunta la cámara al código QR',
     escanear: 'Escanear',
@@ -115,6 +139,30 @@ const TRADUCCIONES: Record<
       'Simulated distance',
     unidades: 'units',
 
+    guiaRuta: 'Step-by-step guidance',
+    inicioRuta:
+      'Start at {nombre}.',
+    continuarHacia:
+      'Continue towards {nombre}.',
+    subirAscensor:
+      'Use the elevator to go up to level {nivel}.',
+    bajarAscensor:
+      'Use the elevator to go down to level {nivel}.',
+    subirEscalera:
+      'Use the stairs to go up to level {nivel}.',
+    bajarEscalera:
+      'Use the stairs to go down to level {nivel}.',
+    subirRampa:
+      'Use the ramp to go up to level {nivel}.',
+    bajarRampa:
+      'Use the ramp to go down to level {nivel}.',
+    cambiarNivelSubir:
+      'Go up to level {nivel} and continue towards {nombre}.',
+    cambiarNivelBajar:
+      'Go down to level {nivel} and continue towards {nombre}.',
+    llegadaRuta:
+      'You have arrived at {nombre}.',
+
     apuntarCamara:
       'Point the camera at the QR code',
     escanear: 'Scan',
@@ -177,6 +225,30 @@ const TRADUCCIONES: Record<
     distanciaSimulada:
       'Distância simulada',
     unidades: 'unidades',
+
+    guiaRuta: 'Guia passo a passo',
+    inicioRuta:
+      'Comece em {nombre}.',
+    continuarHacia:
+      'Continue até {nombre}.',
+    subirAscensor:
+      'Use o elevador para subir ao nível {nivel}.',
+    bajarAscensor:
+      'Use o elevador para descer ao nível {nivel}.',
+    subirEscalera:
+      'Use a escada para subir ao nível {nivel}.',
+    bajarEscalera:
+      'Use a escada para descer ao nível {nivel}.',
+    subirRampa:
+      'Use a rampa para subir ao nível {nivel}.',
+    bajarRampa:
+      'Use a rampa para descer ao nível {nivel}.',
+    cambiarNivelSubir:
+      'Suba ao nível {nivel} e continue até {nombre}.',
+    cambiarNivelBajar:
+      'Desça ao nível {nivel} e continue até {nombre}.',
+    llegadaRuta:
+      'Você chegou a {nombre}.',
 
     apuntarCamara:
       'Aponte a câmera para o código QR',
