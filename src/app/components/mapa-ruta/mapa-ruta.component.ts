@@ -62,6 +62,40 @@ export class MapaRutaComponent {
   @Input()
   nodoActualId: string | null = null;
 
+  @Input()
+  textoEtiqueta =
+    'Mapa navegable preliminar';
+
+  @Input()
+  textoNivel = 'Nivel';
+
+  @Input()
+  textoEstado = 'Datos simulados';
+
+  @Input()
+  textoAriaMapa =
+    'Grafo navegable';
+
+  @Input()
+  textoSinDatos =
+    'No existen nodos disponibles.';
+
+  @Input()
+  textoNodo = 'Nodo';
+
+  @Input()
+  textoRuta = 'Ruta calculada';
+
+  @Input()
+  textoOrigen = 'Origen';
+
+  @Input()
+  textoDestino = 'Destino';
+
+  @Input()
+  textoUbicacionActual =
+    'Ubicación actual';
+
   readonly anchoVista = 1000;
   readonly altoVista = 650;
   readonly margen = 80;

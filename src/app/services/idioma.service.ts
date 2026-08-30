@@ -52,6 +52,21 @@ const TRADUCCIONES: Record<
       'Distancia simulada',
     unidades: 'unidades',
 
+    mapaPreliminar:
+      'Mapa navegable preliminar',
+    nivel: 'Nivel',
+    datosSimulados:
+      'Datos simulados',
+    mapaAria:
+      'Grafo navegable del nivel {nivel}',
+    mapaSinDatos:
+      'No existen nodos disponibles para el nivel {nivel}.',
+    nodo: 'Nodo',
+    rutaCalculada:
+      'Ruta calculada',
+    ubicacionActual:
+      'Ubicación actual',
+
     guiaRuta: 'Guía paso a paso',
     pasoDe:
       'Paso {actual} de {total}',
@@ -151,6 +166,21 @@ const TRADUCCIONES: Record<
       'Simulated distance',
     unidades: 'units',
 
+    mapaPreliminar:
+      'Preliminary navigation map',
+    nivel: 'Level',
+    datosSimulados:
+      'Simulated data',
+    mapaAria:
+      'Navigable graph for level {nivel}',
+    mapaSinDatos:
+      'No nodes are available for level {nivel}.',
+    nodo: 'Node',
+    rutaCalculada:
+      'Calculated route',
+    ubicacionActual:
+      'Current location',
+
     guiaRuta: 'Step-by-step guidance',
     pasoDe:
       'Step {actual} of {total}',
@@ -249,6 +279,21 @@ const TRADUCCIONES: Record<
     distanciaSimulada:
       'Distância simulada',
     unidades: 'unidades',
+
+    mapaPreliminar:
+      'Mapa de navegação preliminar',
+    nivel: 'Nível',
+    datosSimulados:
+      'Dados simulados',
+    mapaAria:
+      'Grafo navegável do nível {nivel}',
+    mapaSinDatos:
+      'Não há nós disponíveis para o nível {nivel}.',
+    nodo: 'Nó',
+    rutaCalculada:
+      'Rota calculada',
+    ubicacionActual:
+      'Localização atual',
 
     guiaRuta: 'Guia passo a passo',
     pasoDe:

@@ -302,6 +302,46 @@
     [origenId]="origenId"
     [destinoId]="destinoId"
     [nodoActualId]="nodoActualId"
+    [textoEtiqueta]="
+      traducir('mapaPreliminar')
+    "
+    [textoNivel]="
+      traducir('nivel')
+    "
+    [textoEstado]="
+      traducir('datosSimulados')
+    "
+    [textoAriaMapa]="
+      traducir(
+        'mapaAria',
+        {
+          nivel: nivelVisualizado
+        }
+      )
+    "
+    [textoSinDatos]="
+      traducir(
+        'mapaSinDatos',
+        {
+          nivel: nivelVisualizado
+        }
+      )
+    "
+    [textoNodo]="
+      traducir('nodo')
+    "
+    [textoRuta]="
+      traducir('rutaCalculada')
+    "
+    [textoOrigen]="
+      traducir('origen')
+    "
+    [textoDestino]="
+      traducir('destino')
+    "
+    [textoUbicacionActual]="
+      traducir('ubicacionActual')
+    "
   >
   </app-mapa-ruta>
 </ion-content>
