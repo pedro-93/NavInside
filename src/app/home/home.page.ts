@@ -92,6 +92,7 @@ export class HomePage {
   distanciaTotal: number | null = null;
   rutaCalculada: Nodo[] = [];
   pasosRuta: PasoRuta[] = [];
+  pasoActualIndice = 0;
   nivelVisualizado = 1;
 
   constructor(
@@ -111,6 +112,68 @@ export class HomePage {
 
   get destinoId(): string | null {
     return this.destino || null;
+  }
+
+  get pasoActual(): PasoRuta | null {
+    return (
+      this.pasosRuta[
+        this.pasoActualIndice
+      ] ?? null
+    );
+  }
+
+  get instruccionActual(): string {
+    if (!this.pasoActual) {
+      return '';
+    }
+
+    return this.traducirPaso(
+      this.pasoActual
+    );
+  }
+
+  get nodoActualId(): string | null {
+    return (
+      this.pasoActual?.nodo.id ??
+      null
+    );
+  }
+
+  get numeroPasoActual(): number {
+    if (this.pasosRuta.length === 0) {
+      return 0;
+    }
+
+    return this.pasoActualIndice + 1;
+  }
+
+  get totalPasos(): number {
+    return this.pasosRuta.length;
+  }
+
+  get progresoRuta(): number {
+    if (this.totalPasos === 0) {
+      return 0;
+    }
+
+    return Math.round(
+      (
+        this.numeroPasoActual /
+        this.totalPasos
+      ) * 100
+    );
+  }
+
+  get esPrimerPaso(): boolean {
+    return this.pasoActualIndice === 0;
+  }
+
+  get esUltimoPaso(): boolean {
+    return (
+      this.totalPasos > 0 &&
+      this.pasoActualIndice ===
+        this.totalPasos - 1
+    );
   }
 
   get instruccionesRuta(): string[] {
@@ -158,6 +221,10 @@ export class HomePage {
 
     this.resultado = '';
     this.distanciaTotal = null;
+  }
+
+  cambiarSeleccionRuta(): void {
+    this.limpiarRuta();
   }
 
   async leerQrReal(): Promise<void> {
@@ -282,18 +349,62 @@ export class HomePage {
         ruta
       );
 
-    this.nivelVisualizado =
-      nodoOrigen.nivel ?? 1;
+    this.pasoActualIndice = 0;
 
     this.distanciaTotal =
       this.rutaService
         .calcularDistanciaTotal(ruta);
 
+    this.sincronizarPasoActual();
     this.actualizarResultadoRuta();
+  }
+
+  avanzarPaso(): void {
+    if (
+      this.pasosRuta.length === 0 ||
+      this.esUltimoPaso
+    ) {
+      return;
+    }
+
+    this.pasoActualIndice++;
+    this.sincronizarPasoActual();
+  }
+
+  retrocederPaso(): void {
+    if (
+      this.pasosRuta.length === 0 ||
+      this.esPrimerPaso
+    ) {
+      return;
+    }
+
+    this.pasoActualIndice--;
+    this.sincronizarPasoActual();
+  }
+
+  reiniciarRecorrido(): void {
+    if (this.pasosRuta.length === 0) {
+      return;
+    }
+
+    this.pasoActualIndice = 0;
+    this.sincronizarPasoActual();
   }
 
   cambiarModoAccesible(): void {
     this.limpiarRuta();
+  }
+
+  private sincronizarPasoActual(): void {
+    const paso = this.pasoActual;
+
+    if (!paso) {
+      return;
+    }
+
+    this.nivelVisualizado =
+      paso.nodo.nivel ?? 1;
   }
 
   private procesarLecturaQr(
@@ -421,5 +532,6 @@ export class HomePage {
     this.distanciaTotal = null;
     this.rutaCalculada = [];
     this.pasosRuta = [];
+    this.pasoActualIndice = 0;
   }
 }

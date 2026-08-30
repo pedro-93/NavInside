@@ -43,6 +43,7 @@
           traducir('seleccionarOrigen')
         "
         [(ngModel)]="origen"
+        (ionChange)="cambiarSeleccionRuta()"
       >
         @for (
           lugar of lugares;
@@ -64,6 +65,7 @@
           traducir('seleccionarDestino')
         "
         [(ngModel)]="destino"
+        (ionChange)="cambiarSeleccionRuta()"
       >
         @for (
           lugar of lugares;
@@ -199,25 +201,95 @@
     </ion-card>
   }
 
-  @if (instruccionesRuta.length > 0) {
-    <ion-card>
+  @if (pasoActual) {
+    <ion-card class="recorrido-card">
       <ion-card-header>
-        <ion-card-title>
-          {{ traducir('guiaRuta') }}
-        </ion-card-title>
+        <div class="recorrido-encabezado">
+          <ion-card-title>
+            {{ traducir('guiaRuta') }}
+          </ion-card-title>
+
+          <span class="recorrido-contador">
+            {{
+              traducir(
+                'pasoDe',
+                {
+                  actual: numeroPasoActual,
+                  total: totalPasos
+                }
+              )
+            }}
+          </span>
+        </div>
       </ion-card-header>
 
       <ion-card-content>
-        <ol>
-          @for (
-            instruccion of instruccionesRuta;
-            track $index
-          ) {
-            <li>
-              {{ instruccion }}
-            </li>
-          }
-        </ol>
+        <div
+          class="recorrido-progreso-texto"
+        >
+          <span>
+            {{ traducir('progresoRuta') }}
+          </span>
+
+          <strong>
+            {{ progresoRuta }}%
+          </strong>
+        </div>
+
+        <progress
+          class="recorrido-progreso"
+          [value]="progresoRuta"
+          max="100"
+          [attr.aria-label]="
+            traducir('progresoRuta')
+          "
+        >
+          {{ progresoRuta }}%
+        </progress>
+
+        <div
+          class="recorrido-instruccion"
+          [class.recorrido-llegada]="
+            esUltimoPaso
+          "
+          aria-live="polite"
+        >
+          <span
+            class="recorrido-numero"
+            aria-hidden="true"
+          >
+            {{ numeroPasoActual }}
+          </span>
+
+          <p>
+            {{ instruccionActual }}
+          </p>
+        </div>
+
+        <div class="recorrido-controles">
+          <ion-button
+            fill="outline"
+            [disabled]="esPrimerPaso"
+            (click)="retrocederPaso()"
+          >
+            {{ traducir('pasoAnterior') }}
+          </ion-button>
+
+          <ion-button
+            fill="clear"
+            [disabled]="esPrimerPaso"
+            (click)="reiniciarRecorrido()"
+          >
+            {{ traducir('reiniciarRuta') }}
+          </ion-button>
+
+          <ion-button
+            [disabled]="esUltimoPaso"
+            (click)="avanzarPaso()"
+          >
+            {{ traducir('pasoSiguiente') }}
+          </ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
   }
@@ -229,6 +301,7 @@
     [nivel]="nivelVisualizado"
     [origenId]="origenId"
     [destinoId]="destinoId"
+    [nodoActualId]="nodoActualId"
   >
   </app-mapa-ruta>
 </ion-content>

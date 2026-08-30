@@ -19,6 +19,7 @@ interface NodoVisual {
   perteneceRuta: boolean;
   esOrigen: boolean;
   esDestino: boolean;
+  esActual: boolean;
 }
 
 interface ConexionVisual {
@@ -58,6 +59,9 @@ export class MapaRutaComponent {
   @Input()
   destinoId: string | null = null;
 
+  @Input()
+  nodoActualId: string | null = null;
+
   readonly anchoVista = 1000;
   readonly altoVista = 650;
   readonly margen = 80;
@@ -73,46 +77,80 @@ export class MapaRutaComponent {
     }
 
     const valoresX =
-      nodosNivel.map(nodo => nodo.x);
+      nodosNivel.map(
+        nodo => nodo.x
+      );
 
     const valoresY =
-      nodosNivel.map(nodo => nodo.y);
+      nodosNivel.map(
+        nodo => nodo.y
+      );
 
-    const minimoX = Math.min(...valoresX);
-    const maximoX = Math.max(...valoresX);
-    const minimoY = Math.min(...valoresY);
-    const maximoY = Math.max(...valoresY);
+    const minimoX =
+      Math.min(...valoresX);
+
+    const maximoX =
+      Math.max(...valoresX);
+
+    const minimoY =
+      Math.min(...valoresY);
+
+    const maximoY =
+      Math.max(...valoresY);
 
     const rangoX =
-      Math.max(maximoX - minimoX, 1);
+      Math.max(
+        maximoX - minimoX,
+        1
+      );
 
     const rangoY =
-      Math.max(maximoY - minimoY, 1);
+      Math.max(
+        maximoY - minimoY,
+        1
+      );
 
     const idsRuta =
       new Set(
-        this.ruta.map(nodo => nodo.id)
+        this.ruta.map(
+          nodo => nodo.id
+        )
       );
 
-    return nodosNivel.map(nodo => ({
-      nodo,
-      xVisual:
-        this.margen +
-        ((nodo.x - minimoX) / rangoX) *
-          (this.anchoVista -
-            this.margen * 2),
-      yVisual:
-        this.margen +
-        ((nodo.y - minimoY) / rangoY) *
-          (this.altoVista -
-            this.margen * 2),
-      perteneceRuta:
-        idsRuta.has(nodo.id),
-      esOrigen:
-        nodo.id === this.origenId,
-      esDestino:
-        nodo.id === this.destinoId
-    }));
+    return nodosNivel.map(
+      nodo => ({
+        nodo,
+        xVisual:
+          this.margen +
+          (
+            (nodo.x - minimoX) /
+            rangoX
+          ) *
+            (
+              this.anchoVista -
+              this.margen * 2
+            ),
+        yVisual:
+          this.margen +
+          (
+            (nodo.y - minimoY) /
+            rangoY
+          ) *
+            (
+              this.altoVista -
+              this.margen * 2
+            ),
+        perteneceRuta:
+          idsRuta.has(nodo.id),
+        esOrigen:
+          nodo.id === this.origenId,
+        esDestino:
+          nodo.id === this.destinoId,
+        esActual:
+          nodo.id ===
+          this.nodoActualId
+      })
+    );
   }
 
   get conexionesVisuales():
@@ -164,7 +202,9 @@ export class MapaRutaComponent {
   }
 
   get hayDatosNivel(): boolean {
-    return this.nodosVisuales.length > 0;
+    return (
+      this.nodosVisuales.length > 0
+    );
   }
 
   identificarNodo(

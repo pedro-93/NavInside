@@ -53,6 +53,14 @@ const TRADUCCIONES: Record<
     unidades: 'unidades',
 
     guiaRuta: 'Guía paso a paso',
+    pasoDe:
+      'Paso {actual} de {total}',
+    progresoRuta:
+      'Progreso del recorrido',
+    pasoAnterior: 'Anterior',
+    pasoSiguiente: 'Siguiente',
+    reiniciarRuta: 'Reiniciar',
+
     inicioRuta:
       'Comienza en {nombre}.',
     continuarHacia:
@@ -140,6 +148,14 @@ const TRADUCCIONES: Record<
     unidades: 'units',
 
     guiaRuta: 'Step-by-step guidance',
+    pasoDe:
+      'Step {actual} of {total}',
+    progresoRuta:
+      'Route progress',
+    pasoAnterior: 'Previous',
+    pasoSiguiente: 'Next',
+    reiniciarRuta: 'Restart',
+
     inicioRuta:
       'Start at {nombre}.',
     continuarHacia:
@@ -227,6 +243,14 @@ const TRADUCCIONES: Record<
     unidades: 'unidades',
 
     guiaRuta: 'Guia passo a passo',
+    pasoDe:
+      'Passo {actual} de {total}',
+    progresoRuta:
+      'Progresso da rota',
+    pasoAnterior: 'Anterior',
+    pasoSiguiente: 'Próximo',
+    reiniciarRuta: 'Reiniciar',
+
     inicioRuta:
       'Comece em {nombre}.',
     continuarHacia:

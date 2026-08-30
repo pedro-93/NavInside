@@ -55,6 +55,29 @@
             />
           </feMerge>
         </filter>
+
+        <filter
+          id="brilloActual"
+          x="-75%"
+          y="-75%"
+          width="250%"
+          height="250%"
+        >
+          <feGaussianBlur
+            stdDeviation="10"
+            result="desenfoqueActual"
+          />
+
+          <feMerge>
+            <feMergeNode
+              in="desenfoqueActual"
+            />
+
+            <feMergeNode
+              in="SourceGraphic"
+            />
+          </feMerge>
+        </filter>
       </defs>
 
       <g class="conexiones">
@@ -110,17 +133,25 @@
             'nodo-origen':
               nodoVisual.esOrigen,
             'nodo-destino':
-              nodoVisual.esDestino
+              nodoVisual.esDestino,
+            'nodo-actual':
+              nodoVisual.esActual
           }"
         />
 
         <circle
           *ngIf="
             nodoVisual.esOrigen ||
-            nodoVisual.esDestino
+            nodoVisual.esDestino ||
+            nodoVisual.esActual
           "
           r="28"
-          class="nodo-pulso"
+          [ngClass]="{
+            'nodo-pulso':
+              !nodoVisual.esActual,
+            'nodo-pulso-actual':
+              nodoVisual.esActual
+          }"
         />
 
         <text
@@ -128,8 +159,23 @@
           y="-34"
           text-anchor="middle"
           class="nodo-nombre"
+          [ngClass]="{
+            'nodo-nombre-actual':
+              nodoVisual.esActual
+          }"
         >
           {{ nodoVisual.nodo.nombre }}
+        </text>
+
+        <text
+          *ngIf="nodoVisual.esActual"
+          x="0"
+          y="5"
+          text-anchor="middle"
+          class="nodo-marcador-actual"
+          aria-hidden="true"
+        >
+          ●
         </text>
       </g>
     </svg>
@@ -163,6 +209,11 @@
     <span>
       <i class="leyenda-destino"></i>
       Destino
+    </span>
+
+    <span>
+      <i class="leyenda-actual"></i>
+      Ubicación actual
     </span>
   </footer>
 </section>

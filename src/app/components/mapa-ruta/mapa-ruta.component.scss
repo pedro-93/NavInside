@@ -13,7 +13,8 @@
     #071728,
     #0a2237
   );
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.28);
   color: #f5f8fc;
 }
 
@@ -23,7 +24,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 18px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.08);
 
   h2 {
     margin: 3px 0 0;
@@ -42,9 +44,11 @@
 
 .mapa-estado {
   padding: 7px 11px;
-  border: 1px solid rgba(255, 190, 92, 0.4);
+  border:
+    1px solid rgba(255, 190, 92, 0.4);
   border-radius: 999px;
-  background: rgba(255, 190, 92, 0.1);
+  background:
+    rgba(255, 190, 92, 0.1);
   color: #ffd28c;
   font-size: 0.72rem;
   white-space: nowrap;
@@ -83,7 +87,8 @@
 }
 
 .conexion-base {
-  stroke: rgba(167, 195, 211, 0.32);
+  stroke:
+    rgba(167, 195, 211, 0.32);
   stroke-width: 7;
   stroke-linecap: round;
 }
@@ -121,11 +126,30 @@
   stroke: #fff0de;
 }
 
+.nodo-actual {
+  fill: #d946ef;
+  stroke: #fae8ff;
+  stroke-width: 7;
+  filter: url(#brilloActual);
+}
+
 .nodo-pulso {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.55);
+  stroke:
+    rgba(255, 255, 255, 0.55);
   stroke-width: 3;
   stroke-dasharray: 5 5;
+}
+
+.nodo-pulso-actual {
+  fill: none;
+  stroke: #f0abfc;
+  stroke-width: 5;
+  stroke-dasharray: 8 5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation:
+    pulso-ubicacion 1.4s ease-out infinite;
 }
 
 .nodo-nombre {
@@ -136,6 +160,16 @@
   stroke: #071728;
   stroke-width: 7px;
   stroke-linejoin: round;
+}
+
+.nodo-nombre-actual {
+  fill: #f5d0fe;
+}
+
+.nodo-marcador-actual {
+  fill: #ffffff;
+  font-size: 15px;
+  pointer-events: none;
 }
 
 .mapa-vacio {
@@ -152,7 +186,8 @@
   flex-wrap: wrap;
   gap: 14px 20px;
   padding: 14px 20px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top:
+    1px solid rgba(255, 255, 255, 0.08);
   color: #b8ceda;
   font-size: 0.75rem;
 
@@ -184,6 +219,30 @@
 
 .leyenda-destino {
   background: #ff9f43;
+}
+
+.leyenda-actual {
+  background: #d946ef;
+  box-shadow:
+    0 0 8px rgba(217, 70, 239, 0.9);
+}
+
+@keyframes pulso-ubicacion {
+  0% {
+    opacity: 1;
+    transform: scale(0.8);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nodo-pulso-actual {
+    animation: none;
+  }
 }
 
 @media (max-width: 520px) {
