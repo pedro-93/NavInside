@@ -228,7 +228,6 @@ export class HomePage {
   }
 
   async leerQrReal(): Promise<void> {
-    this.limpiarRuta();
     this.mensajeUbicacion = '';
 
     try {
@@ -270,7 +269,6 @@ export class HomePage {
   }
 
   simularLecturaQr(): void {
-    this.limpiarRuta();
     this.mensajeUbicacion = '';
 
     const contenidoQr = JSON.stringify({
@@ -342,21 +340,9 @@ export class HomePage {
       return;
     }
 
-    this.rutaCalculada = ruta;
-
-    this.pasosRuta =
-      this.rutaService.generarPasos(
-        ruta
-      );
-
-    this.pasoActualIndice = 0;
-
-    this.distanciaTotal =
-      this.rutaService
-        .calcularDistanciaTotal(ruta);
-
-    this.sincronizarPasoActual();
-    this.actualizarResultadoRuta();
+    this.establecerRutaCalculada(
+      ruta
+    );
   }
 
   avanzarPaso(): void {
@@ -421,10 +407,21 @@ export class HomePage {
       return;
     }
 
+    const debeRecalcular =
+      this.rutaCalculada.length > 0 &&
+      this.destino !== '';
+
     this.origen = nodoDetectado.id;
 
     this.nivelVisualizado =
       nodoDetectado.nivel ?? 1;
+
+    if (debeRecalcular) {
+      this.recalcularRutaDesdeQr(
+        nodoDetectado
+      );
+      return;
+    }
 
     this.mensajeUbicacion =
       this.traducir(
@@ -436,6 +433,122 @@ export class HomePage {
             )
         }
       );
+  }
+
+  private recalcularRutaDesdeQr(
+    nodoDetectado: Nodo
+  ): void {
+    const nodoDestino =
+      NODOS_SIMULADOS.find(
+        nodo =>
+          nodo.id === this.destino
+      );
+
+    if (!nodoDestino) {
+      this.limpiarRuta();
+
+      this.mensajeUbicacion =
+        this.traducir(
+          'lugaresNoEncontrados'
+        );
+      return;
+    }
+
+    if (
+      nodoDetectado.id ===
+      nodoDestino.id
+    ) {
+      this.rutaCalculada = [
+        nodoDetectado
+      ];
+
+      this.pasosRuta = [
+        {
+          orden: 1,
+          tipo: 'llegada',
+          nodo: nodoDetectado
+        }
+      ];
+
+      this.pasoActualIndice = 0;
+      this.distanciaTotal = 0;
+
+      this.actualizarResultadoRuta();
+      this.sincronizarPasoActual();
+
+      this.mensajeUbicacion =
+        this.traducir(
+          'destinoAlcanzadoQr',
+          {
+            nombre:
+              this.nombreNodo(
+                nodoDetectado
+              )
+          }
+        );
+
+      return;
+    }
+
+    const nuevaRuta =
+      this.rutaService.calcularRuta(
+        nodoDetectado.id,
+        nodoDestino.id,
+        this.modoAccesible
+      );
+
+    if (nuevaRuta.length === 0) {
+      this.limpiarRuta();
+
+      this.nivelVisualizado =
+        nodoDetectado.nivel ?? 1;
+
+      this.mensajeUbicacion =
+        this.modoAccesible
+          ? this.traducir(
+            'rutaAccesibleNoDisponible'
+          )
+          : this.traducir(
+            'rutaNoDisponible'
+          );
+
+      return;
+    }
+
+    this.establecerRutaCalculada(
+      nuevaRuta
+    );
+
+    this.mensajeUbicacion =
+      this.traducir(
+        'rutaRecalculada',
+        {
+          nombre:
+            this.nombreNodo(
+              nodoDetectado
+            )
+        }
+      );
+  }
+
+  private establecerRutaCalculada(
+    ruta: Nodo[]
+  ): void {
+    this.rutaCalculada = ruta;
+
+    this.pasosRuta =
+      this.rutaService.generarPasos(
+        ruta
+      );
+
+    this.pasoActualIndice = 0;
+
+    this.distanciaTotal =
+      this.rutaService
+        .calcularDistanciaTotal(ruta);
+
+    this.sincronizarPasoActual();
+    this.actualizarResultadoRuta();
   }
 
   private actualizarNodosMapa(): void {

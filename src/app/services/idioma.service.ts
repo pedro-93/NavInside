@@ -96,6 +96,10 @@ const TRADUCCIONES: Record<
       'El código QR no pertenece a NavInside o la ubicación no existe.',
     ubicacionDetectada:
       'Ubicación detectada: {nombre}',
+    rutaRecalculada:
+      'Ubicación detectada: {nombre}. La ruta fue recalculada.',
+    destinoAlcanzadoQr:
+      'Ubicación detectada: {nombre}. Has llegado a tu destino.',
 
     seleccionarOrigenDestino:
       'Debes seleccionar un origen y un destino.',
@@ -191,6 +195,10 @@ const TRADUCCIONES: Record<
       'The QR code does not belong to NavInside or the location does not exist.',
     ubicacionDetectada:
       'Location detected: {nombre}',
+    rutaRecalculada:
+      'Location detected: {nombre}. The route was recalculated.',
+    destinoAlcanzadoQr:
+      'Location detected: {nombre}. You have reached your destination.',
 
     seleccionarOrigenDestino:
       'You must select a starting point and a destination.',
@@ -286,6 +294,10 @@ const TRADUCCIONES: Record<
       'O código QR não pertence ao NavInside ou a localização não existe.',
     ubicacionDetectada:
       'Localização detectada: {nombre}',
+    rutaRecalculada:
+      'Localização detectada: {nombre}. A rota foi recalculada.',
+    destinoAlcanzadoQr:
+      'Localização detectada: {nombre}. Você chegou ao seu destino.',
 
     seleccionarOrigenDestino:
       'Selecione uma origem e um destino.',
