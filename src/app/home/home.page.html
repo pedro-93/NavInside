@@ -39,19 +39,12 @@
     <ion-item>
       <ion-select
         [label]="traducir('origen')"
-        [placeholder]="
-          traducir('seleccionarOrigen')
-        "
+        [placeholder]="traducir('seleccionarOrigen')"
         [(ngModel)]="origen"
         (ionChange)="cambiarSeleccionRuta()"
       >
-        @for (
-          lugar of lugares;
-          track lugar.id
-        ) {
-          <ion-select-option
-            [value]="lugar.id"
-          >
+        @for (lugar of lugares; track lugar.id) {
+          <ion-select-option [value]="lugar.id">
             {{ nombreNodo(lugar) }}
           </ion-select-option>
         }
@@ -61,19 +54,12 @@
     <ion-item>
       <ion-select
         [label]="traducir('destino')"
-        [placeholder]="
-          traducir('seleccionarDestino')
-        "
+        [placeholder]="traducir('seleccionarDestino')"
         [(ngModel)]="destino"
         (ionChange)="cambiarSeleccionRuta()"
       >
-        @for (
-          lugar of lugares;
-          track lugar.id
-        ) {
-          <ion-select-option
-            [value]="lugar.id"
-          >
+        @for (lugar of lugares; track lugar.id) {
+          <ion-select-option [value]="lugar.id">
             {{ nombreNodo(lugar) }}
           </ion-select-option>
         }
@@ -87,27 +73,49 @@
         </strong>
 
         <p>
-          {{
-            traducir(
-              'descripcionRutaAccesible'
-            )
-          }}
+          {{ traducir('descripcionRutaAccesible') }}
         </p>
       </div>
 
       <ion-toggle
         slot="end"
-        [attr.aria-label]="
-          traducir('rutaAccesible')
-        "
+        [attr.aria-label]="traducir('rutaAccesible')"
         [(ngModel)]="modoAccesible"
-        (ionChange)="
-          cambiarModoAccesible()
-        "
+        (ionChange)="cambiarModoAccesible()"
       >
       </ion-toggle>
     </ion-item>
   </ion-list>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Simulación de acceso
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>
+        {{ textoEstadoAcceso }}
+      </p>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="alternarAccesoRecepcionBano()"
+      >
+        {{ textoBotonAcceso }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  @if (mensajeAcceso) {
+    <ion-card>
+      <ion-card-content>
+        {{ mensajeAcceso }}
+      </ion-card-content>
+    </ion-card>
+  }
 
   <ion-button
     expand="block"
@@ -128,11 +136,7 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          {{
-            traducir(
-              'estadoUbicacion'
-            )
-          }}
+          {{ traducir('estadoUbicacion') }}
         </ion-card-title>
       </ion-card-header>
 
@@ -154,11 +158,7 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          {{
-            traducir(
-              'resultadoRuta'
-            )
-          }}
+          {{ traducir('resultadoRuta') }}
         </ion-card-title>
       </ion-card-header>
 
@@ -174,11 +174,7 @@
             </strong>
 
             @if (modoAccesible) {
-              {{
-                traducir(
-                  'rutaAccesibleSinEscaleras'
-                )
-              }}
+              {{ traducir('rutaAccesibleSinEscaleras') }}
             } @else {
               {{ traducir('rutaNormal') }}
             }
@@ -186,11 +182,7 @@
 
           <p>
             <strong>
-              {{
-                traducir(
-                  'distanciaSimulada'
-                )
-              }}:
+              {{ traducir('distanciaSimulada') }}:
             </strong>
 
             {{ distanciaTotal }}
@@ -224,9 +216,7 @@
       </ion-card-header>
 
       <ion-card-content>
-        <div
-          class="recorrido-progreso-texto"
-        >
+        <div class="recorrido-progreso-texto">
           <span>
             {{ traducir('progresoRuta') }}
           </span>
@@ -240,18 +230,14 @@
           class="recorrido-progreso"
           [value]="progresoRuta"
           max="100"
-          [attr.aria-label]="
-            traducir('progresoRuta')
-          "
+          [attr.aria-label]="traducir('progresoRuta')"
         >
           {{ progresoRuta }}%
         </progress>
 
         <div
           class="recorrido-instruccion"
-          [class.recorrido-llegada]="
-            esUltimoPaso
-          "
+          [class.recorrido-llegada]="esUltimoPaso"
           aria-live="polite"
         >
           <span
@@ -302,15 +288,9 @@
     [origenId]="origenId"
     [destinoId]="destinoId"
     [nodoActualId]="nodoActualId"
-    [textoEtiqueta]="
-      traducir('mapaPreliminar')
-    "
-    [textoNivel]="
-      traducir('nivel')
-    "
-    [textoEstado]="
-      traducir('datosSimulados')
-    "
+    [textoEtiqueta]="traducir('mapaPreliminar')"
+    [textoNivel]="traducir('nivel')"
+    [textoEstado]="traducir('datosSimulados')"
     [textoAriaMapa]="
       traducir(
         'mapaAria',
@@ -327,21 +307,11 @@
         }
       )
     "
-    [textoNodo]="
-      traducir('nodo')
-    "
-    [textoRuta]="
-      traducir('rutaCalculada')
-    "
-    [textoOrigen]="
-      traducir('origen')
-    "
-    [textoDestino]="
-      traducir('destino')
-    "
-    [textoUbicacionActual]="
-      traducir('ubicacionActual')
-    "
+    [textoNodo]="traducir('nodo')"
+    [textoRuta]="traducir('rutaCalculada')"
+    [textoOrigen]="traducir('origen')"
+    [textoDestino]="traducir('destino')"
+    [textoUbicacionActual]="traducir('ubicacionActual')"
   >
   </app-mapa-ruta>
 </ion-content>

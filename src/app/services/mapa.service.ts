@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
 import {
+  CONEXIONES_SIMULADAS,
   LUGARES_HIPPOCAMPUS_PRELIMINARES,
-  MAPA_ACTIVO
+  NODOS_SIMULADOS
 } from '../data/mapa-simulado.data';
 
 import {
   Conexion,
   LugarPlano,
-  MapaNavegacion,
   Nodo
 } from '../models/nodo.model';
 
@@ -16,27 +16,26 @@ import {
   providedIn: 'root'
 })
 export class MapaService {
-  obtenerMapaActivo(): MapaNavegacion {
-    return {
-      ...MAPA_ACTIVO,
-      nodos: MAPA_ACTIVO.nodos.map(
-        nodo => ({ ...nodo })
-      ),
-      conexiones: MAPA_ACTIVO.conexiones.map(
-        conexion => ({ ...conexion })
-      )
-    };
-  }
+  private conexionesCerradas =
+    new Set<string>();
 
   obtenerNodosNavegables(): Nodo[] {
-    return MAPA_ACTIVO.nodos.map(
+    return NODOS_SIMULADOS.map(
       nodo => ({ ...nodo })
     );
   }
 
   obtenerConexionesNavegables(): Conexion[] {
-    return MAPA_ACTIVO.conexiones.map(
-      conexion => ({ ...conexion })
+    return CONEXIONES_SIMULADAS.map(
+      conexion => ({
+        ...conexion,
+        habilitada:
+          conexion.habilitada !== false &&
+          !this.estaConexionCerrada(
+            conexion.origen,
+            conexion.destino
+          )
+      })
     );
   }
 
@@ -47,7 +46,7 @@ export class MapaService {
   }
 
   obtenerNodoPorId(id: string): Nodo | undefined {
-    const nodo = MAPA_ACTIVO.nodos.find(
+    const nodo = NODOS_SIMULADOS.find(
       nodoActual => nodoActual.id === id
     );
 
@@ -70,13 +69,13 @@ export class MapaService {
   }
 
   esNodoNavegable(id: string): boolean {
-    return MAPA_ACTIVO.nodos.some(
+    return NODOS_SIMULADOS.some(
       nodo => nodo.id === id
     );
   }
 
   obtenerNiveles(): number[] {
-    const niveles = MAPA_ACTIVO.nodos
+    const niveles = NODOS_SIMULADOS
       .map(nodo => nodo.nivel)
       .filter(
         (nivel): nivel is number =>
@@ -88,7 +87,7 @@ export class MapaService {
   }
 
   obtenerNodosPorNivel(nivel: number): Nodo[] {
-    return MAPA_ACTIVO.nodos
+    return NODOS_SIMULADOS
       .filter(nodo => nodo.nivel === nivel)
       .map(nodo => ({ ...nodo }));
   }
@@ -101,10 +100,46 @@ export class MapaService {
       .map(lugar => ({ ...lugar }));
   }
 
+  cerrarConexion(
+    origenId: string,
+    destinoId: string
+  ): void {
+    this.conexionesCerradas.add(
+      this.crearClaveConexion(
+        origenId,
+        destinoId
+      )
+    );
+  }
+
+  habilitarConexion(
+    origenId: string,
+    destinoId: string
+  ): void {
+    this.conexionesCerradas.delete(
+      this.crearClaveConexion(
+        origenId,
+        destinoId
+      )
+    );
+  }
+
+  estaConexionCerrada(
+    origenId: string,
+    destinoId: string
+  ): boolean {
+    return this.conexionesCerradas.has(
+      this.crearClaveConexion(
+        origenId,
+        destinoId
+      )
+    );
+  }
+
   obtenerConexionesHabilitadas(
     modoAccesible: boolean = false
   ): Conexion[] {
-    return MAPA_ACTIVO.conexiones
+    return this.obtenerConexionesNavegables()
       .filter(conexion => {
         const estaHabilitada =
           conexion.habilitada !== false;
@@ -124,8 +159,7 @@ export class MapaService {
           noEstaRestringida &&
           esAptaParaAccesibilidad
         );
-      })
-      .map(conexion => ({ ...conexion }));
+      });
   }
 
   obtenerConexionesPorNodo(
@@ -152,5 +186,14 @@ export class MapaService {
           lugar.nivel === null
       )
       .map(lugar => ({ ...lugar }));
+  }
+
+  private crearClaveConexion(
+    origenId: string,
+    destinoId: string
+  ): string {
+    return [origenId, destinoId]
+      .sort()
+      .join('|');
   }
 }

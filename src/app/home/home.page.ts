@@ -26,19 +26,19 @@ import {
   MapaRutaComponent
 } from '../components/mapa-ruta/mapa-ruta.component';
 import {
-  CONEXIONES_SIMULADAS,
-  NODOS_SIMULADOS
-} from '../data/mapa-simulado.data';
-import {
   obtenerNombreNodo
 } from '../data/nombres-nodos.data';
 import {
+  Conexion,
   Nodo
 } from '../models/nodo.model';
 import {
   Idioma,
   IdiomaService
 } from '../services/idioma.service';
+import {
+  MapaService
+} from '../services/mapa.service';
 import {
   QrService
 } from '../services/qr.service';
@@ -72,38 +72,34 @@ import {
   ]
 })
 export class HomePage {
-  readonly conexionesMapa =
-    CONEXIONES_SIMULADAS;
-
-  readonly lugares: Nodo[] =
-    NODOS_SIMULADOS.filter(
-      nodo =>
-        nodo.restringido !== true
-    );
-
+  conexionesMapa: Conexion[] = [];
+  lugares: Nodo[] = [];
   nodosMapa: Nodo[] = [];
 
-  origen: string = '';
-  destino: string = '';
-  modoAccesible: boolean = false;
+  origen = '';
+  destino = '';
+  modoAccesible = false;
   idiomaSeleccionado: Idioma;
-  mensajeUbicacion: string = '';
-  resultado: string = '';
+  mensajeUbicacion = '';
+  mensajeAcceso = '';
+  resultado = '';
   distanciaTotal: number | null = null;
   rutaCalculada: Nodo[] = [];
   pasosRuta: PasoRuta[] = [];
   pasoActualIndice = 0;
   nivelVisualizado = 1;
+  accesoRecepcionBanoCerrado = false;
 
   constructor(
     private rutaService: RutaService,
     private qrService: QrService,
-    private idiomaService: IdiomaService
+    private idiomaService: IdiomaService,
+    private mapaService: MapaService
   ) {
     this.idiomaSeleccionado =
       this.idiomaService.idiomaActual;
 
-    this.actualizarNodosMapa();
+    this.actualizarDatosMapa();
   }
 
   get origenId(): string | null {
@@ -183,6 +179,38 @@ export class HomePage {
     );
   }
 
+  get textoEstadoAcceso(): string {
+    if (this.accesoRecepcionBanoCerrado) {
+      return this.texto(
+        'Acceso cerrado: Recepción a Baño. La ruta usa una alternativa.',
+        'Access closed: Reception to Bathroom. The route uses an alternative.',
+        'Acesso fechado: Recepção ao Banheiro. A rota usa uma alternativa.'
+      );
+    }
+
+    return this.texto(
+      'Acceso habilitado: Recepción a Baño.',
+      'Access enabled: Reception to Bathroom.',
+      'Acesso disponível: Recepção ao Banheiro.'
+    );
+  }
+
+  get textoBotonAcceso(): string {
+    if (this.accesoRecepcionBanoCerrado) {
+      return this.texto(
+        'Restablecer acceso',
+        'Restore access',
+        'Restabelecer acesso'
+      );
+    }
+
+    return this.texto(
+      'Simular acceso cerrado',
+      'Simulate closed access',
+      'Simular acesso fechado'
+    );
+  }
+
   traducir(
     clave: string,
     parametros: Record<
@@ -196,9 +224,7 @@ export class HomePage {
     );
   }
 
-  nombreNodo(
-    nodo: Nodo
-  ): string {
+  nombreNodo(nodo: Nodo): string {
     return obtenerNombreNodo(
       nodo.id,
       this.idiomaSeleccionado,
@@ -211,8 +237,9 @@ export class HomePage {
       this.idiomaSeleccionado
     );
 
-    this.actualizarNodosMapa();
+    this.actualizarDatosMapa();
     this.mensajeUbicacion = '';
+    this.mensajeAcceso = '';
 
     if (this.rutaCalculada.length > 0) {
       this.actualizarResultadoRuta();
@@ -238,9 +265,7 @@ export class HomePage {
           cameraDirection:
             CapacitorBarcodeScannerCameraDirection.BACK,
           scanInstructions:
-            this.traducir(
-              'apuntarCamara'
-            ),
+            this.traducir('apuntarCamara'),
           scanButton: true,
           scanText:
             this.traducir('escanear')
@@ -282,6 +307,44 @@ export class HomePage {
     );
   }
 
+  alternarAccesoRecepcionBano(): void {
+    this.accesoRecepcionBanoCerrado =
+      !this.accesoRecepcionBanoCerrado;
+
+    if (this.accesoRecepcionBanoCerrado) {
+      this.mapaService.cerrarConexion(
+        'recepcion',
+        'baño'
+      );
+    } else {
+      this.mapaService.habilitarConexion(
+        'recepcion',
+        'baño'
+      );
+    }
+
+    this.actualizarDatosMapa();
+
+    if (this.origen && this.destino) {
+      this.calcularRuta();
+
+      this.mensajeAcceso =
+        this.texto(
+          'El acceso cambió y la ruta fue recalculada.',
+          'The access changed and the route was recalculated.',
+          'O acesso mudou e a rota foi recalculada.'
+        );
+      return;
+    }
+
+    this.mensajeAcceso =
+      this.texto(
+        'El estado del acceso fue actualizado. Selecciona origen y destino para calcular una ruta.',
+        'The access status was updated. Select origin and destination to calculate a route.',
+        'O estado do acesso foi atualizado. Selecione origem e destino para calcular uma rota.'
+      );
+  }
+
   calcularRuta(): void {
     this.limpiarRuta();
 
@@ -302,15 +365,13 @@ export class HomePage {
     }
 
     const nodoOrigen =
-      NODOS_SIMULADOS.find(
-        nodo =>
-          nodo.id === this.origen
+      this.mapaService.obtenerNodoPorId(
+        this.origen
       );
 
     const nodoDestino =
-      NODOS_SIMULADOS.find(
-        nodo =>
-          nodo.id === this.destino
+      this.mapaService.obtenerNodoPorId(
+        this.destino
       );
 
     if (!nodoOrigen || !nodoDestino) {
@@ -340,9 +401,7 @@ export class HomePage {
       return;
     }
 
-    this.establecerRutaCalculada(
-      ruta
-    );
+    this.establecerRutaCalculada(ruta);
   }
 
   avanzarPaso(): void {
@@ -439,9 +498,8 @@ export class HomePage {
     nodoDetectado: Nodo
   ): void {
     const nodoDestino =
-      NODOS_SIMULADOS.find(
-        nodo =>
-          nodo.id === this.destino
+      this.mapaService.obtenerNodoPorId(
+        this.destino
       );
 
     if (!nodoDestino) {
@@ -515,9 +573,7 @@ export class HomePage {
       return;
     }
 
-    this.establecerRutaCalculada(
-      nuevaRuta
-    );
+    this.establecerRutaCalculada(nuevaRuta);
 
     this.mensajeUbicacion =
       this.traducir(
@@ -537,9 +593,7 @@ export class HomePage {
     this.rutaCalculada = ruta;
 
     this.pasosRuta =
-      this.rutaService.generarPasos(
-        ruta
-      );
+      this.rutaService.generarPasos(ruta);
 
     this.pasoActualIndice = 0;
 
@@ -551,9 +605,21 @@ export class HomePage {
     this.actualizarResultadoRuta();
   }
 
-  private actualizarNodosMapa(): void {
+  private actualizarDatosMapa(): void {
+    this.lugares =
+      this.mapaService
+        .obtenerNodosNavegables()
+        .filter(
+          nodo =>
+            nodo.restringido !== true
+        );
+
+    this.conexionesMapa =
+      this.mapaService
+        .obtenerConexionesNavegables();
+
     this.nodosMapa =
-      NODOS_SIMULADOS.map(
+      this.lugares.map(
         nodo => ({
           ...nodo,
           nombre:
@@ -638,6 +704,22 @@ export class HomePage {
         nombre
       }
     );
+  }
+
+  private texto(
+    espanol: string,
+    ingles: string,
+    portugues: string
+  ): string {
+    if (this.idiomaSeleccionado === 'en') {
+      return ingles;
+    }
+
+    if (this.idiomaSeleccionado === 'pt') {
+      return portugues;
+    }
+
+    return espanol;
   }
 
   private limpiarRuta(): void {
