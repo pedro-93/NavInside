@@ -1,15 +1,24 @@
 :host {
+  --nav-page: #f4f7fa;
+  --nav-surface: #ffffff;
+  --nav-text: #172033;
+  --nav-muted: #586174;
+  --nav-border: rgba(56, 128, 255, 0.2);
+  --nav-accent-text: #2457a7;
+  --nav-progress-track: #dce5f2;
+
   display: block;
 }
 
 ion-content {
-  --background: #f4f7fa;
+  --background: var(--nav-page);
+  --color: var(--nav-text);
 }
 
 h1 {
   margin-top: 8px;
   margin-bottom: 8px;
-  color: #172033;
+  color: var(--nav-text);
   font-size: 1.8rem;
   font-weight: 750;
 }
@@ -17,26 +26,46 @@ h1 {
 h1 + p {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #586174;
+  color: var(--nav-muted);
   line-height: 1.5;
 }
 
 ion-list {
   margin-bottom: 18px;
   border-radius: 16px;
+  background: var(--nav-surface);
   box-shadow:
     0 8px 24px rgba(31, 41, 55, 0.08);
   overflow: hidden;
 }
 
+ion-item {
+  --background: var(--nav-surface);
+  --color: var(--nav-text);
+  --border-color: rgba(88, 97, 116, 0.18);
+}
+
+ion-select {
+  --color: var(--nav-text);
+  --placeholder-color: var(--nav-muted);
+}
+
 ion-card {
+  --background: var(--nav-surface);
+  --color: var(--nav-text);
+
   margin-inline: 0;
   border-radius: 16px;
+  color: var(--nav-text);
+}
+
+ion-card-title,
+ion-card-content {
+  color: var(--nav-text);
 }
 
 .recorrido-card {
-  border:
-    1px solid rgba(56, 128, 255, 0.2);
+  border: 1px solid var(--nav-border);
   box-shadow:
     0 14px 32px rgba(29, 78, 216, 0.14);
 }
@@ -53,8 +82,8 @@ ion-card {
   padding: 7px 11px;
   border-radius: 999px;
   background:
-    rgba(56, 128, 255, 0.12);
-  color: #2457a7;
+    rgba(56, 128, 255, 0.14);
+  color: var(--nav-accent-text);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -65,11 +94,11 @@ ion-card {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 7px;
-  color: #596579;
+  color: var(--nav-muted);
   font-size: 0.82rem;
 
   strong {
-    color: #2457a7;
+    color: var(--nav-accent-text);
   }
 }
 
@@ -80,13 +109,13 @@ ion-card {
   overflow: hidden;
   border: 0;
   border-radius: 999px;
-  background: #dce5f2;
+  background: var(--nav-progress-track);
   appearance: none;
 }
 
 .recorrido-progreso::-webkit-progress-bar {
   border-radius: 999px;
-  background: #dce5f2;
+  background: var(--nav-progress-track);
 }
 
 .recorrido-progreso::-webkit-progress-value {
@@ -118,18 +147,18 @@ ion-card {
   margin: 20px 0;
   padding: 18px;
   border:
-    1px solid rgba(56, 128, 255, 0.18);
+    1px solid rgba(56, 128, 255, 0.25);
   border-radius: 16px;
   background:
     linear-gradient(
       135deg,
-      rgba(56, 128, 255, 0.08),
-      rgba(19, 196, 255, 0.08)
+      rgba(56, 128, 255, 0.1),
+      rgba(19, 196, 255, 0.1)
     );
 
   p {
     margin: 0;
-    color: #172033;
+    color: var(--nav-text);
     font-size: 1.08rem;
     font-weight: 650;
     line-height: 1.5;
@@ -153,12 +182,12 @@ ion-card {
 
 .recorrido-llegada {
   border-color:
-    rgba(45, 207, 117, 0.35);
+    rgba(45, 207, 117, 0.4);
   background:
     linear-gradient(
       135deg,
-      rgba(45, 207, 117, 0.12),
-      rgba(19, 196, 255, 0.08)
+      rgba(45, 207, 117, 0.14),
+      rgba(19, 196, 255, 0.1)
     );
 
   .recorrido-numero {
@@ -183,6 +212,32 @@ ion-card {
 app-mapa-ruta {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --nav-page: #0f172a;
+    --nav-surface: #162235;
+    --nav-text: #f8fafc;
+    --nav-muted: #c5d0df;
+    --nav-border: rgba(126, 171, 255, 0.42);
+    --nav-accent-text: #9ec1ff;
+    --nav-progress-track: #34445c;
+  }
+
+  ion-list {
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  ion-item {
+    --border-color: rgba(197, 208, 223, 0.2);
+  }
+
+  .recorrido-card {
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.28);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
