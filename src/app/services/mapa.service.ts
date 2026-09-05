@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
 import {
-  CONEXIONES_SIMULADAS,
   LUGARES_HIPPOCAMPUS_PRELIMINARES,
-  NODOS_SIMULADOS
+  MAPA_ACTIVO
 } from '../data/mapa-simulado.data';
 
 import {
   Conexion,
   LugarPlano,
+  MapaNavegacion,
   Nodo
 } from '../models/nodo.model';
 
@@ -16,14 +16,26 @@ import {
   providedIn: 'root'
 })
 export class MapaService {
+  obtenerMapaActivo(): MapaNavegacion {
+    return {
+      ...MAPA_ACTIVO,
+      nodos: MAPA_ACTIVO.nodos.map(
+        nodo => ({ ...nodo })
+      ),
+      conexiones: MAPA_ACTIVO.conexiones.map(
+        conexion => ({ ...conexion })
+      )
+    };
+  }
+
   obtenerNodosNavegables(): Nodo[] {
-    return NODOS_SIMULADOS.map(
+    return MAPA_ACTIVO.nodos.map(
       nodo => ({ ...nodo })
     );
   }
 
   obtenerConexionesNavegables(): Conexion[] {
-    return CONEXIONES_SIMULADAS.map(
+    return MAPA_ACTIVO.conexiones.map(
       conexion => ({ ...conexion })
     );
   }
@@ -35,7 +47,7 @@ export class MapaService {
   }
 
   obtenerNodoPorId(id: string): Nodo | undefined {
-    const nodo = NODOS_SIMULADOS.find(
+    const nodo = MAPA_ACTIVO.nodos.find(
       nodoActual => nodoActual.id === id
     );
 
@@ -58,13 +70,13 @@ export class MapaService {
   }
 
   esNodoNavegable(id: string): boolean {
-    return NODOS_SIMULADOS.some(
+    return MAPA_ACTIVO.nodos.some(
       nodo => nodo.id === id
     );
   }
 
   obtenerNiveles(): number[] {
-    const niveles = NODOS_SIMULADOS
+    const niveles = MAPA_ACTIVO.nodos
       .map(nodo => nodo.nivel)
       .filter(
         (nivel): nivel is number =>
@@ -76,7 +88,7 @@ export class MapaService {
   }
 
   obtenerNodosPorNivel(nivel: number): Nodo[] {
-    return NODOS_SIMULADOS
+    return MAPA_ACTIVO.nodos
       .filter(nodo => nodo.nivel === nivel)
       .map(nodo => ({ ...nodo }));
   }
@@ -92,7 +104,7 @@ export class MapaService {
   obtenerConexionesHabilitadas(
     modoAccesible: boolean = false
   ): Conexion[] {
-    return CONEXIONES_SIMULADAS
+    return MAPA_ACTIVO.conexiones
       .filter(conexion => {
         const estaHabilitada =
           conexion.habilitada !== false;

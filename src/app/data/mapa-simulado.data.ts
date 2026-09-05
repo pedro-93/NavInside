@@ -1,6 +1,7 @@
 import {
   Conexion,
   LugarPlano,
+  MapaNavegacion,
   Nodo
 } from '../models/nodo.model';
 
@@ -230,214 +231,222 @@ export const CONEXIONES_SIMULADAS: Conexion[] = [
 
 /*
  * Lugares identificados visualmente en el plano de orientación.
- *
  * Todavía no forman parte del grafo de navegación porque faltan
- * los planos restantes, medidas, coordenadas y validación oficial.
+ * planos, medidas, coordenadas y validación oficial.
  */
-export const LUGARES_HIPPOCAMPUS_PRELIMINARES:
-  LugarPlano[] = [
-    {
-      id: 'recepcion',
-      nombre: 'Recepción',
-      tipo: 'recepcion',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'lobby',
-      nombre: 'Lobby',
-      tipo: 'servicio',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'estacionamiento',
-      nombre: 'Estacionamiento',
-      tipo: 'estacionamiento',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'piscina-temperada',
-      nombre: 'Piscina temperada',
-      tipo: 'piscina',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'piscina-exterior',
-      nombre: 'Piscina exterior',
-      tipo: 'piscina',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'restaurante-faro',
-      nombre: 'Restaurante Faro',
-      tipo: 'restaurante',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'mirador',
-      nombre: 'Mirador',
-      tipo: 'mirador',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'canchas',
-      nombre: 'Canchas',
-      tipo: 'cancha',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'spa',
-      nombre: 'Spa',
-      tipo: 'spa',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'gimnasio',
-      nombre: 'Gimnasio',
-      tipo: 'gimnasio',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'parque',
-      nombre: 'Parque',
-      tipo: 'parque',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'ascensor-central',
-      nombre: 'Ascensor edificio central',
-      tipo: 'ascensor',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'ascensor-habitaciones',
-      nombre: 'Ascensor edificio habitaciones',
-      tipo: 'ascensor',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'salon-costamar',
-      nombre: 'Salón Costamar',
-      tipo: 'salon',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'salon-vistamar',
-      nombre: 'Salón Vistamar',
-      tipo: 'salon',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'salon-terramar',
-      nombre: 'Salón Terramar',
-      tipo: 'salon',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    },
-    {
-      id: 'salon-montemar',
-      nombre: 'Salón Montemar',
-      tipo: 'salon',
-      nivel: null,
-      sector: null,
-      x: null,
-      y: null,
-      accesible: null,
-      restringido: null,
-      estado: 'confirmado'
-    }
-  ];
+export const LUGARES_HIPPOCAMPUS_PRELIMINARES: LugarPlano[] = [
+  {
+    id: 'recepcion',
+    nombre: 'Recepción',
+    tipo: 'recepcion',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'lobby',
+    nombre: 'Lobby',
+    tipo: 'servicio',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'estacionamiento',
+    nombre: 'Estacionamiento',
+    tipo: 'estacionamiento',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'piscina-temperada',
+    nombre: 'Piscina temperada',
+    tipo: 'piscina',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'piscina-exterior',
+    nombre: 'Piscina exterior',
+    tipo: 'piscina',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'restaurante-faro',
+    nombre: 'Restaurante Faro',
+    tipo: 'restaurante',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'mirador',
+    nombre: 'Mirador',
+    tipo: 'mirador',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'canchas',
+    nombre: 'Canchas',
+    tipo: 'cancha',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'spa',
+    nombre: 'Spa',
+    tipo: 'spa',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'gimnasio',
+    nombre: 'Gimnasio',
+    tipo: 'gimnasio',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'parque',
+    nombre: 'Parque',
+    tipo: 'parque',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'ascensor-central',
+    nombre: 'Ascensor edificio central',
+    tipo: 'ascensor',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'ascensor-habitaciones',
+    nombre: 'Ascensor edificio habitaciones',
+    tipo: 'ascensor',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'salon-costamar',
+    nombre: 'Salón Costamar',
+    tipo: 'salon',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'salon-vistamar',
+    nombre: 'Salón Vistamar',
+    tipo: 'salon',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'salon-terramar',
+    nombre: 'Salón Terramar',
+    tipo: 'salon',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  },
+  {
+    id: 'salon-montemar',
+    nombre: 'Salón Montemar',
+    tipo: 'salon',
+    nivel: null,
+    sector: null,
+    x: null,
+    y: null,
+    accesible: null,
+    restringido: null,
+    estado: 'confirmado'
+  }
+];
+
+export const MAPA_ACTIVO: MapaNavegacion = {
+  id: 'demo-hotel',
+  nombre: 'Mapa de demostración',
+  descripcion:
+    'Escenario simulado para probar navegación, accesibilidad y rutas entre niveles.',
+  estado: 'simulado',
+  nodos: NODOS_SIMULADOS,
+  conexiones: CONEXIONES_SIMULADAS
+};

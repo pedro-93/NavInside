@@ -62,3 +62,17 @@ export interface LugarPlano {
 export type EstadoDato =
   | 'confirmado'
   | 'pendiente-validacion';
+
+export type EstadoMapa =
+  | 'simulado'
+  | 'referencia'
+  | 'validado';
+
+export interface MapaNavegacion {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  estado: EstadoMapa;
+  nodos: Nodo[];
+  conexiones: Conexion[];
+}
