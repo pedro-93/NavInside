@@ -104,6 +104,14 @@
   stroke-dasharray: 22 10;
 }
 
+.conexion-cerrada {
+  stroke: #ff5f6d;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 14 11;
+  opacity: 0.9;
+}
+
 .nodo-base {
   fill: #506b7c;
   stroke: #a8c1cf;
@@ -225,6 +233,16 @@
   background: #d946ef;
   box-shadow:
     0 0 8px rgba(217, 70, 239, 0.9);
+}
+
+.leyenda-cerrada {
+  border-radius: 0 !important;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #ff5f6d 0 5px,
+      transparent 5px 8px
+    );
 }
 
 @keyframes pulso-ubicacion {

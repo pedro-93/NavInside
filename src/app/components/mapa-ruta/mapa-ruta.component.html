@@ -43,13 +43,8 @@
           />
 
           <feMerge>
-            <feMergeNode
-              in="desenfoque"
-            />
-
-            <feMergeNode
-              in="SourceGraphic"
-            />
+            <feMergeNode in="desenfoque" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
 
@@ -83,25 +78,22 @@
             let conexion of conexionesVisuales;
             trackBy: identificarConexion
           "
-          [attr.x1]="
-            conexion.origen.xVisual
-          "
-          [attr.y1]="
-            conexion.origen.yVisual
-          "
-          [attr.x2]="
-            conexion.destino.xVisual
-          "
-          [attr.y2]="
-            conexion.destino.yVisual
-          "
+          [attr.x1]="conexion.origen.xVisual"
+          [attr.y1]="conexion.origen.yVisual"
+          [attr.x2]="conexion.destino.xVisual"
+          [attr.y2]="conexion.destino.yVisual"
           [ngClass]="{
             'conexion-ruta':
-              conexion.perteneceRuta,
+              conexion.perteneceRuta &&
+              conexion.habilitada,
             'conexion-base':
-              !conexion.perteneceRuta,
+              !conexion.perteneceRuta &&
+              conexion.habilitada,
             'conexion-accesible':
-              conexion.accesible
+              conexion.accesible &&
+              conexion.habilitada,
+            'conexion-cerrada':
+              !conexion.habilitada
           }"
         />
       </g>
@@ -210,6 +202,11 @@
     <span>
       <i class="leyenda-actual"></i>
       {{ textoUbicacionActual }}
+    </span>
+
+    <span>
+      <i class="leyenda-cerrada"></i>
+      {{ textoAccesoCerrado }}
     </span>
   </footer>
 </section>

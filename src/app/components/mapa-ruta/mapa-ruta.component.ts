@@ -27,6 +27,7 @@ interface ConexionVisual {
   destino: NodoVisual;
   perteneceRuta: boolean;
   accesible: boolean;
+  habilitada: boolean;
 }
 
 @Component({
@@ -95,6 +96,10 @@ export class MapaRutaComponent {
   @Input()
   textoUbicacionActual =
     'Ubicación actual';
+
+  @Input()
+  textoAccesoCerrado =
+    'Acceso cerrado';
 
   readonly anchoVista = 1000;
   readonly altoVista = 650;
@@ -224,7 +229,9 @@ export class MapaRutaComponent {
               conexion.destino
             ),
           accesible:
-            conexion.accesible === true
+            conexion.accesible === true,
+          habilitada:
+            conexion.habilitada !== false
         };
       })
       .filter(
