@@ -6,8 +6,7 @@ import {
 } from 'vitest';
 
 import {
-  CONEXIONES_SIMULADAS,
-  NODOS_SIMULADOS
+  MAPA_ACTIVO
 } from '../data/mapa-simulado.data';
 
 import {
@@ -31,12 +30,12 @@ describe(
     });
 
     it(
-      'debe aprobar el mapa simulado actual',
+      'debe aprobar el mapa activo actual',
       () => {
         const resultado =
           servicio.validarMapa(
-            NODOS_SIMULADOS,
-            CONEXIONES_SIMULADAS
+            MAPA_ACTIVO.nodos,
+            MAPA_ACTIVO.conexiones
           );
 
         expect(resultado.valido)
@@ -54,16 +53,16 @@ describe(
       'debe detectar identificadores de nodos duplicados',
       () => {
         const nodos: Nodo[] = [
-          ...NODOS_SIMULADOS,
+          ...MAPA_ACTIVO.nodos,
           {
-            ...NODOS_SIMULADOS[0]
+            ...MAPA_ACTIVO.nodos[0]
           }
         ];
 
         const resultado =
           servicio.validarMapa(
             nodos,
-            CONEXIONES_SIMULADAS
+            MAPA_ACTIVO.conexiones
           );
 
         expect(resultado.valido)
@@ -80,11 +79,44 @@ describe(
     );
 
     it(
+      'debe detectar un identificador de nodo vacío',
+      () => {
+        const nodos: Nodo[] =
+          MAPA_ACTIVO.nodos.map(
+            (nodo, indice) =>
+              indice === 0
+                ? {
+                    ...nodo,
+                    id: ''
+                  }
+                : { ...nodo }
+          );
+
+        const resultado =
+          servicio.validarMapa(
+            nodos,
+            MAPA_ACTIVO.conexiones
+          );
+
+        expect(resultado.valido)
+          .toBe(false);
+
+        expect(
+          resultado.errores.some(
+            problema =>
+              problema.codigo ===
+              'NODO_ID_VACIO'
+          )
+        ).toBe(true);
+      }
+    );
+
+    it(
       'debe detectar conexiones hacia nodos inexistentes',
       () => {
         const conexiones:
           Conexion[] = [
-            ...CONEXIONES_SIMULADAS,
+            ...MAPA_ACTIVO.conexiones,
             {
               origen: 'entrada',
               destino:
@@ -99,7 +131,7 @@ describe(
 
         const resultado =
           servicio.validarMapa(
-            NODOS_SIMULADOS,
+            MAPA_ACTIVO.nodos,
             conexiones
           );
 
@@ -121,7 +153,7 @@ describe(
       () => {
         const conexiones:
           Conexion[] =
-          CONEXIONES_SIMULADAS.map(
+          MAPA_ACTIVO.conexiones.map(
             (conexion, indice) =>
               indice === 0
                 ? {
@@ -133,7 +165,7 @@ describe(
 
         const resultado =
           servicio.validarMapa(
-            NODOS_SIMULADOS,
+            MAPA_ACTIVO.nodos,
             conexiones
           );
 
@@ -151,11 +183,47 @@ describe(
     );
 
     it(
+      'debe detectar una conexión hacia el mismo nodo',
+      () => {
+        const conexiones:
+          Conexion[] = [
+            ...MAPA_ACTIVO.conexiones,
+            {
+              origen: 'entrada',
+              destino: 'entrada',
+              distancia: 1,
+              tipo: 'pasillo',
+              accesible: true,
+              restringida: false,
+              habilitada: true
+            }
+          ];
+
+        const resultado =
+          servicio.validarMapa(
+            MAPA_ACTIVO.nodos,
+            conexiones
+          );
+
+        expect(resultado.valido)
+          .toBe(false);
+
+        expect(
+          resultado.errores.some(
+            problema =>
+              problema.codigo ===
+              'CONEXION_MISMO_NODO'
+          )
+        ).toBe(true);
+      }
+    );
+
+    it(
       'debe detectar conexiones multinivel inválidas',
       () => {
         const conexiones:
           Conexion[] = [
-            ...CONEXIONES_SIMULADAS,
+            ...MAPA_ACTIVO.conexiones,
             {
               origen: 'entrada',
               destino:
@@ -170,7 +238,7 @@ describe(
 
         const resultado =
           servicio.validarMapa(
-            NODOS_SIMULADOS,
+            MAPA_ACTIVO.nodos,
             conexiones
           );
 
@@ -192,7 +260,7 @@ describe(
       () => {
         const conexiones:
           Conexion[] = [
-            ...CONEXIONES_SIMULADAS,
+            ...MAPA_ACTIVO.conexiones,
             {
               origen: 'entrada',
               destino:
@@ -207,7 +275,7 @@ describe(
 
         const resultado =
           servicio.validarMapa(
-            NODOS_SIMULADOS,
+            MAPA_ACTIVO.nodos,
             conexiones
           );
 
@@ -219,6 +287,41 @@ describe(
             problema =>
               problema.codigo ===
               'CONEXION_ACCESIBILIDAD_INCONSISTENTE'
+          )
+        ).toBe(true);
+      }
+    );
+
+    it(
+      'debe detectar una escalera marcada como accesible',
+      () => {
+        const conexiones:
+          Conexion[] = [
+            ...MAPA_ACTIVO.conexiones.map(
+              conexion =>
+                conexion.tipo === 'escalera'
+                  ? {
+                      ...conexion,
+                      accesible: true
+                    }
+                  : { ...conexion }
+            )
+          ];
+
+        const resultado =
+          servicio.validarMapa(
+            MAPA_ACTIVO.nodos,
+            conexiones
+          );
+
+        expect(resultado.valido)
+          .toBe(false);
+
+        expect(
+          resultado.errores.some(
+            problema =>
+              problema.codigo ===
+              'ESCALERA_MARCADA_ACCESIBLE'
           )
         ).toBe(true);
       }
@@ -241,10 +344,10 @@ describe(
         const resultado =
           servicio.validarMapa(
             [
-              ...NODOS_SIMULADOS,
+              ...MAPA_ACTIVO.nodos,
               nodoAislado
             ],
-            CONEXIONES_SIMULADAS
+            MAPA_ACTIVO.conexiones
           );
 
         expect(resultado.valido)
@@ -265,7 +368,7 @@ describe(
       () => {
         const conexiones:
           Conexion[] = [
-            ...CONEXIONES_SIMULADAS,
+            ...MAPA_ACTIVO.conexiones,
             {
               origen: 'recepcion',
               destino: 'entrada',
@@ -279,7 +382,7 @@ describe(
 
         const resultado =
           servicio.validarMapa(
-            NODOS_SIMULADOS,
+            MAPA_ACTIVO.nodos,
             conexiones
           );
 
