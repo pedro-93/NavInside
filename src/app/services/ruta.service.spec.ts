@@ -5,7 +5,10 @@ import {
   it
 } from 'vitest';
 
-import { RutaService } from './ruta.service';
+import {
+  PasoRuta,
+  RutaService
+} from './ruta.service';
 
 describe('RutaService', () => {
   let servicio: RutaService;
@@ -241,7 +244,7 @@ describe('RutaService', () => {
         servicio.generarPasos(ruta);
 
       const ordenes = pasos.map(
-        paso => paso.orden
+        (paso: PasoRuta) => paso.orden
       );
 
       expect(ordenes).toEqual(
@@ -264,7 +267,7 @@ describe('RutaService', () => {
         servicio.generarPasos(ruta);
 
       const cambioNivel = pasos.find(
-        paso =>
+        (paso: PasoRuta) =>
           paso.tipo === 'cambio-nivel'
       );
 
@@ -297,7 +300,7 @@ describe('RutaService', () => {
         servicio.generarPasos(ruta);
 
       const cambioNivel = pasos.find(
-        paso =>
+        (paso: PasoRuta) =>
           paso.tipo === 'cambio-nivel'
       );
 
