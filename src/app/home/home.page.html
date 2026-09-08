@@ -15,6 +15,53 @@
     {{ traducir('instrucciones') }}
   </p>
 
+  @if (!mapaEsValido) {
+    <ion-card color="danger">
+      <ion-card-header>
+        <ion-card-title>
+          Configuración de mapa inválida
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          No se pueden calcular rutas hasta corregir estos errores:
+        </p>
+
+        <ul>
+          @for (error of erroresMapa; track error.codigo) {
+            <li>
+              {{ error.mensaje }}
+            </li>
+          }
+        </ul>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  @if (advertenciasMapa.length > 0) {
+    <ion-card color="warning">
+      <ion-card-header>
+        <ion-card-title>
+          Advertencias del mapa
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ul>
+          @for (
+            advertencia of advertenciasMapa;
+            track advertencia.codigo
+          ) {
+            <li>
+              {{ advertencia.mensaje }}
+            </li>
+          }
+        </ul>
+      </ion-card-content>
+    </ion-card>
+  }
+
   <ion-list>
     <ion-item>
       <ion-select
@@ -119,6 +166,7 @@
 
   <ion-button
     expand="block"
+    [disabled]="!mapaEsValido"
     (click)="leerQrReal()"
   >
     {{ traducir('leerQr') }}
@@ -127,6 +175,7 @@
   <ion-button
     expand="block"
     fill="outline"
+    [disabled]="!mapaEsValido"
     (click)="simularLecturaQr()"
   >
     {{ traducir('simularQr') }}
@@ -148,7 +197,11 @@
 
   <ion-button
     expand="block"
-    [disabled]="!origen || !destino"
+    [disabled]="
+      !origen ||
+      !destino ||
+      !mapaEsValido
+    "
     (click)="calcularRuta()"
   >
     {{ traducir('calcularRuta') }}

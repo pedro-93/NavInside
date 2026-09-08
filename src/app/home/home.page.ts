@@ -40,6 +40,11 @@ import {
   MapaService
 } from '../services/mapa.service';
 import {
+  MapaValidadorService,
+  ProblemaMapa,
+  ResultadoValidacionMapa
+} from '../services/mapa-validador.service';
+import {
   QrService
 } from '../services/qr.service';
 import {
@@ -76,6 +81,10 @@ export class HomePage {
   lugares: Nodo[] = [];
   nodosMapa: Nodo[] = [];
 
+  erroresMapa: ProblemaMapa[] = [];
+  advertenciasMapa: ProblemaMapa[] = [];
+  mapaEsValido = true;
+
   origen = '';
   destino = '';
   modoAccesible = false;
@@ -94,7 +103,9 @@ export class HomePage {
     private rutaService: RutaService,
     private qrService: QrService,
     private idiomaService: IdiomaService,
-    private mapaService: MapaService
+    private mapaService: MapaService,
+    private mapaValidadorService:
+      MapaValidadorService
   ) {
     this.idiomaSeleccionado =
       this.idiomaService.idiomaActual;
@@ -348,6 +359,12 @@ export class HomePage {
   calcularRuta(): void {
     this.limpiarRuta();
 
+    if (!this.mapaEsValido) {
+      this.resultado =
+        this.obtenerMensajeMapaInvalido();
+      return;
+    }
+
     if (!this.origen || !this.destino) {
       this.resultado =
         this.traducir(
@@ -455,6 +472,12 @@ export class HomePage {
   private procesarLecturaQr(
     contenidoQr: string
   ): void {
+    if (!this.mapaEsValido) {
+      this.mensajeUbicacion =
+        this.obtenerMensajeMapaInvalido();
+      return;
+    }
+
     const nodoDetectado =
       this.qrService.procesarCodigo(
         contenidoQr
@@ -606,17 +629,38 @@ export class HomePage {
   }
 
   private actualizarDatosMapa(): void {
-    this.lugares =
+    const mapaActivo =
+      this.mapaService.obtenerMapaActivo();
+
+    const conexionesNavegables =
       this.mapaService
-        .obtenerNodosNavegables()
+        .obtenerConexionesNavegables();
+
+    const validacion:
+      ResultadoValidacionMapa =
+      this.mapaValidadorService.validarMapa(
+        mapaActivo.nodos,
+        conexionesNavegables
+      );
+
+    this.mapaEsValido =
+      validacion.valido;
+
+    this.erroresMapa =
+      validacion.errores;
+
+    this.advertenciasMapa =
+      validacion.advertencias;
+
+    this.lugares =
+      mapaActivo.nodos
         .filter(
           nodo =>
             nodo.restringido !== true
         );
 
     this.conexionesMapa =
-      this.mapaService
-        .obtenerConexionesNavegables();
+      conexionesNavegables;
 
     this.nodosMapa =
       this.lugares.map(
@@ -626,6 +670,17 @@ export class HomePage {
             this.nombreNodo(nodo)
         })
       );
+  }
+
+  private obtenerMensajeMapaInvalido(): string {
+    const cantidadErrores =
+      this.erroresMapa.length;
+
+    return this.texto(
+      `No se pueden calcular rutas: el mapa tiene ${cantidadErrores} error(es) de configuración.`,
+      `Routes cannot be calculated: the map has ${cantidadErrores} configuration error(s).`,
+      `Não é possível calcular rotas: o mapa possui ${cantidadErrores} erro(s) de configuração.`
+    );
   }
 
   private actualizarResultadoRuta(): void {
