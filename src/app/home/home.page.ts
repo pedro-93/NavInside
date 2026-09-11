@@ -30,6 +30,7 @@ import {
 } from '../data/nombres-nodos.data';
 import {
   Conexion,
+  LugarPlano,
   Nodo
 } from '../models/nodo.model';
 import {
@@ -80,6 +81,7 @@ export class HomePage {
   conexionesMapa: Conexion[] = [];
   lugares: Nodo[] = [];
   nodosMapa: Nodo[] = [];
+  lugaresReferencia: LugarPlano[] = [];
 
   erroresMapa: ProblemaMapa[] = [];
   advertenciasMapa: ProblemaMapa[] = [];
@@ -670,6 +672,10 @@ export class HomePage {
             this.nombreNodo(nodo)
         })
       );
+
+    this.lugaresReferencia =
+      this.mapaService
+        .obtenerLugaresPreliminares();
   }
 
   private obtenerMensajeMapaInvalido(): string {

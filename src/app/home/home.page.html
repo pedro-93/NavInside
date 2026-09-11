@@ -15,6 +15,49 @@
     {{ traducir('instrucciones') }}
   </p>
 
+  @if (lugaresReferencia.length > 0) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          Sede piloto: Duoc UC Viña del Mar
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          Mapa general de referencia con edificios y
+          puntos identificados en la sede.
+        </p>
+
+        <p>
+          Las rutas interiores, medidas y condiciones de
+          accesibilidad aún requieren validación en terreno.
+        </p>
+
+        <details>
+          <summary>
+            Ver {{ lugaresReferencia.length }}
+            lugares identificados
+          </summary>
+
+          <ul>
+            @for (
+              lugar of lugaresReferencia;
+              track lugar.id
+            ) {
+              <li>
+                <strong>
+                  {{ lugar.nombre }}
+                </strong>
+                — {{ lugar.sector }}
+              </li>
+            }
+          </ul>
+        </details>
+      </ion-card-content>
+    </ion-card>
+  }
+
   @if (!mapaEsValido) {
     <ion-card color="danger">
       <ion-card-header>
