@@ -8,13 +8,14 @@ function crearLugarReferencia(
   id: string,
   nombre: string,
   tipo: TipoNodo,
-  sector: string
+  sector: string,
+  nivel: number | null = null
 ): LugarPlano {
   return {
     id,
     nombre,
     tipo,
-    nivel: null,
+    nivel,
     sector,
     x: null,
     y: null,
@@ -25,7 +26,8 @@ function crearLugarReferencia(
 }
 
 /*
- * Lugares identificados en el mapa general actual de Duoc UC Viña del Mar.
+ * Lugares identificados en el mapa general actual de Duoc UC Viña del Mar
+ * y en antecedentes arquitectónicos públicos del Edificio Tecnológico CTI.
  *
  * Son referencias de orientación. No forman parte del grafo navegable:
  * faltan coordenadas, medidas, rutas internas y validación en terreno.
@@ -114,7 +116,8 @@ export const LUGARES_DUOC_VINA_REFERENCIA:
       'cafeteria',
       'Cafetería',
       'restaurante',
-      'Edificio Tecnológico CTI'
+      'Edificio Tecnológico CTI',
+      4
     ),
     crearLugarReferencia(
       'multicancha-1',
@@ -169,6 +172,82 @@ export const LUGARES_DUOC_VINA_REFERENCIA:
       'Zona de seguridad 4',
       'servicio',
       'Calle Cantera'
+    ),
+
+    crearLugarReferencia(
+      'cti-subterraneo',
+      'Subterráneo CTI',
+      'pasillo',
+      'Edificio Tecnológico CTI',
+      0
+    ),
+    crearLugarReferencia(
+      'cti-acceso-calle-cantera',
+      'Acceso CTI por calle Cantera',
+      'entrada',
+      'Edificio Tecnológico CTI',
+      1
+    ),
+    crearLugarReferencia(
+      'cti-recepcion',
+      'Recepción CTI',
+      'recepcion',
+      'Edificio Tecnológico CTI',
+      1
+    ),
+    crearLugarReferencia(
+      'cti-estacionamientos-nivel-1',
+      'Estacionamientos CTI',
+      'estacionamiento',
+      'Edificio Tecnológico CTI',
+      1
+    ),
+    crearLugarReferencia(
+      'cti-nucleo-vertical',
+      'Núcleo de circulación vertical CTI',
+      'escalera',
+      'Edificio Tecnológico CTI'
+    ),
+    crearLugarReferencia(
+      'cti-conexion-duoc-existente',
+      'Conexión con edificio Duoc existente',
+      'pasillo',
+      'Edificio Tecnológico CTI'
+    ),
+    crearLugarReferencia(
+      'cti-laboratorios-nivel-2',
+      'Laboratorios CTI',
+      'salon',
+      'Edificio Tecnológico CTI',
+      2
+    ),
+    crearLugarReferencia(
+      'cti-laboratorios-nivel-3',
+      'Laboratorios CTI',
+      'salon',
+      'Edificio Tecnológico CTI',
+      3
+    ),
+    crearLugarReferencia(
+      'cti-biblioteca-nivel-5',
+      'Biblioteca CTI',
+      'servicio',
+      'Edificio Tecnológico CTI',
+      5
+    ),
+    crearLugarReferencia(
+      'cti-salas-ingles-nivel-5',
+      'Salas de Inglés',
+      'salon',
+      'Edificio Tecnológico CTI',
+      5
+    ),
+    crearLugarReferencia(
+      'cti-area-nivel-6',
+      'Área CTI',
+      'servicio',
+      'Edificio Tecnológico CTI',
+      6
     )
   ];
 
