@@ -25,9 +25,30 @@ function crearLugarReferencia(
   };
 }
 
+function crearLugaresCodificados(
+  codigos: string[],
+  nombreBase: string,
+  tipo: TipoNodo,
+  sector: string,
+  nivel: number
+): LugarPlano[] {
+  return codigos.map(codigo =>
+    crearLugarReferencia(
+      `cti-${codigo.toLowerCase()}`,
+      `${nombreBase} ${codigo}`,
+      tipo,
+      sector,
+      nivel
+    )
+  );
+}
+
 /*
- * Lugares identificados en el mapa general actual de Duoc UC Viña del Mar
- * y en antecedentes arquitectónicos públicos del Edificio Tecnológico CTI.
+ * Lugares identificados en el mapa general de Duoc UC Viña del Mar
+ * y en la señalética del Edificio Tecnológico CTI.
+ *
+ * Los niveles se registran con la numeración visible para el usuario:
+ * del nivel 1 al nivel 6.
  *
  * Son referencias de orientación. No forman parte del grafo navegable:
  * faltan coordenadas, medidas, rutas internas y validación en terreno.
@@ -113,13 +134,6 @@ export const LUGARES_DUOC_VINA_REFERENCIA:
       'Sector central'
     ),
     crearLugarReferencia(
-      'cafeteria',
-      'Cafetería',
-      'restaurante',
-      'Edificio Tecnológico CTI',
-      4
-    ),
-    crearLugarReferencia(
       'multicancha-1',
       'Multicancha 1',
       'cancha',
@@ -175,13 +189,6 @@ export const LUGARES_DUOC_VINA_REFERENCIA:
     ),
 
     crearLugarReferencia(
-      'cti-subterraneo',
-      'Subterráneo CTI',
-      'pasillo',
-      'Edificio Tecnológico CTI',
-      0
-    ),
-    crearLugarReferencia(
       'cti-acceso-calle-cantera',
       'Acceso CTI por calle Cantera',
       'entrada',
@@ -196,7 +203,7 @@ export const LUGARES_DUOC_VINA_REFERENCIA:
       1
     ),
     crearLugarReferencia(
-      'cti-estacionamientos-nivel-1',
+      'cti-estacionamientos',
       'Estacionamientos CTI',
       'estacionamiento',
       'Edificio Tecnológico CTI',
@@ -214,39 +221,222 @@ export const LUGARES_DUOC_VINA_REFERENCIA:
       'pasillo',
       'Edificio Tecnológico CTI'
     ),
-    crearLugarReferencia(
-      'cti-laboratorios-nivel-2',
-      'Laboratorios CTI',
+
+    ...crearLugaresCodificados(
+      [
+        'VI-LC1',
+        'VI-LC2',
+        'VI-LC3',
+        'VI-LC4',
+        'VI-LC5',
+        'VI-LC6',
+        'VI-LC7',
+        'VI-LC8',
+        'VI-LC9',
+        'VI-LC10',
+        'VI-LC11',
+        'VI-LC12'
+      ],
+      'Laboratorio',
       'salon',
-      'Edificio Tecnológico CTI',
+      'Edificio Tecnológico CTI · Nivel 2',
       2
     ),
     crearLugarReferencia(
-      'cti-laboratorios-nivel-3',
-      'Laboratorios CTI',
+      'cti-bano-mujeres-nivel-2',
+      'Baño de mujeres',
+      'baño',
+      'Edificio Tecnológico CTI · Nivel 2',
+      2
+    ),
+
+    crearLugarReferencia(
+      'cti-laboratorio-mac-1',
+      'Laboratorio MAC 1 (VI-LC13)',
       'salon',
-      'Edificio Tecnológico CTI',
+      'Edificio Tecnológico CTI · Nivel 3',
       3
     ),
     crearLugarReferencia(
-      'cti-biblioteca-nivel-5',
-      'Biblioteca CTI',
-      'servicio',
-      'Edificio Tecnológico CTI',
-      5
-    ),
-    crearLugarReferencia(
-      'cti-salas-ingles-nivel-5',
-      'Salas de Inglés',
+      'cti-laboratorio-redes-1',
+      'Laboratorio de Redes 1 (VI-LR1)',
       'salon',
-      'Edificio Tecnológico CTI',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    crearLugarReferencia(
+      'cti-laboratorio-redes-2',
+      'Laboratorio de Redes 2 (VI-LR2)',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    crearLugarReferencia(
+      'cti-taller-proyectos-1',
+      'Taller de Proyectos 1',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    crearLugarReferencia(
+      'cti-taller-proyectos-2',
+      'Taller de Proyectos 2',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    crearLugarReferencia(
+      'cti-laboratorio-telecomunicaciones',
+      'Laboratorio de Telecomunicaciones (VI-LT1)',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    ...crearLugaresCodificados(
+      [
+        'VI-LC14',
+        'VI-LC15',
+        'VI-LC16',
+        'VI-LC17'
+      ],
+      'Laboratorio MAC',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    ...crearLugaresCodificados(
+      [
+        'VI-S301',
+        'VI-S302',
+        'VI-S303'
+      ],
+      'Sala',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+    crearLugarReferencia(
+      'cti-servicios-digitales',
+      'Servicios Digitales',
+      'servicio',
+      'Edificio Tecnológico CTI · Nivel 3',
+      3
+    ),
+
+    crearLugarReferencia(
+      'cti-casino',
+      'Casino',
+      'restaurante',
+      'Edificio Tecnológico CTI · Nivel 4',
+      4
+    ),
+    ...crearLugaresCodificados(
+      [
+        'VI-S401',
+        'VI-S402'
+      ],
+      'Sala',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 4',
+      4
+    ),
+    crearLugarReferencia(
+      'cti-banos-nivel-4',
+      'Baños',
+      'baño',
+      'Edificio Tecnológico CTI · Nivel 4',
+      4
+    ),
+
+    crearLugarReferencia(
+      'cti-bano-hombres-nivel-5',
+      'Baño de hombres',
+      'baño',
+      'Edificio Tecnológico CTI · Nivel 5',
+      5
+    ),
+    ...crearLugaresCodificados(
+      [
+        'VI-S501',
+        'VI-S502',
+        'VI-S503',
+        'VI-S504',
+        'VI-S505',
+        'VI-S506',
+        'VI-S507'
+      ],
+      'Sala',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 5',
+      5
+    ),
+    ...crearLugaresCodificados(
+      [
+        'VI-LC508',
+        'VI-LC509'
+      ],
+      'Laboratorio de Computación',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 5',
       5
     ),
     crearLugarReferencia(
-      'cti-area-nivel-6',
-      'Área CTI',
+      'cti-biblioteca',
+      'Biblioteca',
       'servicio',
-      'Edificio Tecnológico CTI',
+      'Edificio Tecnológico CTI · Nivel 5',
+      5
+    ),
+
+    crearLugarReferencia(
+      'cti-bano-mujeres-nivel-6',
+      'Baño de mujeres',
+      'baño',
+      'Edificio Tecnológico CTI · Nivel 6',
+      6
+    ),
+    ...crearLugaresCodificados(
+      [
+        'VI-S601',
+        'VI-S602',
+        'VI-S603',
+        'VI-S604',
+        'VI-S605',
+        'VI-S606',
+        'VI-S607',
+        'VI-S608'
+      ],
+      'Sala',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 6',
+      6
+    ),
+    crearLugarReferencia(
+      'cti-sala-agencia-609',
+      'Sala Agencia 609',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 6',
+      6
+    ),
+    crearLugarReferencia(
+      'cti-centro-tecnologico',
+      'Centro Tecnológico',
+      'servicio',
+      'Edificio Tecnológico CTI · Nivel 6',
+      6
+    ),
+    crearLugarReferencia(
+      'cti-centro-negocios',
+      'Centro de Negocios',
+      'servicio',
+      'Edificio Tecnológico CTI · Nivel 6',
+      6
+    ),
+    crearLugarReferencia(
+      'cti-laboratorio-computacion-606',
+      'Laboratorio de Computación (VI-LC606)',
+      'salon',
+      'Edificio Tecnológico CTI · Nivel 6',
       6
     )
   ];
@@ -260,7 +450,7 @@ export const MAPA_DUOC_VINA_REFERENCIA:
     id: 'duoc-vina-referencia',
     nombre: 'Sede Duoc UC Viña del Mar',
     descripcion:
-      'Mapa general de referencia con edificios y puntos visibles. Las rutas internas, medidas y accesibilidad requieren validación en terreno.',
+      'Mapa general de referencia con lugares identificados por señalética. Las coordenadas, rutas internas, medidas y accesibilidad requieren validación en terreno.',
     estado: 'referencia',
     nodos: [],
     conexiones: []
