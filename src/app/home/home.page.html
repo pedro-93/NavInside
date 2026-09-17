@@ -25,14 +25,14 @@
 
       <ion-card-content>
         <p>
-          Plano de orientación con servicios, salones,
-          accesos, ascensores y habitaciones identificados.
+          Lugares identificados a partir de planos de orientación
+          disponibles del recinto.
         </p>
 
         <p>
-          Las distancias, coordenadas, rutas navegables y
-          condiciones de accesibilidad se incorporarán tras
-          el levantamiento en terreno.
+          Las coordenadas, distancias, rutas internas y condiciones
+          de accesibilidad requieren levantamiento y validación en
+          terreno.
         </p>
 
         <details>
@@ -56,7 +56,7 @@
                 }
 
                 @if (lugar.nivel !== null) {
-                  · Nivel {{ lugar.nivel }}
+                  — Nivel {{ lugar.nivel }}
                 }
               </li>
             }
@@ -65,6 +65,28 @@
       </ion-card-content>
     </ion-card>
   }
+
+  <ion-card class="plano-referencia-card">
+    <ion-card-header>
+      <ion-card-title>
+        Plano de referencia
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>
+        Plano digital de Hippocampus Resort & Club.
+        Las rutas calculadas permanecen en modo simulado
+        hasta completar el levantamiento en terreno.
+      </p>
+
+      <img
+        class="plano-referencia-imagen"
+        src="assets/mapa/hippocampus-plano-digital.png"
+        alt="Plano digital de referencia de Hippocampus Resort & Club"
+      />
+    </ion-card-content>
+  </ion-card>
 
   @if (!mapaEsValido) {
     <ion-card color="danger">

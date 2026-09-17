@@ -64,6 +64,27 @@ ion-card-content {
   color: var(--nav-text);
 }
 
+.plano-referencia-card {
+  ion-card-content {
+    padding-top: 0;
+  }
+
+  p {
+    color: var(--nav-muted);
+    line-height: 1.5;
+  }
+}
+
+.plano-referencia-imagen {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 16px;
+  border: 1px solid rgba(88, 97, 116, 0.2);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
 .recorrido-card {
   border: 1px solid var(--nav-border);
   box-shadow:
