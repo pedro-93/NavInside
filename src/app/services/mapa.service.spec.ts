@@ -15,7 +15,7 @@ describe('MapaService', () => {
   });
 
   it(
-    'debe entregar los nodos navegables simulados',
+    'debe entregar los nodos navegables del mapa activo',
     () => {
       const nodos =
         servicio.obtenerNodosNavegables();
@@ -43,15 +43,15 @@ describe('MapaService', () => {
   );
 
   it(
-    'debe encontrar un lugar preliminar de Duoc Viña',
+    'debe encontrar un lugar preliminar de Hippocampus',
     () => {
       const lugar =
         servicio.obtenerLugarPreliminarPorId(
-          'punto-estudiantil'
+          'piscina-temperada'
         );
 
       expect(lugar?.nombre).toBe(
-        'Punto Estudiantil'
+        'Piscina temperada'
       );
 
       expect(lugar?.nivel).toBeNull();
@@ -78,7 +78,7 @@ describe('MapaService', () => {
     () => {
       expect(
         servicio.esNodoNavegable(
-          'punto-estudiantil'
+          'piscina-temperada'
         )
       ).toBe(false);
     }

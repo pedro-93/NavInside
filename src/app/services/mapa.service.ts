@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import {
-  LUGARES_DUOC_VINA_REFERENCIA
-} from '../data/mapa-duoc-vina-referencia.data';
-
-import {
+  LUGARES_HIPPOCAMPUS_PRELIMINARES,
   MAPA_ACTIVO
 } from '../data/mapa-simulado.data';
 
@@ -55,7 +52,7 @@ export class MapaService {
   }
 
   obtenerLugaresPreliminares(): LugarPlano[] {
-    return LUGARES_DUOC_VINA_REFERENCIA.map(
+    return LUGARES_HIPPOCAMPUS_PRELIMINARES.map(
       lugar => ({ ...lugar })
     );
   }
@@ -74,7 +71,7 @@ export class MapaService {
     id: string
   ): LugarPlano | undefined {
     const lugar =
-      LUGARES_DUOC_VINA_REFERENCIA.find(
+      LUGARES_HIPPOCAMPUS_PRELIMINARES.find(
         lugarActual => lugarActual.id === id
       );
 
@@ -110,7 +107,7 @@ export class MapaService {
   obtenerLugaresPorNivel(
     nivel: number
   ): LugarPlano[] {
-    return LUGARES_DUOC_VINA_REFERENCIA
+    return LUGARES_HIPPOCAMPUS_PRELIMINARES
       .filter(lugar => lugar.nivel === nivel)
       .map(lugar => ({ ...lugar }));
   }
@@ -193,7 +190,7 @@ export class MapaService {
   }
 
   obtenerLugaresPendientes(): LugarPlano[] {
-    return LUGARES_DUOC_VINA_REFERENCIA
+    return LUGARES_HIPPOCAMPUS_PRELIMINARES
       .filter(
         lugar =>
           lugar.x === null ||

@@ -19,19 +19,20 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          Sede piloto: Duoc UC Viña del Mar
+          Entorno de referencia: Hippocampus Resort & Club
         </ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <p>
-          Mapa general de referencia con edificios y
-          puntos identificados en la sede.
+          Plano de orientación con servicios, salones,
+          accesos, ascensores y habitaciones identificados.
         </p>
 
         <p>
-          Las rutas interiores, medidas y condiciones de
-          accesibilidad aún requieren validación en terreno.
+          Las distancias, coordenadas, rutas navegables y
+          condiciones de accesibilidad se incorporarán tras
+          el levantamiento en terreno.
         </p>
 
         <details>
@@ -49,7 +50,14 @@
                 <strong>
                   {{ lugar.nombre }}
                 </strong>
-                — {{ lugar.sector }}
+
+                @if (lugar.sector) {
+                  — {{ lugar.sector }}
+                }
+
+                @if (lugar.nivel !== null) {
+                  · Nivel {{ lugar.nivel }}
+                }
               </li>
             }
           </ul>
