@@ -113,6 +113,7 @@ export class HomePage {
       this.idiomaService.idiomaActual;
 
     this.actualizarDatosMapa();
+    void this.cargarMapaInicial();
   }
 
   get origenId(): string | null {
@@ -628,6 +629,15 @@ export class HomePage {
 
     this.sincronizarPasoActual();
     this.actualizarResultadoRuta();
+  }
+
+  private async cargarMapaInicial(): Promise<void> {
+    const mapaCargado =
+      await this.mapaService.cargarMapaDesdeSupabase();
+
+    if (mapaCargado) {
+      this.actualizarDatosMapa();
+    }
   }
 
   private actualizarDatosMapa(): void {
