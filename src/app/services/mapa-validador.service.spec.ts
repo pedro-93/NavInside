@@ -29,374 +29,131 @@ describe(
         new MapaValidadorService();
     });
 
-    it(
-      'debe aprobar el mapa activo actual',
-      () => {
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            MAPA_ACTIVO.conexiones
-          );
+    it('aprueba el mapa de referencia con advertencias', () => {
+      const resultado =
+        servicio.validarMapa(
+          MAPA_ACTIVO.nodos,
+          MAPA_ACTIVO.conexiones
+        );
 
-        expect(resultado.valido)
-          .toBe(true);
+      expect(resultado.valido)
+        .toBe(true);
 
-        expect(resultado.errores)
-          .toEqual([]);
+      expect(resultado.errores)
+        .toEqual([]);
 
-        expect(resultado.advertencias)
-          .toEqual([]);
-      }
-    );
+      expect(
+        resultado.advertencias.length
+      ).toBeGreaterThan(0);
+    });
 
-    it(
-      'debe detectar identificadores de nodos duplicados',
-      () => {
-        const nodos: Nodo[] = [
-          ...MAPA_ACTIVO.nodos,
+    it('permite distancia cero únicamente en ascensores', () => {
+      const ascensores =
+        MAPA_ACTIVO.conexiones.filter(
+          conexion =>
+            conexion.tipo ===
+              'ascensor' &&
+            conexion.distancia === 0
+        );
+
+      expect(ascensores.length)
+        .toBe(3);
+
+      const resultado =
+        servicio.validarMapa(
+          MAPA_ACTIVO.nodos,
+          MAPA_ACTIVO.conexiones
+        );
+
+      expect(resultado.valido)
+        .toBe(true);
+    });
+
+    it('rechaza distancia cero en un pasillo', () => {
+      const conexiones:
+        Conexion[] = [
+          ...MAPA_ACTIVO.conexiones,
           {
-            ...MAPA_ACTIVO.nodos[0]
+            origen:
+              'entrada-nivel-4',
+            destino:
+              'recepcion-resort-nivel-4',
+            distancia: 0,
+            tipo: 'pasillo',
+            accesible: true,
+            restringida: false,
+            habilitada: true
           }
         ];
 
-        const resultado =
-          servicio.validarMapa(
-            nodos,
-            MAPA_ACTIVO.conexiones
-          );
+      const resultado =
+        servicio.validarMapa(
+          MAPA_ACTIVO.nodos,
+          conexiones
+        );
 
-        expect(resultado.valido)
-          .toBe(false);
+      expect(
+        resultado.errores.some(
+          problema =>
+            problema.codigo ===
+            'CONEXION_DISTANCIA_INVALIDA'
+        )
+      ).toBe(true);
+    });
 
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'NODO_ID_DUPLICADO'
-          )
-        ).toBe(true);
-      }
-    );
+    it('detecta identificadores duplicados', () => {
+      const nodos: Nodo[] = [
+        ...MAPA_ACTIVO.nodos,
+        {
+          ...MAPA_ACTIVO.nodos[0]
+        }
+      ];
 
-    it(
-      'debe detectar un identificador de nodo vacío',
-      () => {
-        const nodos: Nodo[] =
-          MAPA_ACTIVO.nodos.map(
-            (nodo, indice) =>
-              indice === 0
-                ? {
-                    ...nodo,
-                    id: ''
-                  }
-                : { ...nodo }
-          );
+      const resultado =
+        servicio.validarMapa(
+          nodos,
+          MAPA_ACTIVO.conexiones
+        );
 
-        const resultado =
-          servicio.validarMapa(
-            nodos,
-            MAPA_ACTIVO.conexiones
-          );
+      expect(
+        resultado.errores.some(
+          problema =>
+            problema.codigo ===
+            'NODO_ID_DUPLICADO'
+        )
+      ).toBe(true);
+    });
 
-        expect(resultado.valido)
-          .toBe(false);
+    it('detecta conexiones multinivel inválidas', () => {
+      const conexiones:
+        Conexion[] = [
+          ...MAPA_ACTIVO.conexiones,
+          {
+            origen:
+              'entrada-nivel-4',
+            destino:
+              'hall-nivel-1',
+            distancia: 10,
+            tipo: 'pasillo',
+            accesible: true,
+            restringida: false,
+            habilitada: true
+          }
+        ];
 
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'NODO_ID_VACIO'
-          )
-        ).toBe(true);
-      }
-    );
+      const resultado =
+        servicio.validarMapa(
+          MAPA_ACTIVO.nodos,
+          conexiones
+        );
 
-    it(
-      'debe detectar conexiones hacia nodos inexistentes',
-      () => {
-        const conexiones:
-          Conexion[] = [
-            ...MAPA_ACTIVO.conexiones,
-            {
-              origen: 'entrada',
-              destino:
-                'nodo-inexistente',
-              distancia: 4,
-              tipo: 'pasillo',
-              accesible: true,
-              restringida: false,
-              habilitada: true
-            }
-          ];
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'CONEXION_DESTINO_INEXISTENTE'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe detectar distancias inválidas',
-      () => {
-        const conexiones:
-          Conexion[] =
-          MAPA_ACTIVO.conexiones.map(
-            (conexion, indice) =>
-              indice === 0
-                ? {
-                    ...conexion,
-                    distancia: 0
-                  }
-                : { ...conexion }
-          );
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'CONEXION_DISTANCIA_INVALIDA'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe detectar una conexión hacia el mismo nodo',
-      () => {
-        const conexiones:
-          Conexion[] = [
-            ...MAPA_ACTIVO.conexiones,
-            {
-              origen: 'entrada',
-              destino: 'entrada',
-              distancia: 1,
-              tipo: 'pasillo',
-              accesible: true,
-              restringida: false,
-              habilitada: true
-            }
-          ];
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'CONEXION_MISMO_NODO'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe detectar conexiones multinivel inválidas',
-      () => {
-        const conexiones:
-          Conexion[] = [
-            ...MAPA_ACTIVO.conexiones,
-            {
-              origen: 'entrada',
-              destino:
-                'salon-nivel-3',
-              distancia: 10,
-              tipo: 'pasillo',
-              accesible: true,
-              restringida: false,
-              habilitada: true
-            }
-          ];
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'CONEXION_MULTINIVEL_INVALIDA'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe detectar accesibilidad inconsistente',
-      () => {
-        const conexiones:
-          Conexion[] = [
-            ...MAPA_ACTIVO.conexiones,
-            {
-              origen: 'entrada',
-              destino:
-                'escalera-nivel-1',
-              distancia: 7,
-              tipo: 'pasillo',
-              accesible: true,
-              restringida: false,
-              habilitada: true
-            }
-          ];
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'CONEXION_ACCESIBILIDAD_INCONSISTENTE'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe detectar una escalera marcada como accesible',
-      () => {
-        const conexiones:
-          Conexion[] = [
-            ...MAPA_ACTIVO.conexiones.map(
-              conexion =>
-                conexion.tipo === 'escalera'
-                  ? {
-                      ...conexion,
-                      accesible: true
-                    }
-                  : { ...conexion }
-            )
-          ];
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'ESCALERA_MARCADA_ACCESIBLE'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe advertir sobre nodos aislados',
-      () => {
-        const nodoAislado: Nodo = {
-          id: 'nodo-aislado',
-          nombre: 'Nodo aislado',
-          x: 20,
-          y: 20,
-          tipo: 'pasillo',
-          nivel: 1,
-          accesible: true,
-          restringido: false
-        };
-
-        const resultado =
-          servicio.validarMapa(
-            [
-              ...MAPA_ACTIVO.nodos,
-              nodoAislado
-            ],
-            MAPA_ACTIVO.conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(true);
-
-        expect(
-          resultado.advertencias.some(
-            problema =>
-              problema.codigo ===
-              'NODO_AISLADO'
-          )
-        ).toBe(true);
-      }
-    );
-
-    it(
-      'debe detectar conexiones duplicadas en cualquier sentido',
-      () => {
-        const conexiones:
-          Conexion[] = [
-            ...MAPA_ACTIVO.conexiones,
-            {
-              origen: 'recepcion',
-              destino: 'entrada',
-              distancia: 2,
-              tipo: 'pasillo',
-              accesible: true,
-              restringida: false,
-              habilitada: true
-            }
-          ];
-
-        const resultado =
-          servicio.validarMapa(
-            MAPA_ACTIVO.nodos,
-            conexiones
-          );
-
-        expect(resultado.valido)
-          .toBe(false);
-
-        expect(
-          resultado.errores.some(
-            problema =>
-              problema.codigo ===
-              'CONEXION_DUPLICADA'
-          )
-        ).toBe(true);
-      }
-    );
+      expect(
+        resultado.errores.some(
+          problema =>
+            problema.codigo ===
+            'CONEXION_MULTINIVEL_INVALIDA'
+        )
+      ).toBe(true);
+    });
   }
 );

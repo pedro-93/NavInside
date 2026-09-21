@@ -71,7 +71,7 @@ export class MapaRutaComponent {
   textoNivel = 'Nivel';
 
   @Input()
-  textoEstado = 'Datos simulados';
+  textoEstado = 'Mediciones de referencia';
 
   @Input()
   textoAriaMapa =

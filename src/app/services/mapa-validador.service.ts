@@ -205,7 +205,11 @@ export class MapaValidadorService {
         !Number.isFinite(
           conexion.distancia
         ) ||
-        conexion.distancia <= 0
+        conexion.distancia < 0 ||
+        (
+          conexion.distancia === 0 &&
+          conexion.tipo !== 'ascensor'
+        )
       ) {
         this.agregarProblema(
           problemas,

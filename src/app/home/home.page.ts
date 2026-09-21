@@ -92,14 +92,12 @@ export class HomePage {
   modoAccesible = false;
   idiomaSeleccionado: Idioma;
   mensajeUbicacion = '';
-  mensajeAcceso = '';
   resultado = '';
   distanciaTotal: number | null = null;
   rutaCalculada: Nodo[] = [];
   pasosRuta: PasoRuta[] = [];
   pasoActualIndice = 0;
   nivelVisualizado = 1;
-  accesoRecepcionBanoCerrado = false;
 
   constructor(
     private rutaService: RutaService,
@@ -193,38 +191,6 @@ export class HomePage {
     );
   }
 
-  get textoEstadoAcceso(): string {
-    if (this.accesoRecepcionBanoCerrado) {
-      return this.texto(
-        'Acceso cerrado: Recepción a Baño. La ruta usa una alternativa.',
-        'Access closed: Reception to Bathroom. The route uses an alternative.',
-        'Acesso fechado: Recepção ao Banheiro. A rota usa uma alternativa.'
-      );
-    }
-
-    return this.texto(
-      'Acceso habilitado: Recepción a Baño.',
-      'Access enabled: Reception to Bathroom.',
-      'Acesso disponível: Recepção ao Banheiro.'
-    );
-  }
-
-  get textoBotonAcceso(): string {
-    if (this.accesoRecepcionBanoCerrado) {
-      return this.texto(
-        'Restablecer acceso',
-        'Restore access',
-        'Restabelecer acesso'
-      );
-    }
-
-    return this.texto(
-      'Simular acceso cerrado',
-      'Simulate closed access',
-      'Simular acesso fechado'
-    );
-  }
-
   traducir(
     clave: string,
     parametros: Record<
@@ -253,7 +219,6 @@ export class HomePage {
 
     this.actualizarDatosMapa();
     this.mensajeUbicacion = '';
-    this.mensajeAcceso = '';
 
     if (this.rutaCalculada.length > 0) {
       this.actualizarResultadoRuta();
@@ -313,50 +278,12 @@ export class HomePage {
     const contenidoQr = JSON.stringify({
       sistema: 'navinside',
       version: 1,
-      nodoId: 'recepcion'
+      nodoId: 'entrada-nivel-4'
     });
 
     this.procesarLecturaQr(
       contenidoQr
     );
-  }
-
-  alternarAccesoRecepcionBano(): void {
-    this.accesoRecepcionBanoCerrado =
-      !this.accesoRecepcionBanoCerrado;
-
-    if (this.accesoRecepcionBanoCerrado) {
-      this.mapaService.cerrarConexion(
-        'recepcion',
-        'baño'
-      );
-    } else {
-      this.mapaService.habilitarConexion(
-        'recepcion',
-        'baño'
-      );
-    }
-
-    this.actualizarDatosMapa();
-
-    if (this.origen && this.destino) {
-      this.calcularRuta();
-
-      this.mensajeAcceso =
-        this.texto(
-          'El acceso cambió y la ruta fue recalculada.',
-          'The access changed and the route was recalculated.',
-          'O acesso mudou e a rota foi recalculada.'
-        );
-      return;
-    }
-
-    this.mensajeAcceso =
-      this.texto(
-        'El estado del acceso fue actualizado. Selecciona origen y destino para calcular una ruta.',
-        'The access status was updated. Select origin and destination to calculate a route.',
-        'O estado do acesso foi atualizado. Selecione origem e destino para calcular uma rota.'
-      );
   }
 
   calcularRuta(): void {

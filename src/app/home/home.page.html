@@ -30,9 +30,10 @@
         </p>
 
         <p>
-          Las coordenadas, distancias, rutas internas y condiciones
-          de accesibilidad requieren levantamiento y validación en
-          terreno.
+          Las distancias incluidas corresponden al levantamiento
+          realizado en terreno. Las coordenadas visuales y las
+          condiciones de accesibilidad pendientes requieren
+          validación oficial.
         </p>
 
         <details>
@@ -76,8 +77,8 @@
     <ion-card-content>
       <p>
         Plano digital de Hippocampus Resort & Club.
-        Las rutas calculadas permanecen en modo simulado
-        hasta completar el levantamiento en terreno.
+        Las rutas calculadas utilizan las mediciones de referencia
+        obtenidas durante el levantamiento en terreno.
       </p>
 
       <img
@@ -206,36 +207,6 @@
       </ion-toggle>
     </ion-item>
   </ion-list>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        Simulación de acceso
-      </ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <p>
-        {{ textoEstadoAcceso }}
-      </p>
-
-      <ion-button
-        expand="block"
-        fill="outline"
-        (click)="alternarAccesoRecepcionBano()"
-      >
-        {{ textoBotonAcceso }}
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
-
-  @if (mensajeAcceso) {
-    <ion-card>
-      <ion-card-content>
-        {{ mensajeAcceso }}
-      </ion-card-content>
-    </ion-card>
-  }
 
   <ion-button
     expand="block"

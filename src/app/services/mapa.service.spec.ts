@@ -5,7 +5,9 @@ import {
   it
 } from 'vitest';
 
-import { MapaService } from './mapa.service';
+import {
+  MapaService
+} from './mapa.service';
 
 describe('MapaService', () => {
   let servicio: MapaService;
@@ -14,73 +16,91 @@ describe('MapaService', () => {
     servicio = new MapaService();
   });
 
-  it(
-    'debe entregar los nodos navegables del mapa activo',
-    () => {
-      const nodos =
-        servicio.obtenerNodosNavegables();
+  it('entrega los nodos reales del mapa activo', () => {
+    const nodos =
+      servicio.obtenerNodosNavegables();
 
-      expect(nodos.length)
-        .toBeGreaterThan(0);
+    expect(
+      nodos.some(
+        nodo =>
+          nodo.id ===
+          'entrada-nivel-4'
+      )
+    ).toBe(true);
 
-      expect(
-        nodos.some(
-          nodo => nodo.id === 'recepcion'
-        )
-      ).toBe(true);
-    }
-  );
+    expect(
+      nodos.some(
+        nodo =>
+          nodo.id ===
+          'alma-spa-tinaja-piso-6'
+      )
+    ).toBe(true);
+  });
 
-  it(
-    'debe entregar las conexiones navegables',
-    () => {
-      const conexiones =
-        servicio.obtenerConexionesNavegables();
+  it('encuentra un lugar de Hippocampus', () => {
+    const lugar =
+      servicio.obtenerLugarPreliminarPorId(
+        'piscina-temperada-nivel-3'
+      );
 
-      expect(conexiones.length)
-        .toBeGreaterThan(0);
-    }
-  );
+    expect(lugar?.nombre)
+      .toBe('Piscina Temperada');
 
-  it(
-    'debe encontrar un lugar preliminar de Hippocampus',
-    () => {
-      const lugar =
-        servicio.obtenerLugarPreliminarPorId(
-          'piscina-temperada'
+    expect(lugar?.nivel)
+      .toBe(3);
+  });
+
+  it('entrega los niveles levantados', () => {
+    expect(
+      servicio.obtenerNiveles()
+    ).toEqual([1, 3, 4, 6]);
+  });
+
+  it('cierra y habilita una conexión', () => {
+    const origen =
+      'entrada-nivel-4';
+
+    const destino =
+      'recepcion-resort-nivel-4';
+
+    servicio.cerrarConexion(
+      origen,
+      destino
+    );
+
+    expect(
+      servicio.estaConexionCerrada(
+        origen,
+        destino
+      )
+    ).toBe(true);
+
+    servicio.habilitarConexion(
+      origen,
+      destino
+    );
+
+    expect(
+      servicio.estaConexionCerrada(
+        origen,
+        destino
+      )
+    ).toBe(false);
+  });
+
+  it('excluye datos sin validar en modo accesible', () => {
+    const conexiones =
+      servicio
+        .obtenerConexionesHabilitadas(
+          true
         );
 
-      expect(lugar?.nombre).toBe(
-        'Piscina temperada'
-      );
-
-      expect(lugar?.nivel).toBeNull();
-    }
-  );
-
-  it(
-    'debe identificar los lugares pendientes',
-    () => {
-      const lugares =
-        servicio.obtenerLugaresPreliminares();
-
-      const pendientes =
-        servicio.obtenerLugaresPendientes();
-
-      expect(pendientes.length).toBe(
-        lugares.length
-      );
-    }
-  );
-
-  it(
-    'no debe considerar navegable un lugar de referencia',
-    () => {
-      expect(
-        servicio.esNodoNavegable(
-          'piscina-temperada'
-        )
-      ).toBe(false);
-    }
-  );
+    expect(
+      conexiones.some(
+        conexion =>
+          conexion.destino ===
+          'restaurant-faro-nivel-3'
+      )
+    ).toBe(false);
+  });
 });

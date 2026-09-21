@@ -49,14 +49,14 @@ const TRADUCCIONES: Record<
     rutaAccesibleSinEscaleras:
       'Accesible, sin escaleras',
     distanciaSimulada:
-      'Distancia simulada',
-    unidades: 'unidades',
+      'Distancia medida',
+    unidades: 'm',
 
     mapaPreliminar:
       'Mapa navegable preliminar',
     nivel: 'Nivel',
     datosSimulados:
-      'Datos simulados',
+      'Mediciones de referencia',
     mapaAria:
       'Grafo navegable del nivel {nivel}',
     mapaSinDatos:
@@ -163,14 +163,14 @@ const TRADUCCIONES: Record<
     rutaAccesibleSinEscaleras:
       'Accessible, without stairs',
     distanciaSimulada:
-      'Simulated distance',
-    unidades: 'units',
+      'Measured distance',
+    unidades: 'm',
 
     mapaPreliminar:
       'Preliminary navigation map',
     nivel: 'Level',
     datosSimulados:
-      'Simulated data',
+      'Reference measurements',
     mapaAria:
       'Navigable graph for level {nivel}',
     mapaSinDatos:
@@ -277,14 +277,14 @@ const TRADUCCIONES: Record<
     rutaAccesibleSinEscaleras:
       'Acessível, sem escadas',
     distanciaSimulada:
-      'Distância simulada',
-    unidades: 'unidades',
+      'Distância medida',
+    unidades: 'm',
 
     mapaPreliminar:
       'Mapa de navegação preliminar',
     nivel: 'Nível',
     datosSimulados:
-      'Dados simulados',
+      'Medições de referência',
     mapaAria:
       'Grafo navegável do nível {nivel}',
     mapaSinDatos:

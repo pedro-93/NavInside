@@ -5,7 +5,9 @@ import {
   Nodo,
   TipoConexion
 } from '../models/nodo.model';
-import { MapaService } from './mapa.service';
+import {
+  MapaService
+} from './mapa.service';
 
 export type TipoPasoRuta =
   | 'inicio'
@@ -34,25 +36,41 @@ export class RutaService {
   private conexiones: Conexion[];
 
   constructor(
-    private mapaService: MapaService =
-      new MapaService()
+    private mapaService:
+      MapaService =
+        new MapaService()
   ) {
     this.nodos =
-      this.mapaService.obtenerNodosNavegables();
+      this.mapaService
+        .obtenerNodosNavegables();
 
     this.conexiones =
-      this.mapaService.obtenerConexionesNavegables();
+      this.mapaService
+        .obtenerConexionesNavegables();
   }
 
   calcularRuta(
     origenId: string,
     destinoId: string,
-    modoAccesible: boolean = false
+    modoAccesible:
+      boolean = false
   ): Nodo[] {
-    const origen = this.obtenerNodo(origenId);
-    const destino = this.obtenerNodo(destinoId);
+    this.sincronizarMapa();
 
-    if (!origen || !destino) {
+    const origen =
+      this.obtenerNodo(
+        origenId
+      );
+
+    const destino =
+      this.obtenerNodo(
+        destinoId
+      );
+
+    if (
+      !origen ||
+      !destino
+    ) {
       return [];
     }
 
@@ -80,24 +98,52 @@ export class RutaService {
         );
 
     const abiertos =
-      new Set<string>([origenId]);
+      new Set<string>(
+        [origenId]
+      );
 
     const anteriores =
-      new Map<string, string | null>();
+      new Map<
+        string,
+        string | null
+      >();
 
     const costoReal =
-      new Map<string, number>();
+      new Map<
+        string,
+        number
+      >();
 
     const costoEstimado =
-      new Map<string, number>();
+      new Map<
+        string,
+        number
+      >();
 
-    for (const nodo of this.nodos) {
-      anteriores.set(nodo.id, null);
-      costoReal.set(nodo.id, Infinity);
-      costoEstimado.set(nodo.id, Infinity);
+    for (
+      const nodo of
+        this.nodos
+    ) {
+      anteriores.set(
+        nodo.id,
+        null
+      );
+
+      costoReal.set(
+        nodo.id,
+        Infinity
+      );
+
+      costoEstimado.set(
+        nodo.id,
+        Infinity
+      );
     }
 
-    costoReal.set(origenId, 0);
+    costoReal.set(
+      origenId,
+      0
+    );
 
     costoEstimado.set(
       origenId,
@@ -107,7 +153,9 @@ export class RutaService {
       )
     );
 
-    while (abiertos.size > 0) {
+    while (
+      abiertos.size > 0
+    ) {
       const actual =
         this.obtenerMenorCostoEstimado(
           abiertos,
@@ -118,7 +166,9 @@ export class RutaService {
         break;
       }
 
-      if (actual === destinoId) {
+      if (
+        actual === destinoId
+      ) {
         return this.reconstruirRuta(
           origenId,
           destinoId,
@@ -126,25 +176,36 @@ export class RutaService {
         );
       }
 
-      abiertos.delete(actual);
-
-      const vecinos = this.obtenerVecinos(
-        actual,
-        conexionesDisponibles,
-        modoAccesible
+      abiertos.delete(
+        actual
       );
 
-      for (const vecino of vecinos) {
+      const vecinos =
+        this.obtenerVecinos(
+          actual,
+          conexionesDisponibles,
+          modoAccesible
+        );
+
+      for (
+        const vecino of
+          vecinos
+      ) {
         const nuevoCosto =
           (
-            costoReal.get(actual) ??
+            costoReal.get(
+              actual
+            ) ??
             Infinity
-          ) + vecino.distancia;
+          ) +
+          vecino.distancia;
 
         if (
           nuevoCosto <
           (
-            costoReal.get(vecino.id) ??
+            costoReal.get(
+              vecino.id
+            ) ??
             Infinity
           )
         ) {
@@ -166,10 +227,13 @@ export class RutaService {
 
           costoEstimado.set(
             vecino.id,
-            nuevoCosto + heuristica
+            nuevoCosto +
+              heuristica
           );
 
-          abiertos.add(vecino.id);
+          abiertos.add(
+            vecino.id
+          );
         }
       }
     }
@@ -180,6 +244,8 @@ export class RutaService {
   calcularDistanciaTotal(
     ruta: Nodo[]
   ): number {
+    this.sincronizarMapa();
+
     let distanciaTotal = 0;
 
     for (
@@ -197,7 +263,8 @@ export class RutaService {
         return Infinity;
       }
 
-      distanciaTotal += conexion.distancia;
+      distanciaTotal +=
+        conexion.distancia;
     }
 
     return distanciaTotal;
@@ -206,25 +273,33 @@ export class RutaService {
   generarPasos(
     ruta: Nodo[]
   ): PasoRuta[] {
-    if (ruta.length === 0) {
+    this.sincronizarMapa();
+
+    if (
+      ruta.length === 0
+    ) {
       return [];
     }
 
-    const pasos: PasoRuta[] = [
-      {
-        orden: 1,
-        tipo: 'inicio',
-        nodo: ruta[0]
-      }
-    ];
+    const pasos:
+      PasoRuta[] = [
+        {
+          orden: 1,
+          tipo: 'inicio',
+          nodo: ruta[0]
+        }
+      ];
 
     for (
       let i = 0;
       i < ruta.length - 1;
       i++
     ) {
-      const nodoActual = ruta[i];
-      const nodoSiguiente = ruta[i + 1];
+      const nodoActual =
+        ruta[i];
+
+      const nodoSiguiente =
+        ruta[i + 1];
 
       const conexion =
         this.obtenerConexionEntre(
@@ -233,17 +308,25 @@ export class RutaService {
         );
 
       const cambioNivel =
-        nodoActual.nivel !== undefined &&
-        nodoSiguiente.nivel !== undefined &&
-        nodoActual.nivel !== nodoSiguiente.nivel;
+        nodoActual.nivel !==
+          undefined &&
+        nodoSiguiente.nivel !==
+          undefined &&
+        nodoActual.nivel !==
+          nodoSiguiente.nivel;
 
       if (cambioNivel) {
         pasos.push({
-          orden: pasos.length + 1,
-          tipo: 'cambio-nivel',
-          desde: nodoActual,
-          nodo: nodoSiguiente,
-          medio: conexion?.tipo,
+          orden:
+            pasos.length + 1,
+          tipo:
+            'cambio-nivel',
+          desde:
+            nodoActual,
+          nodo:
+            nodoSiguiente,
+          medio:
+            conexion?.tipo,
           direccionNivel:
             nodoSiguiente.nivel! >
             nodoActual.nivel!
@@ -255,65 +338,90 @@ export class RutaService {
       }
 
       pasos.push({
-        orden: pasos.length + 1,
-        tipo: 'avance',
-        desde: nodoActual,
-        nodo: nodoSiguiente,
-        medio: conexion?.tipo
+        orden:
+          pasos.length + 1,
+        tipo:
+          'avance',
+        desde:
+          nodoActual,
+        nodo:
+          nodoSiguiente,
+        medio:
+          conexion?.tipo
       });
     }
 
     pasos.push({
-      orden: pasos.length + 1,
-      tipo: 'llegada',
-      nodo: ruta[ruta.length - 1]
+      orden:
+        pasos.length + 1,
+      tipo:
+        'llegada',
+      nodo:
+        ruta[
+          ruta.length - 1
+        ]
     });
 
     return pasos;
   }
 
   private calcularHeuristica(
-    origenId: string,
-    destinoId: string
+    _origenId: string,
+    _destinoId: string
   ): number {
-    const origen =
-      this.obtenerNodo(origenId);
+    /*
+     * Las coordenadas son esquemáticas
+     * y no están a escala.
+     *
+     * Una heurística igual a cero
+     * hace que A* funcione como
+     * Dijkstra y garantiza que la
+     * ruta se decida exclusivamente
+     * por las mediciones reales.
+     */
+    return 0;
+  }
 
-    const destino =
-      this.obtenerNodo(destinoId);
+  private sincronizarMapa():
+    void {
+    this.nodos =
+      this.mapaService
+        .obtenerNodosNavegables();
 
-    if (!origen || !destino) {
-      return Infinity;
-    }
-
-    const diferenciaX =
-      destino.x - origen.x;
-
-    const diferenciaY =
-      destino.y - origen.y;
-
-    return Math.sqrt(
-      diferenciaX ** 2 +
-      diferenciaY ** 2
-    );
+    this.conexiones =
+      this.mapaService
+        .obtenerConexionesNavegables();
   }
 
   private obtenerMenorCostoEstimado(
-    abiertos: Set<string>,
-    costos: Map<string, number>
+    abiertos:
+      Set<string>,
+    costos:
+      Map<string, number>
   ): string | null {
-    let seleccionado: string | null =
-      null;
+    let seleccionado:
+      string | null = null;
 
-    let menorCosto = Infinity;
+    let menorCosto =
+      Infinity;
 
-    for (const id of abiertos) {
+    for (
+      const id of
+        abiertos
+    ) {
       const costo =
-        costos.get(id) ?? Infinity;
+        costos.get(id) ??
+          Infinity;
 
-      if (costo < menorCosto) {
-        menorCosto = costo;
-        seleccionado = id;
+      if (
+        costo <
+        menorCosto
+      ) {
+        menorCosto =
+          costo;
+
+        seleccionado =
+          id;
       }
     }
 
@@ -322,7 +430,8 @@ export class RutaService {
 
   private obtenerVecinos(
     nodoId: string,
-    conexionesDisponibles: Conexion[],
+    conexionesDisponibles:
+      Conexion[],
     modoAccesible: boolean
   ): {
     id: string;
@@ -337,14 +446,23 @@ export class RutaService {
       const conexion of
         conexionesDisponibles
     ) {
-      let vecinoId: string | null = null;
+      let vecinoId:
+        string | null = null;
 
-      if (conexion.origen === nodoId) {
-        vecinoId = conexion.destino;
+      if (
+        conexion.origen ===
+        nodoId
+      ) {
+        vecinoId =
+          conexion.destino;
       }
 
-      if (conexion.destino === nodoId) {
-        vecinoId = conexion.origen;
+      if (
+        conexion.destino ===
+        nodoId
+      ) {
+        vecinoId =
+          conexion.origen;
       }
 
       if (!vecinoId) {
@@ -352,26 +470,34 @@ export class RutaService {
       }
 
       const nodoVecino =
-        this.obtenerNodo(vecinoId);
+        this.obtenerNodo(
+          vecinoId
+        );
 
       if (!nodoVecino) {
         continue;
       }
 
-      if (nodoVecino.restringido === true) {
+      if (
+        nodoVecino.restringido ===
+        true
+      ) {
         continue;
       }
 
       if (
         modoAccesible &&
-        nodoVecino.accesible === false
+        nodoVecino.accesible ===
+          false
       ) {
         continue;
       }
 
       vecinos.push({
-        id: vecinoId,
-        distancia: conexion.distancia
+        id:
+          vecinoId,
+        distancia:
+          conexion.distancia
       });
     }
 
@@ -382,7 +508,8 @@ export class RutaService {
     id: string
   ): Nodo | undefined {
     return this.nodos.find(
-      nodo => nodo.id === id
+      nodo =>
+        nodo.id === id
     );
   }
 
@@ -393,12 +520,16 @@ export class RutaService {
     return this.conexiones.find(
       conexion =>
         (
-          conexion.origen === origenId &&
-          conexion.destino === destinoId
+          conexion.origen ===
+            origenId &&
+          conexion.destino ===
+            destinoId
         ) ||
         (
-          conexion.origen === destinoId &&
-          conexion.destino === origenId
+          conexion.origen ===
+            destinoId &&
+          conexion.destino ===
+            origenId
         )
     );
   }
@@ -407,35 +538,54 @@ export class RutaService {
     origenId: string,
     destinoId: string,
     anteriores:
-      Map<string, string | null>
+      Map<
+        string,
+        string | null
+      >
   ): Nodo[] {
-    const idsRuta: string[] = [];
+    const idsRuta:
+      string[] = [];
 
-    let actual: string | null =
-      destinoId;
+    let actual:
+      string | null =
+        destinoId;
 
-    while (actual !== null) {
-      idsRuta.unshift(actual);
+    while (
+      actual !== null
+    ) {
+      idsRuta.unshift(
+        actual
+      );
 
-      if (actual === origenId) {
+      if (
+        actual === origenId
+      ) {
         break;
       }
 
       actual =
-        anteriores.get(actual) ??
+        anteriores.get(
+          actual
+        ) ??
         null;
     }
 
-    if (idsRuta[0] !== origenId) {
+    if (
+      idsRuta[0] !==
+      origenId
+    ) {
       return [];
     }
 
     return idsRuta
       .map(
-        id => this.obtenerNodo(id)
+        id =>
+          this.obtenerNodo(id)
       )
       .filter(
-        (nodo): nodo is Nodo =>
+        (
+          nodo
+        ): nodo is Nodo =>
           nodo !== undefined
       );
   }

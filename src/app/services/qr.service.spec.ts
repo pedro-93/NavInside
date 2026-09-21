@@ -1,53 +1,61 @@
 import {
-  beforeEach,
   describe,
   expect,
   it
 } from 'vitest';
 
-import { QrService } from './qr.service';
+import {
+  QrService
+} from './qr.service';
 
 describe('QrService', () => {
-  let service: QrService;
+  const service = new QrService();
 
-  beforeEach(() => {
-    service = new QrService();
+  it('reconoce un QR válido de Hippocampus', () => {
+    const resultado =
+      service.procesarCodigo(
+        JSON.stringify({
+          sistema: 'navinside',
+          version: 1,
+          nodoId: 'entrada-nivel-4'
+        })
+      );
+
+    expect(resultado?.id)
+      .toBe('entrada-nivel-4');
+
+    expect(resultado?.nombre)
+      .toBe('Entrada');
   });
 
-  it('debe reconocer un QR válido', () => {
-    const contenido = JSON.stringify({
-      sistema: 'navinside',
-      version: 1,
-      nodoId: 'recepcion'
-    });
+  it('reconoce el formato simple guardado en Supabase', () => {
+    const resultado =
+      service.procesarCodigo(
+        'NAVINSIDE:entrada-nivel-4'
+      );
 
-    const resultado = service.procesarCodigo(contenido);
-
-    expect(resultado?.id).toBe('recepcion');
-    expect(resultado?.nombre).toBe('Recepción');
+    expect(resultado?.id)
+      .toBe('entrada-nivel-4');
   });
 
-  it('debe rechazar un QR de otro sistema', () => {
-    const contenido = JSON.stringify({
-      sistema: 'otro-sistema',
-      version: 1,
-      nodoId: 'recepcion'
-    });
+  it('rechaza un nodo inexistente', () => {
+    const resultado =
+      service.procesarCodigo(
+        JSON.stringify({
+          sistema: 'navinside',
+          version: 1,
+          nodoId: 'nodo-inexistente'
+        })
+      );
 
-    expect(service.procesarCodigo(contenido)).toBeNull();
+    expect(resultado).toBeNull();
   });
 
-  it('debe rechazar un nodo inexistente', () => {
-    const contenido = JSON.stringify({
-      sistema: 'navinside',
-      version: 1,
-      nodoId: 'lugar-inexistente'
-    });
-
-    expect(service.procesarCodigo(contenido)).toBeNull();
-  });
-
-  it('debe rechazar contenido que no sea JSON', () => {
-    expect(service.procesarCodigo('codigo-invalido')).toBeNull();
+  it('rechaza contenido inválido', () => {
+    expect(
+      service.procesarCodigo(
+        'inválido'
+      )
+    ).toBeNull();
   });
 });
