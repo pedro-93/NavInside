@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
 
 import {
   Conexion,
@@ -32,14 +35,12 @@ export interface PasoRuta {
   providedIn: 'root'
 })
 export class RutaService {
+  private readonly mapaService =
+    inject(MapaService);
   private nodos: Nodo[];
   private conexiones: Conexion[];
 
-  constructor(
-    private mapaService:
-      MapaService =
-        new MapaService()
-  ) {
+  constructor() {
     this.nodos =
       this.mapaService
         .obtenerNodosNavegables();

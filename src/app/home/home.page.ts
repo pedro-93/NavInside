@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  inject
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   CapacitorBarcodeScanner,
@@ -78,6 +81,17 @@ import {
   ]
 })
 export class HomePage {
+  private readonly rutaService =
+    inject(RutaService);
+  private readonly qrService =
+    inject(QrService);
+  private readonly idiomaService =
+    inject(IdiomaService);
+  private readonly mapaService =
+    inject(MapaService);
+  private readonly mapaValidadorService =
+    inject(MapaValidadorService);
+
   conexionesMapa: Conexion[] = [];
   lugares: Nodo[] = [];
   nodosMapa: Nodo[] = [];
@@ -99,14 +113,7 @@ export class HomePage {
   pasoActualIndice = 0;
   nivelVisualizado = 1;
 
-  constructor(
-    private rutaService: RutaService,
-    private qrService: QrService,
-    private idiomaService: IdiomaService,
-    private mapaService: MapaService,
-    private mapaValidadorService:
-      MapaValidadorService
-  ) {
+  constructor() {
     this.idiomaSeleccionado =
       this.idiomaService.idiomaActual;
 

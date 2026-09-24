@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
 
 import {
   DatosQrUbicacion
@@ -14,10 +17,8 @@ import {
   providedIn: 'root'
 })
 export class QrService {
-  constructor(
-    private mapaService: MapaService =
-      new MapaService()
-  ) {}
+  private readonly mapaService =
+    inject(MapaService);
 
   procesarCodigo(
     contenido: string

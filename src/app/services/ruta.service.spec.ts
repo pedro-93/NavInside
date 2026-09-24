@@ -4,6 +4,9 @@ import {
   expect,
   it
 } from 'vitest';
+import {
+  TestBed
+} from '@angular/core/testing';
 
 import {
   RutaService
@@ -15,7 +18,7 @@ describe(
     let servicio: RutaService;
 
     beforeEach(() => {
-      servicio = new RutaService();
+      servicio = TestBed.inject(RutaService);
     });
 
     it('calcula una ruta desde la entrada al Restaurant Faro', () => {
