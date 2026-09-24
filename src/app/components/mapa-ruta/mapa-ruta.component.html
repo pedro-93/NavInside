@@ -15,10 +15,8 @@
     </span>
   </header>
 
-  <div
-    *ngIf="hayDatosNivel; else sinDatos"
-    class="mapa-superficie"
-  >
+  @if (hayDatosNivel) {
+  <div class="mapa-superficie">
     <svg
       [attr.viewBox]="
         '0 0 ' +
@@ -73,11 +71,11 @@
       </defs>
 
       <g class="conexiones">
+        @for (
+          conexion of conexionesVisuales;
+          track identificarConexion($index, conexion)
+        ) {
         <line
-          *ngFor="
-            let conexion of conexionesVisuales;
-            trackBy: identificarConexion
-          "
           [attr.x1]="conexion.origen.xVisual"
           [attr.y1]="conexion.origen.yVisual"
           [attr.x2]="conexion.destino.xVisual"
@@ -96,13 +94,14 @@
               !conexion.habilitada
           }"
         />
+        }
       </g>
 
+      @for (
+        nodoVisual of nodosVisuales;
+        track identificarNodo($index, nodoVisual)
+      ) {
       <g
-        *ngFor="
-          let nodoVisual of nodosVisuales;
-          trackBy: identificarNodo
-        "
         class="nodo"
         [attr.transform]="
           'translate(' +
@@ -128,12 +127,12 @@
           }"
         />
 
-        <circle
-          *ngIf="
+        @if (
             nodoVisual.esOrigen ||
             nodoVisual.esDestino ||
             nodoVisual.esActual
-          "
+        ) {
+        <circle
           r="28"
           [ngClass]="{
             'nodo-pulso':
@@ -142,6 +141,7 @@
               nodoVisual.esActual
           }"
         />
+        }
 
         <text
           x="0"
@@ -156,27 +156,28 @@
           {{ nodoVisual.nodo.nombre }}
         </text>
 
-        <text
-          *ngIf="nodoVisual.esActual"
-          x="0"
-          y="5"
-          text-anchor="middle"
-          class="nodo-marcador-actual"
-          aria-hidden="true"
-        >
-          ●
-        </text>
+        @if (nodoVisual.esActual) {
+          <text
+            x="0"
+            y="5"
+            text-anchor="middle"
+            class="nodo-marcador-actual"
+            aria-hidden="true"
+          >
+            ●
+          </text>
+        }
       </g>
+      }
     </svg>
   </div>
-
-  <ng-template #sinDatos>
+  } @else {
     <div class="mapa-vacio">
       <p>
         {{ textoSinDatos }}
       </p>
     </div>
-  </ng-template>
+  }
 
   <footer class="mapa-leyenda">
     <span>

@@ -3,13 +3,16 @@ import {
   expect,
   it
 } from 'vitest';
+import {
+  TestBed
+} from '@angular/core/testing';
 
 import {
   QrService
 } from './qr.service';
 
 describe('QrService', () => {
-  const service = new QrService();
+  const service = TestBed.inject(QrService);
 
   it('reconoce un QR válido de Hippocampus', () => {
     const resultado =
