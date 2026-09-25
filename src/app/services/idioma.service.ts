@@ -25,6 +25,25 @@ const TRADUCCIONES: Record<
     instrucciones:
       'Selecciona tu punto de origen y destino.',
 
+    entornoReferencia:
+      'Entorno de referencia: Hippocampus Resort & Club',
+    lugaresReferenciaDescripcion:
+      'Lugares identificados a partir de planos de orientación disponibles del recinto.',
+    medicionesReferenciaDescripcion:
+      'Las distancias incluidas corresponden al levantamiento realizado en terreno. Las coordenadas visuales y las condiciones de accesibilidad pendientes requieren validación oficial.',
+    verLugaresIdentificados:
+      'Ver {cantidad} lugares identificados',
+    planoReferencia:
+      'Plano de referencia',
+    planoReferenciaDescripcion:
+      'Plano digital de Hippocampus Resort & Club. Las rutas calculadas utilizan las mediciones de referencia obtenidas durante el levantamiento en terreno.',
+    planoReferenciaAlt:
+      'Plano digital de referencia de Hippocampus Resort & Club',
+    configuracionMapaInvalida:
+      'Configuración de mapa inválida',
+    corregirErroresMapa:
+      'No se pueden calcular rutas hasta corregir estos errores:',
+
     origen: 'Origen',
     seleccionarOrigen:
       'Seleccionar origen',
@@ -139,6 +158,25 @@ const TRADUCCIONES: Record<
     instrucciones:
       'Select your starting point and destination.',
 
+    entornoReferencia:
+      'Reference environment: Hippocampus Resort & Club',
+    lugaresReferenciaDescripcion:
+      'Locations identified from the orientation maps available for the resort.',
+    medicionesReferenciaDescripcion:
+      'The included distances come from the on-site survey. Pending visual coordinates and accessibility conditions require official validation.',
+    verLugaresIdentificados:
+      'View {cantidad} identified locations',
+    planoReferencia:
+      'Reference map',
+    planoReferenciaDescripcion:
+      'Digital map of Hippocampus Resort & Club. Calculated routes use the reference measurements collected during the on-site survey.',
+    planoReferenciaAlt:
+      'Digital reference map of Hippocampus Resort & Club',
+    configuracionMapaInvalida:
+      'Invalid map configuration',
+    corregirErroresMapa:
+      'Routes cannot be calculated until these errors are corrected:',
+
     origen: 'Starting point',
     seleccionarOrigen:
       'Select starting point',
@@ -252,6 +290,25 @@ const TRADUCCIONES: Record<
     tituloPagina: 'Navegação interna',
     instrucciones:
       'Selecione o ponto de origem e o destino.',
+
+    entornoReferencia:
+      'Ambiente de referência: Hippocampus Resort & Club',
+    lugaresReferenciaDescripcion:
+      'Locais identificados a partir dos mapas de orientação disponíveis do resort.',
+    medicionesReferenciaDescripcion:
+      'As distâncias incluídas correspondem ao levantamento realizado no local. As coordenadas visuais e as condições de acessibilidade pendentes exigem validação oficial.',
+    verLugaresIdentificados:
+      'Ver {cantidad} locais identificados',
+    planoReferencia:
+      'Mapa de referência',
+    planoReferenciaDescripcion:
+      'Mapa digital do Hippocampus Resort & Club. As rotas calculadas utilizam as medições de referência obtidas durante o levantamento no local.',
+    planoReferenciaAlt:
+      'Mapa digital de referência do Hippocampus Resort & Club',
+    configuracionMapaInvalida:
+      'Configuração de mapa inválida',
+    corregirErroresMapa:
+      'Não é possível calcular rotas até que estes erros sejam corrigidos:',
 
     origen: 'Origem',
     seleccionarOrigen:

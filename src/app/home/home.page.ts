@@ -219,6 +219,16 @@ export class HomePage {
     );
   }
 
+  nombreLugarReferencia(
+    lugar: LugarPlano
+  ): string {
+    return obtenerNombreNodo(
+      lugar.id,
+      this.idiomaSeleccionado,
+      lugar.nombre
+    );
+  }
+
   cambiarIdioma(): void {
     this.idiomaService.establecerIdioma(
       this.idiomaSeleccionado
