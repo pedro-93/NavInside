@@ -2,12 +2,16 @@ import {
   beforeEach,
   describe,
   expect,
-  it
+  it,
+  vi
 } from 'vitest';
 import {
   TestBed
 } from '@angular/core/testing';
 
+import {
+  MapaService
+} from './mapa.service';
 import {
   RutaService
 } from './ruta.service';
@@ -16,9 +20,18 @@ describe(
   'RutaService con mediciones de Hippocampus',
   () => {
     let servicio: RutaService;
+    let mapaService: MapaService;
 
     beforeEach(() => {
-      servicio = TestBed.inject(RutaService);
+      servicio =
+        TestBed.inject(
+          RutaService
+        );
+
+      mapaService =
+        TestBed.inject(
+          MapaService
+        );
     });
 
     it('calcula una ruta desde la entrada al Restaurant Faro', () => {
@@ -138,6 +151,99 @@ describe(
 
       expect(cambio?.direccionNivel)
         .toBe('bajar');
+    });
+
+    it('devuelve el mismo nodo cuando origen y destino coinciden', () => {
+      const ruta =
+        servicio.calcularRuta(
+          'entrada-nivel-4',
+          'entrada-nivel-4'
+        );
+
+      expect(
+        ruta.map(
+          nodo => nodo.id
+        )
+      ).toEqual([
+        'entrada-nivel-4'
+      ]);
+
+      expect(
+        servicio.calcularDistanciaTotal(
+          ruta
+        )
+      ).toBe(0);
+    });
+
+    it('rechaza un origen inexistente', () => {
+      const ruta =
+        servicio.calcularRuta(
+          'origen-inexistente',
+          'entrada-nivel-4'
+        );
+
+      expect(ruta).toEqual([]);
+    });
+
+    it('rechaza un destino inexistente', () => {
+      const ruta =
+        servicio.calcularRuta(
+          'entrada-nivel-4',
+          'destino-inexistente'
+        );
+
+      expect(ruta).toEqual([]);
+    });
+
+    it('devuelve una ruta vacía cuando no existen conexiones disponibles', () => {
+      vi.spyOn(
+        mapaService,
+        'obtenerConexionesHabilitadas'
+      ).mockReturnValueOnce([]);
+
+      const ruta =
+        servicio.calcularRuta(
+          'entrada-nivel-4',
+          'restaurant-faro-nivel-3'
+        );
+
+      expect(ruta).toEqual([]);
+    });
+
+    it('devuelve infinito si la ruta contiene un tramo inexistente', () => {
+      const origen =
+        mapaService.obtenerNodoPorId(
+          'entrada-nivel-4'
+        );
+
+      const destino =
+        mapaService.obtenerNodoPorId(
+          'restaurant-faro-nivel-3'
+        );
+
+      expect(origen)
+        .toBeDefined();
+
+      expect(destino)
+        .toBeDefined();
+
+      if (
+        !origen ||
+        !destino
+      ) {
+        throw new Error(
+          'No se encontraron los nodos de prueba.'
+        );
+      }
+
+      expect(
+        servicio.calcularDistanciaTotal([
+          origen,
+          destino
+        ])
+      ).toBe(
+        Number.POSITIVE_INFINITY
+      );
     });
   }
 );
