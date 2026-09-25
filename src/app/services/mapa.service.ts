@@ -354,6 +354,20 @@ export class MapaService {
             conexion.restringida !==
               true;
 
+          const distanciaValida =
+            Number.isFinite(
+              conexion.distancia
+            ) &&
+            conexion.distancia >= 0;
+
+          const nodosValidos =
+            this.esNodoNavegable(
+              conexion.origen
+            ) &&
+            this.esNodoNavegable(
+              conexion.destino
+            );
+
           const esAptaParaAccesibilidad =
             !modoAccesible ||
             (
@@ -366,6 +380,8 @@ export class MapaService {
           return (
             estaHabilitada &&
             noEstaRestringida &&
+            distanciaValida &&
+            nodosValidos &&
             esAptaParaAccesibilidad
           );
         }

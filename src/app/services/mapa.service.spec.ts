@@ -2,7 +2,8 @@ import {
   beforeEach,
   describe,
   expect,
-  it
+  it,
+  vi
 } from 'vitest';
 
 import {
@@ -102,5 +103,94 @@ describe('MapaService', () => {
           'restaurant-faro-nivel-3'
       )
     ).toBe(false);
+  });
+
+  it('excluye conexiones con distancias inválidas', () => {
+    vi.spyOn(
+      servicio,
+      'obtenerConexionesNavegables'
+    ).mockReturnValue([
+      {
+        origen:
+          'entrada-nivel-4',
+        destino:
+          'recepcion-resort-nivel-4',
+        distancia:
+          Number.NEGATIVE_INFINITY,
+        habilitada: true
+      },
+      {
+        origen:
+          'entrada-nivel-4',
+        destino:
+          'recepcion-resort-nivel-4',
+        distancia: -5,
+        habilitada: true
+      },
+      {
+        origen:
+          'entrada-nivel-4',
+        destino:
+          'recepcion-resort-nivel-4',
+        distancia: Number.NaN,
+        habilitada: true
+      },
+      {
+        origen:
+          'entrada-nivel-4',
+        destino:
+          'recepcion-resort-nivel-4',
+        distancia:
+          Number.POSITIVE_INFINITY,
+        habilitada: true
+      }
+    ]);
+
+    expect(
+      servicio
+        .obtenerConexionesHabilitadas()
+    ).toEqual([]);
+  });
+
+  it('excluye conexiones cuyos nodos no existen', () => {
+    vi.spyOn(
+      servicio,
+      'obtenerConexionesNavegables'
+    ).mockReturnValue([
+      {
+        origen:
+          'entrada-nivel-4',
+        destino:
+          'nodo-inexistente',
+        distancia: 10,
+        habilitada: true
+      }
+    ]);
+
+    expect(
+      servicio
+        .obtenerConexionesHabilitadas()
+    ).toEqual([]);
+  });
+
+  it('mantiene conexiones válidas', () => {
+    vi.spyOn(
+      servicio,
+      'obtenerConexionesNavegables'
+    ).mockReturnValue([
+      {
+        origen:
+          'entrada-nivel-4',
+        destino:
+          'recepcion-resort-nivel-4',
+        distancia: 6.751,
+        habilitada: true
+      }
+    ]);
+
+    expect(
+      servicio
+        .obtenerConexionesHabilitadas()
+    ).toHaveLength(1);
   });
 });
