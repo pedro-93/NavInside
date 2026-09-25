@@ -19,27 +19,29 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>
-          Entorno de referencia: Hippocampus Resort & Club
+          {{ traducir('entornoReferencia') }}
         </ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <p>
-          Lugares identificados a partir de planos de orientación
-          disponibles del recinto.
+          {{ traducir('lugaresReferenciaDescripcion') }}
         </p>
 
         <p>
-          Las distancias incluidas corresponden al levantamiento
-          realizado en terreno. Las coordenadas visuales y las
-          condiciones de accesibilidad pendientes requieren
-          validación oficial.
+          {{ traducir('medicionesReferenciaDescripcion') }}
         </p>
 
         <details>
           <summary>
-            Ver {{ lugaresReferencia.length }}
-            lugares identificados
+            {{
+              traducir(
+                'verLugaresIdentificados',
+                {
+                  cantidad: lugaresReferencia.length
+                }
+              )
+            }}
           </summary>
 
           <ul>
@@ -49,7 +51,7 @@
             ) {
               <li>
                 <strong>
-                  {{ lugar.nombre }}
+                  {{ nombreLugarReferencia(lugar) }}
                 </strong>
 
                 @if (lugar.sector) {
@@ -57,7 +59,9 @@
                 }
 
                 @if (lugar.nivel !== null) {
-                  — Nivel {{ lugar.nivel }}
+                  —
+                  {{ traducir('nivel') }}
+                  {{ lugar.nivel }}
                 }
               </li>
             }
@@ -70,21 +74,19 @@
   <ion-card class="plano-referencia-card">
     <ion-card-header>
       <ion-card-title>
-        Plano de referencia
+        {{ traducir('planoReferencia') }}
       </ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
       <p>
-        Plano digital de Hippocampus Resort & Club.
-        Las rutas calculadas utilizan las mediciones de referencia
-        obtenidas durante el levantamiento en terreno.
+        {{ traducir('planoReferenciaDescripcion') }}
       </p>
 
       <img
         class="plano-referencia-imagen"
         src="assets/mapa/hippocampus-plano-digital.png"
-        alt="Plano digital de referencia de Hippocampus Resort & Club"
+        [alt]="traducir('planoReferenciaAlt')"
       />
     </ion-card-content>
   </ion-card>
@@ -93,13 +95,13 @@
     <ion-card color="danger">
       <ion-card-header>
         <ion-card-title>
-          Configuración de mapa inválida
+          {{ traducir('configuracionMapaInvalida') }}
         </ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <p>
-          No se pueden calcular rutas hasta corregir estos errores:
+          {{ traducir('corregirErroresMapa') }}
         </p>
 
         <ul>
