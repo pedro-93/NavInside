@@ -290,12 +290,14 @@
   .mapa-superficie {
     width: 100%;
     min-height: 0;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
 
     svg {
       display: block;
-      width: 100%;
-      min-width: 0;
+      width: 720px;
+      min-width: 720px;
       height: auto;
       min-height: 0;
       aspect-ratio: 1000 / 650;
@@ -303,7 +305,7 @@
   }
 
   .nodo-nombre {
-    font-size: 18px;
+    font-size: 20px;
     stroke-width: 6px;
   }
 
