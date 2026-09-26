@@ -145,7 +145,13 @@
 
         <text
           x="0"
-          y="-34"
+          [attr.y]="
+            -34 -
+            (
+              nodoVisual.lineasNombre.length -
+              1
+            ) * 24
+          "
           text-anchor="middle"
           class="nodo-nombre"
           [ngClass]="{
@@ -153,7 +159,17 @@
               nodoVisual.esActual
           }"
         >
-          {{ nodoVisual.nodo.nombre }}
+          @for (
+            linea of nodoVisual.lineasNombre;
+            track $index
+          ) {
+            <tspan
+              x="0"
+              [attr.dy]="$index === 0 ? 0 : 24"
+            >
+              {{ linea }}
+            </tspan>
+          }
         </text>
 
         @if (nodoVisual.esActual) {

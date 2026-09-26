@@ -16,6 +16,7 @@ interface NodoVisual {
   nodo: Nodo;
   xVisual: number;
   yVisual: number;
+  lineasNombre: string[];
   perteneceRuta: boolean;
   esOrigen: boolean;
   esDestino: boolean;
@@ -103,7 +104,7 @@ export class MapaRutaComponent {
 
   readonly anchoVista = 1000;
   readonly altoVista = 650;
-  readonly margen = 80;
+  readonly margen = 140;
 
   get nodosVisuales(): NodoVisual[] {
     const nodosNivel =
@@ -159,6 +160,10 @@ export class MapaRutaComponent {
     return nodosNivel.map(
       nodo => ({
         nodo,
+        lineasNombre:
+          this.dividirNombreNodo(
+            nodo.nombre
+          ),
         xVisual:
           this.margen +
           (
@@ -264,6 +269,45 @@ export class MapaRutaComponent {
       conexion.destino.nodo.id,
       indice
     ].join('-');
+  }
+
+  dividirNombreNodo(
+    nombre: string
+  ): string[] {
+    const limite = 20;
+    const palabras =
+      nombre.trim().split(/\s+/);
+
+    const lineas: string[] = [];
+    let lineaActual = '';
+
+    for (const palabra of palabras) {
+      const lineaPropuesta =
+        lineaActual
+          ? `${lineaActual} ${palabra}`
+          : palabra;
+
+      if (
+        lineaPropuesta.length <= limite
+      ) {
+        lineaActual = lineaPropuesta;
+        continue;
+      }
+
+      if (lineaActual) {
+        lineas.push(lineaActual);
+      }
+
+      lineaActual = palabra;
+    }
+
+    if (lineaActual) {
+      lineas.push(lineaActual);
+    }
+
+    return lineas.length > 0
+      ? lineas
+      : [nombre];
   }
 
   private esConexionDeRuta(
