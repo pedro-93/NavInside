@@ -29,6 +29,7 @@ export interface PasoRuta {
   desde?: Nodo;
   medio?: TipoConexion;
   direccionNivel?: DireccionNivel;
+  destinoEsPiso?: boolean;
 }
 
 @Injectable({
@@ -329,10 +330,14 @@ export class RutaService {
           medio:
             conexion?.tipo,
           direccionNivel:
-            nodoSiguiente.nivel! >
-            nodoActual.nivel!
-              ? 'subir'
-              : 'bajar'
+            this.obtenerDireccionNivel(
+              nodoActual,
+              nodoSiguiente
+            ),
+          destinoEsPiso:
+            nodoSiguiente.id.includes(
+              '-piso-'
+            )
         });
 
         continue;
@@ -364,6 +369,36 @@ export class RutaService {
     });
 
     return pasos;
+  }
+
+  private obtenerDireccionNivel(
+    origen: Nodo,
+    destino: Nodo
+  ): DireccionNivel {
+    const bajaAlPisoSeis =
+      origen.id ===
+        'ascensor-habitaciones-nivel-1' &&
+      destino.id ===
+        'ascensor-habitaciones-piso-6';
+
+    if (bajaAlPisoSeis) {
+      return 'bajar';
+    }
+
+    const subeAlNivelUno =
+      origen.id ===
+        'ascensor-habitaciones-piso-6' &&
+      destino.id ===
+        'ascensor-habitaciones-nivel-1';
+
+    if (subeAlNivelUno) {
+      return 'subir';
+    }
+
+    return destino.nivel! >
+      origen.nivel!
+      ? 'subir'
+      : 'bajar';
   }
 
   private calcularHeuristica(

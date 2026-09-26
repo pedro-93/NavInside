@@ -153,6 +153,53 @@ describe(
         .toBe('bajar');
     });
 
+    it('indica bajar al Piso 6 desde el nivel 1', () => {
+      const ruta =
+        servicio.calcularRuta(
+          'ascensor-habitaciones-nivel-1',
+          'ascensor-habitaciones-piso-6'
+        );
+
+      const cambio =
+        servicio.generarPasos(ruta)
+          .find(
+            paso =>
+              paso.tipo ===
+              'cambio-nivel'
+          );
+
+      expect(cambio?.medio)
+        .toBe('ascensor');
+
+      expect(cambio?.direccionNivel)
+        .toBe('bajar');
+
+      expect(cambio?.destinoEsPiso)
+        .toBe(true);
+    });
+
+    it('indica subir al nivel 1 desde el Piso 6', () => {
+      const ruta =
+        servicio.calcularRuta(
+          'ascensor-habitaciones-piso-6',
+          'ascensor-habitaciones-nivel-1'
+        );
+
+      const cambio =
+        servicio.generarPasos(ruta)
+          .find(
+            paso =>
+              paso.tipo ===
+              'cambio-nivel'
+          );
+
+      expect(cambio?.direccionNivel)
+        .toBe('subir');
+
+      expect(cambio?.destinoEsPiso)
+        .toBe(false);
+    });
+
     it('devuelve el mismo nodo cuando origen y destino coinciden', () => {
       const ruta =
         servicio.calcularRuta(

@@ -103,6 +103,10 @@ const TRADUCCIONES: Record<
       'Utiliza el ascensor para subir al nivel {nivel}.',
     bajarAscensor:
       'Utiliza el ascensor para bajar al nivel {nivel}.',
+    subirAscensorPiso:
+      'Utiliza el ascensor para subir al piso {nivel}.',
+    bajarAscensorPiso:
+      'Utiliza el ascensor para bajar al piso {nivel}.',
     subirEscalera:
       'Utiliza la escalera para subir al nivel {nivel}.',
     bajarEscalera:
@@ -236,6 +240,10 @@ const TRADUCCIONES: Record<
       'Use the elevator to go up to level {nivel}.',
     bajarAscensor:
       'Use the elevator to go down to level {nivel}.',
+    subirAscensorPiso:
+      'Use the elevator to go up to floor {nivel}.',
+    bajarAscensorPiso:
+      'Use the elevator to go down to floor {nivel}.',
     subirEscalera:
       'Use the stairs to go up to level {nivel}.',
     bajarEscalera:
@@ -369,6 +377,10 @@ const TRADUCCIONES: Record<
       'Use o elevador para subir ao nível {nivel}.',
     bajarAscensor:
       'Use o elevador para descer ao nível {nivel}.',
+    subirAscensorPiso:
+      'Use o elevador para subir ao piso {nivel}.',
+    bajarAscensorPiso:
+      'Use o elevador para descer ao piso {nivel}.',
     subirEscalera:
       'Use a escada para subir ao nível {nivel}.',
     bajarEscalera:

@@ -684,6 +684,15 @@ export class HomePage {
       paso.nodo.nivel ?? '';
 
     if (paso.medio === 'ascensor') {
+      if (paso.destinoEsPiso) {
+        return this.traducir(
+          paso.direccionNivel === 'subir'
+            ? 'subirAscensorPiso'
+            : 'bajarAscensorPiso',
+          { nivel }
+        );
+      }
+
       return this.traducir(
         paso.direccionNivel === 'subir'
           ? 'subirAscensor'
