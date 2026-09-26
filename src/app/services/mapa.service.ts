@@ -129,6 +129,17 @@ export class MapaService {
         return false;
       }
 
+      if (
+        nodos.length === 0 ||
+        conexiones.length === 0
+      ) {
+        console.warn(
+          'Supabase devolvió un mapa sin nodos o conexiones.'
+        );
+
+        return false;
+      }
+
       this.mapaActivo = {
         ...this.crearCopiaMapa(
           MAPA_ACTIVO
