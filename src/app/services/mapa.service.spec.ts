@@ -1,4 +1,5 @@
 import {
+  afterEach,
   beforeEach,
   describe,
   expect,
@@ -10,11 +11,120 @@ import {
   MapaService
 } from './mapa.service';
 
+const respuestaSupabase = vi.hoisted(
+  () => ({
+    mapa: {
+      data: {
+        id: 'hippocampus-resort'
+      },
+      error: null
+    },
+    nodos: {
+      data: [] as object[],
+      error: null
+    },
+    conexiones: {
+      data: [] as object[],
+      error: null
+    }
+  })
+);
+
+vi.mock(
+  '@supabase/supabase-js',
+  () => ({
+    createClient: vi.fn(
+      () => ({
+        from: vi.fn(
+          (tabla: string) => {
+            if (tabla === 'mapas') {
+              return {
+                select: vi.fn(
+                  () => ({
+                    eq: vi.fn(
+                      () => ({
+                        maybeSingle:
+                          vi.fn()
+                            .mockResolvedValue(
+                              respuestaSupabase.mapa
+                            )
+                      })
+                    )
+                  })
+                )
+              };
+            }
+
+            if (tabla === 'nodos') {
+              return {
+                select: vi.fn(
+                  () => ({
+                    eq: vi.fn(
+                      () => ({
+                        eq: vi.fn(
+                          () => ({
+                            order:
+                              vi.fn()
+                                .mockResolvedValue(
+                                  respuestaSupabase.nodos
+                                )
+                          })
+                        )
+                      })
+                    )
+                  })
+                )
+              };
+            }
+
+            return {
+              select: vi.fn(
+                () => ({
+                  eq: vi.fn(
+                    () => ({
+                      order:
+                        vi.fn()
+                          .mockResolvedValue(
+                            respuestaSupabase.conexiones
+                          )
+                    })
+                  )
+                })
+              )
+            };
+          }
+        )
+      })
+    )
+  })
+);
+
 describe('MapaService', () => {
   let servicio: MapaService;
 
   beforeEach(() => {
+    respuestaSupabase.mapa = {
+      data: {
+        id: 'hippocampus-resort'
+      },
+      error: null
+    };
+
+    respuestaSupabase.nodos = {
+      data: [],
+      error: null
+    };
+
+    respuestaSupabase.conexiones = {
+      data: [],
+      error: null
+    };
+
     servicio = new MapaService();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('entrega los nodos reales del mapa activo', () => {
@@ -192,5 +302,73 @@ describe('MapaService', () => {
       servicio
         .obtenerConexionesHabilitadas()
     ).toHaveLength(1);
+  });
+
+  it('conserva el mapa local si Supabase no entrega nodos', async () => {
+    respuestaSupabase.nodos.data = [];
+    respuestaSupabase.conexiones.data = [
+      {
+        origen_id: 'entrada-nivel-4',
+        destino_id:
+          'recepcion-resort-nivel-4',
+        distancia: 6.751,
+        tipo: 'pasillo',
+        accesible: true,
+        restringida: false,
+        habilitada: true
+      }
+    ];
+
+    const nodosLocales =
+      servicio.obtenerNodosNavegables();
+
+    vi.spyOn(
+      console,
+      'warn'
+    ).mockImplementation(() => undefined);
+
+    const resultado =
+      await servicio.cargarMapaDesdeSupabase();
+
+    expect(resultado).toBe(false);
+
+    expect(
+      servicio.obtenerNodosNavegables()
+    ).toEqual(nodosLocales);
+  });
+
+  it('conserva el mapa local si Supabase no entrega conexiones', async () => {
+    respuestaSupabase.nodos.data = [
+      {
+        id: 'entrada-nivel-4',
+        nombre: 'Entrada',
+        x: 0,
+        y: 0,
+        tipo: 'entrada',
+        nivel: 4,
+        sector: 'Acceso',
+        accesible: true,
+        restringido: false
+      }
+    ];
+
+    respuestaSupabase.conexiones.data = [];
+
+    const nodosLocales =
+      servicio.obtenerNodosNavegables();
+
+    vi.spyOn(
+      console,
+      'warn'
+    ).mockImplementation(() => undefined);
+
+    const resultado =
+      await servicio.cargarMapaDesdeSupabase();
+
+    expect(resultado).toBe(false);
+
+    expect(
+      servicio.obtenerNodosNavegables()
+    ).toEqual(nodosLocales);
   });
 });
