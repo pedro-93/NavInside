@@ -7,89 +7,15 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h1>
-    {{ traducir('tituloPagina') }}
-  </h1>
+  <section class="pagina-encabezado">
+    <h1>
+      {{ traducir('tituloPagina') }}
+    </h1>
 
-  <p>
-    {{ traducir('instrucciones') }}
-  </p>
-
-  @if (lugaresReferencia.length > 0) {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>
-          {{ traducir('entornoReferencia') }}
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <p>
-          {{ traducir('lugaresReferenciaDescripcion') }}
-        </p>
-
-        <p>
-          {{ traducir('medicionesReferenciaDescripcion') }}
-        </p>
-
-        <details>
-          <summary>
-            {{
-              traducir(
-                'verLugaresIdentificados',
-                {
-                  cantidad: lugaresReferencia.length
-                }
-              )
-            }}
-          </summary>
-
-          <ul>
-            @for (
-              lugar of lugaresReferencia;
-              track lugar.id
-            ) {
-              <li>
-                <strong>
-                  {{ nombreLugarReferencia(lugar) }}
-                </strong>
-
-                @if (lugar.sector) {
-                  — {{ lugar.sector }}
-                }
-
-                @if (lugar.nivel !== null) {
-                  —
-                  {{ traducir('nivel') }}
-                  {{ lugar.nivel }}
-                }
-              </li>
-            }
-          </ul>
-        </details>
-      </ion-card-content>
-    </ion-card>
-  }
-
-  <ion-card class="plano-referencia-card">
-    <ion-card-header>
-      <ion-card-title>
-        {{ traducir('planoReferencia') }}
-      </ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <p>
-        {{ traducir('planoReferenciaDescripcion') }}
-      </p>
-
-      <img
-        class="plano-referencia-imagen"
-        src="assets/mapa/hippocampus-plano-digital.png"
-        [alt]="traducir('planoReferenciaAlt')"
-      />
-    </ion-card-content>
-  </ion-card>
+    <p>
+      {{ traducir('instrucciones') }}
+    </p>
+  </section>
 
   @if (!mapaEsValido) {
     <ion-card color="danger">
@@ -105,7 +31,10 @@
         </p>
 
         <ul>
-          @for (error of erroresMapa; track error.codigo) {
+          @for (
+            error of erroresMapa;
+            track error.codigo
+          ) {
             <li>
               {{ error.mensaje }}
             </li>
@@ -115,123 +44,290 @@
     </ion-card>
   }
 
-  <ion-list>
-    <ion-item>
-      <ion-select
-        [label]="traducir('idioma')"
-        [(ngModel)]="idiomaSeleccionado"
-        (ionChange)="cambiarIdioma()"
+  <ion-card class="navegacion-card">
+    <ion-card-content>
+      <ion-item
+        class="idioma-item"
+        lines="none"
       >
-        <ion-select-option value="es">
-          {{ traducir('espanol') }}
-        </ion-select-option>
-
-        <ion-select-option value="en">
-          {{ traducir('ingles') }}
-        </ion-select-option>
-
-        <ion-select-option value="pt">
-          {{ traducir('portugues') }}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <ion-item>
-      <ion-select
-        [label]="traducir('origen')"
-        [placeholder]="traducir('seleccionarOrigen')"
-        [(ngModel)]="origen"
-        (ionChange)="cambiarSeleccionRuta()"
-      >
-        @for (lugar of lugares; track lugar.id) {
-          <ion-select-option [value]="lugar.id">
-            {{ nombreNodo(lugar) }}
+        <ion-select
+          [label]="traducir('idioma')"
+          [(ngModel)]="idiomaSeleccionado"
+          (ionChange)="cambiarIdioma()"
+        >
+          <ion-select-option value="es">
+            {{ traducir('espanol') }}
           </ion-select-option>
-        }
-      </ion-select>
-    </ion-item>
 
-    <ion-item>
-      <ion-select
-        [label]="traducir('destino')"
-        [placeholder]="traducir('seleccionarDestino')"
-        [(ngModel)]="destino"
-        (ionChange)="cambiarSeleccionRuta()"
-      >
-        @for (lugar of lugares; track lugar.id) {
-          <ion-select-option [value]="lugar.id">
-            {{ nombreNodo(lugar) }}
+          <ion-select-option value="en">
+            {{ traducir('ingles') }}
           </ion-select-option>
-        }
-      </ion-select>
-    </ion-item>
 
-    <ion-item>
-      <div>
-        <strong>
-          {{ traducir('rutaAccesible') }}
-        </strong>
+          <ion-select-option value="pt">
+            {{ traducir('portugues') }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
 
-        <p>
-          {{ traducir('descripcionRutaAccesible') }}
+      <div class="seleccion-bloque">
+        <span class="seleccion-etiqueta">
+          {{ traducir('origen') }}
+        </span>
+
+        <div class="destino-actual">
+          @if (origenSeleccionado) {
+            <strong>
+              {{ nombreNodo(origenSeleccionado) }}
+            </strong>
+
+            @if (
+              origenSeleccionado.nivel !==
+              undefined
+            ) {
+              <span>
+                {{
+                  etiquetaNivel(
+                    origenSeleccionado.nivel
+                  )
+                }}
+              </span>
+            }
+          } @else {
+            <span>
+              {{ traducir('seleccionarOrigen') }}
+            </span>
+          }
+        </div>
+
+        <ion-button
+          class="puntos-boton"
+          expand="block"
+          fill="outline"
+          [attr.aria-expanded]="
+            selectorPuntosAbierto &&
+            selectorPuntosTipo === 'origen'
+          "
+          (click)="
+            alternarSelectorPuntos('origen')
+          "
+        >
+          {{
+            selectorPuntosAbierto &&
+            selectorPuntosTipo === 'origen'
+              ? traducir('cerrarPuntosInteres')
+              : traducir('puntosInteres')
+          }}
+        </ion-button>
+
+        <p class="seleccion-ayuda">
+          {{ traducir('origenQrDescripcion') }}
         </p>
+
+        <div class="qr-acciones">
+          <ion-button
+            expand="block"
+            [disabled]="!mapaEsValido"
+            (click)="leerQrReal()"
+          >
+            {{ traducir('leerQr') }}
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            [disabled]="!mapaEsValido"
+            (click)="simularLecturaQr()"
+          >
+            {{ traducir('simularQr') }}
+          </ion-button>
+        </div>
       </div>
 
-      <ion-toggle
-        slot="end"
-        [attr.aria-label]="traducir('rutaAccesible')"
-        [(ngModel)]="modoAccesible"
-        (ionChange)="cambiarModoAccesible()"
+      @if (mensajeUbicacion) {
+        <div
+          class="estado-ubicacion"
+          aria-live="polite"
+        >
+          <strong>
+            {{ traducir('estadoUbicacion') }}
+          </strong>
+
+          <p>
+            {{ mensajeUbicacion }}
+          </p>
+        </div>
+      }
+
+      <div class="seleccion-bloque">
+        <span class="seleccion-etiqueta">
+          {{ traducir('destino') }}
+        </span>
+
+        <div class="destino-actual">
+          @if (destinoSeleccionado) {
+            <strong>
+              {{ nombreNodo(destinoSeleccionado) }}
+            </strong>
+
+            @if (
+              destinoSeleccionado.nivel !==
+              undefined
+            ) {
+              <span>
+                {{
+                  etiquetaNivel(
+                    destinoSeleccionado.nivel
+                  )
+                }}
+              </span>
+            }
+          } @else {
+            <span>
+              {{ traducir('destinoSinSeleccionar') }}
+            </span>
+          }
+        </div>
+
+        <ion-button
+          class="puntos-boton"
+          expand="block"
+          fill="outline"
+          [attr.aria-expanded]="
+            selectorPuntosAbierto &&
+            selectorPuntosTipo === 'destino'
+          "
+          (click)="
+            alternarSelectorPuntos('destino')
+          "
+        >
+          {{
+            selectorPuntosAbierto &&
+            selectorPuntosTipo === 'destino'
+              ? traducir('cerrarPuntosInteres')
+              : traducir('puntosInteres')
+          }}
+        </ion-button>
+      </div>
+
+      @if (selectorPuntosAbierto) {
+        <section class="puntos-panel">
+          <h2>
+            {{ traducir('seleccionarNivel') }}
+          </h2>
+
+          <div class="niveles-grid">
+            @for (
+              nivelPunto of nivelesPuntos;
+              track nivelPunto
+            ) {
+              <ion-button
+                size="small"
+                [fill]="
+                  nivelPuntosSeleccionado ===
+                  nivelPunto
+                    ? 'solid'
+                    : 'outline'
+                "
+                (click)="
+                  seleccionarNivelPuntos(
+                    nivelPunto
+                  )
+                "
+              >
+                {{ etiquetaNivel(nivelPunto) }}
+              </ion-button>
+            }
+          </div>
+
+          <h3>
+            {{ traducir('lugaresDisponibles') }}
+          </h3>
+
+          <div class="lugares-grid">
+            @for (
+              lugar of lugaresNivelSeleccionado;
+              track lugar.id
+            ) {
+              <button
+                type="button"
+                class="lugar-boton"
+                [class.lugar-seleccionado]="
+                  (
+                    selectorPuntosTipo ===
+                    'origen' &&
+                    origen === lugar.id
+                  ) ||
+                  (
+                    selectorPuntosTipo ===
+                    'destino' &&
+                    destino === lugar.id
+                  )
+                "
+                (click)="seleccionarPunto(lugar)"
+              >
+                <strong>
+                  {{ nombreNodo(lugar) }}
+                </strong>
+
+                <span>
+                  {{
+                    etiquetaNivel(
+                      lugar.nivel ?? 1
+                    )
+                  }}
+                </span>
+              </button>
+            }
+          </div>
+        </section>
+      }
+
+      <ion-item
+        class="accesibilidad-item"
+        lines="none"
       >
-      </ion-toggle>
-    </ion-item>
-  </ion-list>
+        <div>
+          <strong>
+            {{ traducir('rutaAccesible') }}
+          </strong>
 
-  <ion-button
-    expand="block"
-    [disabled]="!mapaEsValido"
-    (click)="leerQrReal()"
-  >
-    {{ traducir('leerQr') }}
-  </ion-button>
+          <p>
+            {{
+              traducir(
+                'descripcionRutaAccesible'
+              )
+            }}
+          </p>
+        </div>
 
-  <ion-button
-    expand="block"
-    fill="outline"
-    [disabled]="!mapaEsValido"
-    (click)="simularLecturaQr()"
-  >
-    {{ traducir('simularQr') }}
-  </ion-button>
+        <ion-toggle
+          slot="end"
+          [attr.aria-label]="
+            traducir('rutaAccesible')
+          "
+          [(ngModel)]="modoAccesible"
+          (ionChange)="cambiarModoAccesible()"
+        >
+        </ion-toggle>
+      </ion-item>
 
-  @if (mensajeUbicacion) {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>
-          {{ traducir('estadoUbicacion') }}
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        {{ mensajeUbicacion }}
-      </ion-card-content>
-    </ion-card>
-  }
-
-  <ion-button
-    expand="block"
-    [disabled]="
-      !origen ||
-      !destino ||
-      !mapaEsValido
-    "
-    (click)="calcularRuta()"
-  >
-    {{ traducir('calcularRuta') }}
-  </ion-button>
+      <ion-button
+        class="calcular-boton"
+        expand="block"
+        [disabled]="
+          !origen ||
+          !destino ||
+          !mapaEsValido
+        "
+        (click)="calcularRuta()"
+      >
+        {{ traducir('calcularRuta') }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 
   @if (resultado) {
-    <ion-card>
+    <ion-card class="resultado-card">
       <ion-card-header>
         <ion-card-title>
           {{ traducir('resultadoRuta') }}
@@ -250,7 +346,11 @@
             </strong>
 
             @if (modoAccesible) {
-              {{ traducir('rutaAccesibleSinEscaleras') }}
+              {{
+                traducir(
+                  'rutaAccesibleSinEscaleras'
+                )
+              }}
             } @else {
               {{ traducir('rutaNormal') }}
             }
@@ -306,14 +406,18 @@
           class="recorrido-progreso"
           [value]="progresoRuta"
           max="100"
-          [attr.aria-label]="traducir('progresoRuta')"
+          [attr.aria-label]="
+            traducir('progresoRuta')
+          "
         >
           {{ progresoRuta }}%
         </progress>
 
         <div
           class="recorrido-instruccion"
-          [class.recorrido-llegada]="esUltimoPaso"
+          [class.recorrido-llegada]="
+            esUltimoPaso
+          "
           aria-live="polite"
         >
           <span
@@ -356,38 +460,48 @@
     </ion-card>
   }
 
-  <app-mapa-ruta
-    [nodos]="nodosMapa"
-    [conexiones]="conexionesMapa"
-    [ruta]="rutaCalculada"
-    [nivel]="nivelVisualizado"
-    [origenId]="origenId"
-    [destinoId]="destinoId"
-    [nodoActualId]="nodoActualId"
-    [textoEtiqueta]="traducir('mapaPreliminar')"
-    [textoNivel]="traducir('nivel')"
-    [textoEstado]="traducir('datosSimulados')"
-    [textoAriaMapa]="
-      traducir(
-        'mapaAria',
-        {
-          nivel: nivelVisualizado
-        }
-      )
-    "
-    [textoSinDatos]="
-      traducir(
-        'mapaSinDatos',
-        {
-          nivel: nivelVisualizado
-        }
-      )
-    "
-    [textoNodo]="traducir('nodo')"
-    [textoRuta]="traducir('rutaCalculada')"
-    [textoOrigen]="traducir('origen')"
-    [textoDestino]="traducir('destino')"
-    [textoUbicacionActual]="traducir('ubicacionActual')"
-  >
-  </app-mapa-ruta>
+  @if (resultado) {
+    <app-mapa-ruta
+      [nodos]="nodosMapa"
+      [conexiones]="conexionesMapa"
+      [ruta]="rutaCalculada"
+      [nivel]="nivelVisualizado"
+      [origenId]="origenId"
+      [destinoId]="destinoId"
+      [nodoActualId]="nodoActualId"
+      [textoEtiqueta]="
+        traducir('mapaPreliminar')
+      "
+      [textoNivel]="traducir('nivel')"
+      [textoEstado]="
+        traducir('datosSimulados')
+      "
+      [textoAriaMapa]="
+        traducir(
+          'mapaAria',
+          {
+            nivel: nivelVisualizado
+          }
+        )
+      "
+      [textoSinDatos]="
+        traducir(
+          'mapaSinDatos',
+          {
+            nivel: nivelVisualizado
+          }
+        )
+      "
+      [textoNodo]="traducir('nodo')"
+      [textoRuta]="
+        traducir('rutaCalculada')
+      "
+      [textoOrigen]="traducir('origen')"
+      [textoDestino]="traducir('destino')"
+      [textoUbicacionActual]="
+        traducir('ubicacionActual')
+      "
+    >
+    </app-mapa-ruta>
+  }
 </ion-content>

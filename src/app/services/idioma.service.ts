@@ -50,6 +50,26 @@ const TRADUCCIONES: Record<
     destino: 'Destino',
     seleccionarDestino:
       'Seleccionar destino',
+    origenQrDescripcion:
+      'Escanea un QR para detectar tu ubicación o selecciona el origen manualmente.',
+    destinoSinSeleccionar:
+      'Aún no has seleccionado un destino',
+    puntosInteres:
+      'Puntos de interés',
+    cerrarPuntosInteres:
+      'Cerrar puntos de interés',
+    seleccionarNivel:
+      'Selecciona un nivel o piso',
+    lugaresDisponibles:
+      'Lugares disponibles',
+    nivelNumero:
+      'Nivel {numero}',
+    pisoNumero:
+      'Piso {numero}',
+    verMapaRuta:
+      'Ver mapa de la ruta',
+    ocultarMapaRuta:
+      'Ocultar mapa de la ruta',
 
     rutaAccesible: 'Ruta accesible',
     descripcionRutaAccesible:
@@ -187,6 +207,26 @@ const TRADUCCIONES: Record<
     destino: 'Destination',
     seleccionarDestino:
       'Select destination',
+    origenQrDescripcion:
+      'Scan a QR code to detect your location or select the starting point manually.',
+    destinoSinSeleccionar:
+      'No destination selected yet',
+    puntosInteres:
+      'Points of interest',
+    cerrarPuntosInteres:
+      'Close points of interest',
+    seleccionarNivel:
+      'Select a level or floor',
+    lugaresDisponibles:
+      'Available locations',
+    nivelNumero:
+      'Level {numero}',
+    pisoNumero:
+      'Floor {numero}',
+    verMapaRuta:
+      'View route map',
+    ocultarMapaRuta:
+      'Hide route map',
 
     rutaAccesible: 'Accessible route',
     descripcionRutaAccesible:
@@ -324,6 +364,26 @@ const TRADUCCIONES: Record<
     destino: 'Destino',
     seleccionarDestino:
       'Selecionar destino',
+    origenQrDescripcion:
+      'Leia um código QR para detectar sua localização ou selecione a origem manualmente.',
+    destinoSinSeleccionar:
+      'Nenhum destino selecionado ainda',
+    puntosInteres:
+      'Pontos de interesse',
+    cerrarPuntosInteres:
+      'Fechar pontos de interesse',
+    seleccionarNivel:
+      'Selecione um nível ou andar',
+    lugaresDisponibles:
+      'Locais disponíveis',
+    nivelNumero:
+      'Nível {numero}',
+    pisoNumero:
+      'Andar {numero}',
+    verMapaRuta:
+      'Ver mapa da rota',
+    ocultarMapaRuta:
+      'Ocultar mapa da rota',
 
     rutaAccesible: 'Rota acessível',
     descripcionRutaAccesible:

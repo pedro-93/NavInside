@@ -17,7 +17,6 @@ import {
   IonContent,
   IonHeader,
   IonItem,
-  IonList,
   IonSelect,
   IonSelectOption,
   IonTitle,
@@ -72,7 +71,6 @@ import {
     IonContent,
     IonHeader,
     IonItem,
-    IonList,
     IonSelect,
     IonSelectOption,
     IonTitle,
@@ -112,6 +110,13 @@ export class HomePage {
   pasosRuta: PasoRuta[] = [];
   pasoActualIndice = 0;
   nivelVisualizado = 1;
+  selectorPuntosAbierto = false;
+  selectorPuntosTipo:
+    | 'origen'
+    | 'destino'
+    | null = null;
+  nivelPuntosSeleccionado:
+    number | null = null;
 
   constructor() {
     this.idiomaSeleccionado =
@@ -198,6 +203,74 @@ export class HomePage {
     );
   }
 
+  get nivelesPuntos(): number[] {
+    const niveles: number[] = [];
+
+    for (const lugar of this.lugares) {
+      if (
+        lugar.nivel !== undefined &&
+        !niveles.includes(lugar.nivel)
+      ) {
+        niveles.push(lugar.nivel);
+      }
+    }
+
+    return niveles;
+  }
+
+  get lugaresNivelSeleccionado(): Nodo[] {
+    if (
+      this.nivelPuntosSeleccionado === null
+    ) {
+      return [];
+    }
+
+    return this.lugares.filter(
+      lugar => {
+        if (
+          lugar.nivel !==
+          this.nivelPuntosSeleccionado
+        ) {
+          return false;
+        }
+
+        if (
+          this.selectorPuntosTipo ===
+          'origen'
+        ) {
+          return lugar.id !== this.destino;
+        }
+
+        if (
+          this.selectorPuntosTipo ===
+          'destino'
+        ) {
+          return lugar.id !== this.origen;
+        }
+
+        return true;
+      }
+    );
+  }
+
+  get origenSeleccionado(): Nodo | null {
+    return (
+      this.lugares.find(
+        lugar =>
+          lugar.id === this.origen
+      ) ?? null
+    );
+  }
+
+  get destinoSeleccionado(): Nodo | null {
+    return (
+      this.lugares.find(
+        lugar =>
+          lugar.id === this.destino
+      ) ?? null
+    );
+  }
+
   traducir(
     clave: string,
     parametros: Record<
@@ -237,7 +310,9 @@ export class HomePage {
     this.actualizarDatosMapa();
     this.mensajeUbicacion = '';
 
-    if (this.rutaCalculada.length > 0) {
+    if (
+      this.rutaCalculada.length > 0
+    ) {
       this.actualizarResultadoRuta();
       return;
     }
@@ -250,22 +325,101 @@ export class HomePage {
     this.limpiarRuta();
   }
 
+  alternarSelectorPuntos(
+    tipo: 'origen' | 'destino'
+  ): void {
+    if (
+      this.selectorPuntosAbierto &&
+      this.selectorPuntosTipo === tipo
+    ) {
+      this.selectorPuntosAbierto = false;
+      this.selectorPuntosTipo = null;
+      return;
+    }
+
+    this.selectorPuntosTipo = tipo;
+    this.selectorPuntosAbierto = true;
+
+    if (
+      this.nivelPuntosSeleccionado ===
+      null
+    ) {
+      this.nivelPuntosSeleccionado =
+        this.nivelesPuntos[0] ?? null;
+    }
+  }
+
+  seleccionarNivelPuntos(
+    nivel: number
+  ): void {
+    this.nivelPuntosSeleccionado =
+      nivel;
+  }
+
+  seleccionarPunto(
+    lugar: Nodo
+  ): void {
+    if (
+      this.selectorPuntosTipo ===
+      'origen'
+    ) {
+      this.origen = lugar.id;
+      this.nivelVisualizado =
+        lugar.nivel ?? 1;
+    } else if (
+      this.selectorPuntosTipo ===
+      'destino'
+    ) {
+      this.destino = lugar.id;
+    } else {
+      return;
+    }
+
+    this.selectorPuntosAbierto = false;
+    this.selectorPuntosTipo = null;
+    this.nivelPuntosSeleccionado =
+      lugar.nivel ?? null;
+
+    this.limpiarRuta();
+  }
+
+  etiquetaNivel(
+    nivel: number
+  ): string {
+    return nivel === 6
+      ? this.traducir(
+        'pisoNumero',
+        { numero: nivel }
+      )
+      : this.traducir(
+        'nivelNumero',
+        { numero: nivel }
+      );
+  }
+
   async leerQrReal(): Promise<void> {
     this.mensajeUbicacion = '';
 
     try {
       const lectura =
-        await CapacitorBarcodeScanner.scanBarcode({
-          hint:
-            CapacitorBarcodeScannerTypeHint.QR_CODE,
-          cameraDirection:
-            CapacitorBarcodeScannerCameraDirection.BACK,
-          scanInstructions:
-            this.traducir('apuntarCamara'),
-          scanButton: true,
-          scanText:
-            this.traducir('escanear')
-        });
+        await CapacitorBarcodeScanner
+          .scanBarcode({
+            hint:
+              CapacitorBarcodeScannerTypeHint
+                .QR_CODE,
+            cameraDirection:
+              CapacitorBarcodeScannerCameraDirection
+                .BACK,
+            scanInstructions:
+              this.traducir(
+                'apuntarCamara'
+              ),
+            scanButton: true,
+            scanText:
+              this.traducir(
+                'escanear'
+              )
+          });
 
       if (!lectura.ScanResult) {
         this.mensajeUbicacion =
@@ -285,18 +439,22 @@ export class HomePage {
       );
 
       this.mensajeUbicacion =
-        this.traducir('errorCamara');
+        this.traducir(
+          'errorCamara'
+        );
     }
   }
 
   simularLecturaQr(): void {
     this.mensajeUbicacion = '';
 
-    const contenidoQr = JSON.stringify({
-      sistema: 'navinside',
-      version: 1,
-      nodoId: 'entrada-nivel-4'
-    });
+    const contenidoQr =
+      JSON.stringify({
+        sistema: 'navinside',
+        version: 1,
+        nodoId:
+          'entrada-nivel-4'
+      });
 
     this.procesarLecturaQr(
       contenidoQr
@@ -312,7 +470,10 @@ export class HomePage {
       return;
     }
 
-    if (!this.origen || !this.destino) {
+    if (
+      !this.origen ||
+      !this.destino
+    ) {
       this.resultado =
         this.traducir(
           'seleccionarOrigenDestino'
@@ -320,7 +481,9 @@ export class HomePage {
       return;
     }
 
-    if (this.origen === this.destino) {
+    if (
+      this.origen === this.destino
+    ) {
       this.resultado =
         this.traducir(
           'origenDestinoIguales'
@@ -329,16 +492,21 @@ export class HomePage {
     }
 
     const nodoOrigen =
-      this.mapaService.obtenerNodoPorId(
-        this.origen
-      );
+      this.mapaService
+        .obtenerNodoPorId(
+          this.origen
+        );
 
     const nodoDestino =
-      this.mapaService.obtenerNodoPorId(
-        this.destino
-      );
+      this.mapaService
+        .obtenerNodoPorId(
+          this.destino
+        );
 
-    if (!nodoOrigen || !nodoDestino) {
+    if (
+      !nodoOrigen ||
+      !nodoDestino
+    ) {
       this.resultado =
         this.traducir(
           'lugaresNoEncontrados'
@@ -353,7 +521,9 @@ export class HomePage {
         this.modoAccesible
       );
 
-    if (ruta.length === 0) {
+    if (
+      ruta.length === 0
+    ) {
       this.resultado =
         this.modoAccesible
           ? this.traducir(
@@ -365,7 +535,9 @@ export class HomePage {
       return;
     }
 
-    this.establecerRutaCalculada(ruta);
+    this.establecerRutaCalculada(
+      ruta
+    );
   }
 
   avanzarPaso(): void {
@@ -393,7 +565,9 @@ export class HomePage {
   }
 
   reiniciarRecorrido(): void {
-    if (this.pasosRuta.length === 0) {
+    if (
+      this.pasosRuta.length === 0
+    ) {
       return;
     }
 
@@ -426,13 +600,16 @@ export class HomePage {
     }
 
     const nodoDetectado =
-      this.qrService.procesarCodigo(
-        contenidoQr
-      );
+      this.qrService
+        .procesarCodigo(
+          contenidoQr
+        );
 
     if (!nodoDetectado) {
       this.mensajeUbicacion =
-        this.traducir('qrInvalido');
+        this.traducir(
+          'qrInvalido'
+        );
       return;
     }
 
@@ -440,7 +617,8 @@ export class HomePage {
       this.rutaCalculada.length > 0 &&
       this.destino !== '';
 
-    this.origen = nodoDetectado.id;
+    this.origen =
+      nodoDetectado.id;
 
     this.nivelVisualizado =
       nodoDetectado.nivel ?? 1;
@@ -468,9 +646,10 @@ export class HomePage {
     nodoDetectado: Nodo
   ): void {
     const nodoDestino =
-      this.mapaService.obtenerNodoPorId(
-        this.destino
-      );
+      this.mapaService
+        .obtenerNodoPorId(
+          this.destino
+        );
 
     if (!nodoDestino) {
       this.limpiarRuta();
@@ -519,13 +698,16 @@ export class HomePage {
     }
 
     const nuevaRuta =
-      this.rutaService.calcularRuta(
-        nodoDetectado.id,
-        nodoDestino.id,
-        this.modoAccesible
-      );
+      this.rutaService
+        .calcularRuta(
+          nodoDetectado.id,
+          nodoDestino.id,
+          this.modoAccesible
+        );
 
-    if (nuevaRuta.length === 0) {
+    if (
+      nuevaRuta.length === 0
+    ) {
       this.limpiarRuta();
 
       this.nivelVisualizado =
@@ -543,7 +725,9 @@ export class HomePage {
       return;
     }
 
-    this.establecerRutaCalculada(nuevaRuta);
+    this.establecerRutaCalculada(
+      nuevaRuta
+    );
 
     this.mensajeUbicacion =
       this.traducir(
@@ -560,24 +744,31 @@ export class HomePage {
   private establecerRutaCalculada(
     ruta: Nodo[]
   ): void {
-    this.rutaCalculada = ruta;
+    this.rutaCalculada =
+      ruta;
 
     this.pasosRuta =
-      this.rutaService.generarPasos(ruta);
+      this.rutaService
+        .generarPasos(ruta);
 
-    this.pasoActualIndice = 0;
+    this.pasoActualIndice =
+      0;
 
     this.distanciaTotal =
       this.rutaService
-        .calcularDistanciaTotal(ruta);
+        .calcularDistanciaTotal(
+          ruta
+        );
 
     this.sincronizarPasoActual();
     this.actualizarResultadoRuta();
   }
 
-  private async cargarMapaInicial(): Promise<void> {
+  private async cargarMapaInicial():
+    Promise<void> {
     const mapaCargado =
-      await this.mapaService.cargarMapaDesdeSupabase();
+      await this.mapaService
+        .cargarMapaDesdeSupabase();
 
     if (mapaCargado) {
       this.actualizarDatosMapa();
@@ -586,7 +777,8 @@ export class HomePage {
 
   private actualizarDatosMapa(): void {
     const mapaActivo =
-      this.mapaService.obtenerMapaActivo();
+      this.mapaService
+        .obtenerMapaActivo();
 
     const conexionesNavegables =
       this.mapaService
@@ -594,10 +786,11 @@ export class HomePage {
 
     const validacion:
       ResultadoValidacionMapa =
-      this.mapaValidadorService.validarMapa(
-        mapaActivo.nodos,
-        conexionesNavegables
-      );
+      this.mapaValidadorService
+        .validarMapa(
+          mapaActivo.nodos,
+          conexionesNavegables
+        );
 
     this.mapaEsValido =
       validacion.valido;
@@ -609,11 +802,10 @@ export class HomePage {
       validacion.advertencias;
 
     this.lugares =
-      mapaActivo.nodos
-        .filter(
-          nodo =>
-            nodo.restringido !== true
-        );
+      mapaActivo.nodos.filter(
+        nodo =>
+          nodo.restringido !== true
+      );
 
     this.conexionesMapa =
       conexionesNavegables;
@@ -623,16 +815,31 @@ export class HomePage {
         nodo => ({
           ...nodo,
           nombre:
-            this.nombreNodo(nodo)
+            this.nombreNodo(
+              nodo
+            )
         })
       );
 
     this.lugaresReferencia =
       this.mapaService
         .obtenerLugaresPreliminares();
+
+    if (
+      this.nivelPuntosSeleccionado ===
+        null ||
+      !this.nivelesPuntos.includes(
+        this.nivelPuntosSeleccionado
+      )
+    ) {
+      this.nivelPuntosSeleccionado =
+        this.nivelesPuntos[0] ??
+        null;
+    }
   }
 
-  private obtenerMensajeMapaInvalido(): string {
+  private obtenerMensajeMapaInvalido():
+    string {
     const cantidadErrores =
       this.erroresMapa.length;
 
@@ -648,7 +855,9 @@ export class HomePage {
       this.rutaCalculada
         .map(
           nodo =>
-            this.nombreNodo(nodo)
+            this.nombreNodo(
+              nodo
+            )
         )
         .join(' → ');
   }
@@ -657,23 +866,31 @@ export class HomePage {
     paso: PasoRuta
   ): string {
     const nombre =
-      this.nombreNodo(paso.nodo);
+      this.nombreNodo(
+        paso.nodo
+      );
 
-    if (paso.tipo === 'inicio') {
+    if (
+      paso.tipo === 'inicio'
+    ) {
       return this.traducir(
         'inicioRuta',
         { nombre }
       );
     }
 
-    if (paso.tipo === 'llegada') {
+    if (
+      paso.tipo === 'llegada'
+    ) {
       return this.traducir(
         'llegadaRuta',
         { nombre }
       );
     }
 
-    if (paso.tipo === 'avance') {
+    if (
+      paso.tipo === 'avance'
+    ) {
       return this.traducir(
         'continuarHacia',
         { nombre }
@@ -683,10 +900,15 @@ export class HomePage {
     const nivel =
       paso.nodo.nivel ?? '';
 
-    if (paso.medio === 'ascensor') {
-      if (paso.destinoEsPiso) {
+    if (
+      paso.medio === 'ascensor'
+    ) {
+      if (
+        paso.destinoEsPiso
+      ) {
         return this.traducir(
-          paso.direccionNivel === 'subir'
+          paso.direccionNivel ===
+            'subir'
             ? 'subirAscensorPiso'
             : 'bajarAscensorPiso',
           { nivel }
@@ -694,25 +916,32 @@ export class HomePage {
       }
 
       return this.traducir(
-        paso.direccionNivel === 'subir'
+        paso.direccionNivel ===
+          'subir'
           ? 'subirAscensor'
           : 'bajarAscensor',
         { nivel }
       );
     }
 
-    if (paso.medio === 'escalera') {
+    if (
+      paso.medio === 'escalera'
+    ) {
       return this.traducir(
-        paso.direccionNivel === 'subir'
+        paso.direccionNivel ===
+          'subir'
           ? 'subirEscalera'
           : 'bajarEscalera',
         { nivel }
       );
     }
 
-    if (paso.medio === 'rampa') {
+    if (
+      paso.medio === 'rampa'
+    ) {
       return this.traducir(
-        paso.direccionNivel === 'subir'
+        paso.direccionNivel ===
+          'subir'
           ? 'subirRampa'
           : 'bajarRampa',
         { nivel }
@@ -720,7 +949,8 @@ export class HomePage {
     }
 
     return this.traducir(
-      paso.direccionNivel === 'subir'
+      paso.direccionNivel ===
+        'subir'
         ? 'cambiarNivelSubir'
         : 'cambiarNivelBajar',
       {
@@ -735,11 +965,17 @@ export class HomePage {
     ingles: string,
     portugues: string
   ): string {
-    if (this.idiomaSeleccionado === 'en') {
+    if (
+      this.idiomaSeleccionado ===
+      'en'
+    ) {
       return ingles;
     }
 
-    if (this.idiomaSeleccionado === 'pt') {
+    if (
+      this.idiomaSeleccionado ===
+      'pt'
+    ) {
       return portugues;
     }
 
