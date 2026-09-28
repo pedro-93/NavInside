@@ -28,14 +28,14 @@ describe(
 
         expect(version.id)
           .toBe(
-            'hippocampus-simulado'
+            'hippocampus-resort'
           );
 
         expect(version.version)
-          .toBe('0.1.0');
+          .toBe('0.2.0');
 
         expect(version.estado)
-          .toBe('simulado');
+          .toBe('preliminar');
       }
     );
 
@@ -55,7 +55,12 @@ describe(
         expect(
           segundaCopia
             .nivelesDisponibles
-        ).toEqual([1, 3]);
+        ).toEqual([
+          1,
+          3,
+          4,
+          6
+        ]);
       }
     );
 
@@ -90,6 +95,14 @@ describe(
         ).toBe(true);
 
         expect(
+          servicio.contieneNivel(4)
+        ).toBe(true);
+
+        expect(
+          servicio.contieneNivel(6)
+        ).toBe(true);
+
+        expect(
           servicio.contieneNivel(5)
         ).toBe(false);
       }
@@ -100,13 +113,13 @@ describe(
       () => {
         expect(
           servicio.esMismaVersion(
-            '0.1.0'
+            '0.2.0'
           )
         ).toBe(true);
 
         expect(
           servicio.esMismaVersion(
-            '0.2.0'
+            '0.1.0'
           )
         ).toBe(false);
       }
@@ -118,14 +131,14 @@ describe(
         expect(
           servicio
             .hayActualizacionDisponible(
-              '0.1.1'
+              '0.2.1'
             )
         ).toBe(true);
 
         expect(
           servicio
             .hayActualizacionDisponible(
-              '0.2.0'
+              '0.3.0'
             )
         ).toBe(true);
 
@@ -144,14 +157,14 @@ describe(
         expect(
           servicio
             .hayActualizacionDisponible(
-              '0.1.0'
+              '0.2.0'
             )
         ).toBe(false);
 
         expect(
           servicio
             .hayActualizacionDisponible(
-              '0.0.9'
+              '0.1.9'
             )
         ).toBe(false);
 
