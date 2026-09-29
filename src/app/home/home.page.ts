@@ -16,6 +16,7 @@ import {
   IonCardTitle,
   IonContent,
   IonHeader,
+  IonIcon,
   IonItem,
   IonSelect,
   IonSelectOption,
@@ -23,6 +24,29 @@ import {
   IonToggle,
   IonToolbar
 } from '@ionic/angular';
+import {
+  addIcons
+} from 'ionicons';
+import {
+  accessibilityOutline,
+  arrowBackOutline,
+  arrowForwardOutline,
+  bedOutline,
+  businessOutline,
+  cartOutline,
+  enterOutline,
+  fitnessOutline,
+  gameControllerOutline,
+  locationOutline,
+  navigateOutline,
+  phonePortraitOutline,
+  qrCodeOutline,
+  refreshOutline,
+  restaurantOutline,
+  scanOutline,
+  sparklesOutline,
+  waterOutline
+} from 'ionicons/icons';
 
 import {
   MapaRutaComponent
@@ -70,6 +94,7 @@ import {
     IonCardTitle,
     IonContent,
     IonHeader,
+    IonIcon,
     IonItem,
     IonSelect,
     IonSelectOption,
@@ -81,12 +106,16 @@ import {
 export class HomePage {
   private readonly rutaService =
     inject(RutaService);
+
   private readonly qrService =
     inject(QrService);
+
   private readonly idiomaService =
     inject(IdiomaService);
+
   private readonly mapaService =
     inject(MapaService);
+
   private readonly mapaValidadorService =
     inject(MapaValidadorService);
 
@@ -111,14 +140,37 @@ export class HomePage {
   pasoActualIndice = 0;
   nivelVisualizado = 1;
   selectorPuntosAbierto = false;
+
   selectorPuntosTipo:
     | 'origen'
     | 'destino'
     | null = null;
+
   nivelPuntosSeleccionado:
     number | null = null;
 
   constructor() {
+    addIcons({
+      accessibilityOutline,
+      arrowBackOutline,
+      arrowForwardOutline,
+      bedOutline,
+      businessOutline,
+      cartOutline,
+      enterOutline,
+      fitnessOutline,
+      gameControllerOutline,
+      locationOutline,
+      navigateOutline,
+      phonePortraitOutline,
+      qrCodeOutline,
+      refreshOutline,
+      restaurantOutline,
+      scanOutline,
+      sparklesOutline,
+      waterOutline
+    });
+
     this.idiomaSeleccionado =
       this.idiomaService.idiomaActual;
 
@@ -302,6 +354,73 @@ export class HomePage {
     );
   }
 
+  iconoLugar(lugar: Nodo): string {
+    const id = lugar.id.toLowerCase();
+
+    if (
+      id.includes('piscina') ||
+      id.includes('tinaja')
+    ) {
+      return 'water-outline';
+    }
+
+    if (
+      id.includes('restaurant')
+    ) {
+      return 'restaurant-outline';
+    }
+
+    if (
+      id.includes('gimnasio')
+    ) {
+      return 'fitness-outline';
+    }
+
+    if (
+      id.includes('market')
+    ) {
+      return 'cart-outline';
+    }
+
+    if (
+      id.includes('habitacion')
+    ) {
+      return 'bed-outline';
+    }
+
+    if (
+      id.includes('juego') ||
+      id.includes('play') ||
+      id.includes('kid')
+    ) {
+      return 'game-controller-outline';
+    }
+
+    if (
+      id.includes('spa') ||
+      id.includes('salon')
+    ) {
+      return 'sparkles-outline';
+    }
+
+    if (
+      id.includes('entrada') ||
+      id.includes('puerta') ||
+      id.includes('acceso')
+    ) {
+      return 'enter-outline';
+    }
+
+    if (
+      id.includes('recepcion') ||
+      id.includes('ascensor')
+    ) {
+      return 'business-outline';
+    }
+
+    return 'location-outline';
+  }
+
   cambiarIdioma(): void {
     this.idiomaService.establecerIdioma(
       this.idiomaSeleccionado
@@ -426,6 +545,7 @@ export class HomePage {
           this.traducir(
             'lecturaCancelada'
           );
+
         return;
       }
 
@@ -467,6 +587,7 @@ export class HomePage {
     if (!this.mapaEsValido) {
       this.resultado =
         this.obtenerMensajeMapaInvalido();
+
       return;
     }
 
@@ -478,6 +599,7 @@ export class HomePage {
         this.traducir(
           'seleccionarOrigenDestino'
         );
+
       return;
     }
 
@@ -488,6 +610,7 @@ export class HomePage {
         this.traducir(
           'origenDestinoIguales'
         );
+
       return;
     }
 
@@ -511,6 +634,7 @@ export class HomePage {
         this.traducir(
           'lugaresNoEncontrados'
         );
+
       return;
     }
 
@@ -532,6 +656,7 @@ export class HomePage {
           : this.traducir(
             'rutaNoDisponible'
           );
+
       return;
     }
 
@@ -596,6 +721,7 @@ export class HomePage {
     if (!this.mapaEsValido) {
       this.mensajeUbicacion =
         this.obtenerMensajeMapaInvalido();
+
       return;
     }
 
@@ -610,6 +736,7 @@ export class HomePage {
         this.traducir(
           'qrInvalido'
         );
+
       return;
     }
 
@@ -627,6 +754,7 @@ export class HomePage {
       this.recalcularRutaDesdeQr(
         nodoDetectado
       );
+
       return;
     }
 
@@ -658,6 +786,7 @@ export class HomePage {
         this.traducir(
           'lugaresNoEncontrados'
         );
+
       return;
     }
 
@@ -679,7 +808,6 @@ export class HomePage {
 
       this.pasoActualIndice = 0;
       this.distanciaTotal = 0;
-
       this.actualizarResultadoRuta();
       this.sincronizarPasoActual();
 

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>
       {{ traducir('tituloAplicacion') }}
     </ion-title>
@@ -111,6 +111,13 @@
             alternarSelectorPuntos('origen')
           "
         >
+          <ion-icon
+            slot="start"
+            name="location-outline"
+            aria-hidden="true"
+          >
+          </ion-icon>
+
           {{
             selectorPuntosAbierto &&
             selectorPuntosTipo === 'origen'
@@ -129,6 +136,13 @@
             [disabled]="!mapaEsValido"
             (click)="leerQrReal()"
           >
+            <ion-icon
+              slot="start"
+              name="scan-outline"
+              aria-hidden="true"
+            >
+            </ion-icon>
+
             {{ traducir('leerQr') }}
           </ion-button>
 
@@ -138,6 +152,13 @@
             [disabled]="!mapaEsValido"
             (click)="simularLecturaQr()"
           >
+            <ion-icon
+              slot="start"
+              name="phone-portrait-outline"
+              aria-hidden="true"
+            >
+            </ion-icon>
+
             {{ traducir('simularQr') }}
           </ion-button>
         </div>
@@ -183,7 +204,11 @@
             }
           } @else {
             <span>
-              {{ traducir('destinoSinSeleccionar') }}
+              {{
+                traducir(
+                  'destinoSinSeleccionar'
+                )
+              }}
             </span>
           }
         </div>
@@ -200,6 +225,13 @@
             alternarSelectorPuntos('destino')
           "
         >
+          <ion-icon
+            slot="start"
+            name="location-outline"
+            aria-hidden="true"
+          >
+          </ion-icon>
+
           {{
             selectorPuntosAbierto &&
             selectorPuntosTipo === 'destino'
@@ -265,6 +297,12 @@
                 "
                 (click)="seleccionarPunto(lugar)"
               >
+                <ion-icon
+                  [name]="iconoLugar(lugar)"
+                  aria-hidden="true"
+                >
+                </ion-icon>
+
                 <strong>
                   {{ nombreNodo(lugar) }}
                 </strong>
@@ -286,6 +324,13 @@
         class="accesibilidad-item"
         lines="none"
       >
+        <ion-icon
+          slot="start"
+          name="accessibility-outline"
+          aria-hidden="true"
+        >
+        </ion-icon>
+
         <div>
           <strong>
             {{ traducir('rutaAccesible') }}
@@ -321,6 +366,13 @@
         "
         (click)="calcularRuta()"
       >
+        <ion-icon
+          slot="start"
+          name="navigate-outline"
+          aria-hidden="true"
+        >
+        </ion-icon>
+
         {{ traducir('calcularRuta') }}
       </ion-button>
     </ion-card-content>
@@ -330,6 +382,12 @@
     <ion-card class="resultado-card">
       <ion-card-header>
         <ion-card-title>
+          <ion-icon
+            name="qr-code-outline"
+            aria-hidden="true"
+          >
+          </ion-icon>
+
           {{ traducir('resultadoRuta') }}
         </ion-card-title>
       </ion-card-header>
@@ -358,7 +416,11 @@
 
           <p>
             <strong>
-              {{ traducir('distanciaSimulada') }}:
+              {{
+                traducir(
+                  'distanciaSimulada'
+                )
+              }}:
             </strong>
 
             {{ distanciaTotal }}
@@ -374,6 +436,12 @@
       <ion-card-header>
         <div class="recorrido-encabezado">
           <ion-card-title>
+            <ion-icon
+              name="navigate-outline"
+              aria-hidden="true"
+            >
+            </ion-icon>
+
             {{ traducir('guiaRuta') }}
           </ion-card-title>
 
@@ -438,6 +506,13 @@
             [disabled]="esPrimerPaso"
             (click)="retrocederPaso()"
           >
+            <ion-icon
+              slot="start"
+              name="arrow-back-outline"
+              aria-hidden="true"
+            >
+            </ion-icon>
+
             {{ traducir('pasoAnterior') }}
           </ion-button>
 
@@ -446,6 +521,13 @@
             [disabled]="esPrimerPaso"
             (click)="reiniciarRecorrido()"
           >
+            <ion-icon
+              slot="start"
+              name="refresh-outline"
+              aria-hidden="true"
+            >
+            </ion-icon>
+
             {{ traducir('reiniciarRuta') }}
           </ion-button>
 
@@ -454,6 +536,13 @@
             (click)="avanzarPaso()"
           >
             {{ traducir('pasoSiguiente') }}
+
+            <ion-icon
+              slot="end"
+              name="arrow-forward-outline"
+              aria-hidden="true"
+            >
+            </ion-icon>
           </ion-button>
         </div>
       </ion-card-content>

@@ -1,25 +1,103 @@
 :host {
-  --page: #f4f7fa;
-  --surface: #fff;
-  --text: #172033;
-  --muted: #586174;
-  --border: rgba(56, 128, 255, 0.24);
+  --navy-950: #03131f;
+  --navy-900: #061b2a;
+  --navy-850: #092334;
+  --navy-800: #0c2b3d;
+  --cyan: #10b7d4;
+  --cyan-light: #63d5e8;
+  --gold: #d7b46a;
+  --gold-light: #ead29c;
+  --white: #ffffff;
+  --text: #f4f8fb;
+  --muted: #a8bac6;
+  --border: rgba(99, 213, 232, 0.18);
+  --surface: var(--navy-900);
+  --surface-soft: var(--navy-850);
+  --success: #38c987;
+
   display: block;
 }
 
+/* Fondo general */
+
 ion-content {
-  --background: var(--page);
+  --background:
+    radial-gradient(
+      circle at top right,
+      rgba(16, 183, 212, 0.13),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      var(--navy-950) 0%,
+      #041a27 100%
+    );
+
   --color: var(--text);
 }
 
+/* Barra superior */
+
+ion-header {
+  box-shadow: none;
+}
+
+ion-toolbar {
+  --background: rgba(3, 19, 31, 0.97);
+  --color: var(--white);
+  --border-color:
+    rgba(215, 180, 106, 0.32);
+
+  min-height: 64px;
+  border-bottom: 1px solid
+    rgba(215, 180, 106, 0.32);
+}
+
+ion-title {
+  color: var(--white);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+/* Encabezado */
+
 .pagina-encabezado {
-  margin: 8px 0 20px;
+  position: relative;
+  max-width: 920px;
+  margin: 12px auto 22px;
+  padding: 22px 20px;
+  overflow: hidden;
+  border: 1px solid
+    rgba(215, 180, 106, 0.25);
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(215, 180, 106, 0.09),
+      transparent 48%
+    ),
+    var(--surface);
+}
+
+.pagina-encabezado::before {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: 72px;
+  height: 3px;
+  border-radius: 20px;
+  background: var(--gold);
+  content: '';
 }
 
 .pagina-encabezado h1 {
-  margin: 0 0 8px;
-  color: var(--text);
-  font-size: 1.8rem;
+  margin: 0 0 9px;
+  color: var(--white);
+  font-size:
+    clamp(1.55rem, 5vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 .pagina-encabezado p,
@@ -27,17 +105,41 @@ ion-content {
 .accesibilidad-item p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.45;
+  line-height: 1.5;
 }
+
+/* Tarjetas generales */
 
 ion-card {
   --background: var(--surface);
   --color: var(--text);
-  margin-inline: 0;
-  border-radius: 18px;
+
+  max-width: 920px;
+  margin: 16px auto;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.24);
 }
 
-ion-card-title,
+ion-card-header {
+  padding-bottom: 8px;
+}
+
+ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--white);
+  font-weight: 800;
+}
+
+ion-card-title ion-icon {
+  flex: 0 0 auto;
+  color: var(--gold-light);
+  font-size: 1.25rem;
+}
+
 ion-card-content {
   color: var(--text);
 }
@@ -49,81 +151,186 @@ ion-card-content {
 }
 
 .navegacion-card {
-  box-shadow: 0 12px 30px rgba(31, 41, 55, 0.1);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 183, 212, 0.05),
+      transparent 45%
+    ),
+    var(--surface);
 }
 
 .navegacion-card ion-card-content {
   display: grid;
-  gap: 18px;
-  padding: 20px;
+  gap: 22px;
+  padding: 22px;
 }
 
+/* Controles Ionic */
+
 ion-item {
-  --background: var(--surface);
+  --background: transparent;
   --color: var(--text);
+  --border-color: var(--border);
+  --highlight-color-focused: var(--cyan);
 }
 
 ion-select {
   --color: var(--text);
   --placeholder-color: var(--muted);
+  --placeholder-opacity: 1;
+
   width: 100%;
+  font-weight: 650;
 }
 
 .idioma-item,
 .accesibilidad-item {
   --padding-start: 0;
   --inner-padding-end: 0;
+
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
 }
 
+.idioma-item {
+  --padding-start: 15px;
+  --inner-padding-end: 15px;
+  --min-height: 54px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.accesibilidad-item {
+  --padding-start: 15px;
+  --inner-padding-end: 12px;
+  --min-height: 68px;
+
+  background: rgba(16, 183, 212, 0.07);
+}
+
+.accesibilidad-item > ion-icon {
+  margin-right: 13px;
+  color: var(--cyan-light);
+  font-size: 1.65rem;
+}
+
+ion-toggle {
+  --track-background:
+    rgba(168, 186, 198, 0.3);
+  --track-background-checked: var(--cyan);
+  --handle-background: var(--white);
+  --handle-background-checked: var(--white);
+}
+
+/* Bloques de origen y destino */
+
 .seleccion-bloque {
+  position: relative;
   display: grid;
-  gap: 10px;
+  gap: 11px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 183, 212, 0.06),
+      transparent 55%
+    ),
+    rgba(255, 255, 255, 0.018);
 }
 
 .seleccion-etiqueta {
-  color: var(--text);
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold-light);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
-.seleccion-control,
-.destino-actual {
-  min-height: 58px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface);
-}
-
-.seleccion-control {
-  --padding-start: 16px;
+.seleccion-etiqueta::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow:
+    0 0 0 4px
+    rgba(16, 183, 212, 0.12);
+  content: '';
 }
 
 .destino-actual {
   display: flex;
+  min-height: 68px;
   justify-content: center;
   flex-direction: column;
-  gap: 4px;
-  padding: 13px 16px;
+  gap: 5px;
+  padding: 14px 16px;
+  border: 1px solid
+    rgba(99, 213, 232, 0.22);
+  border-radius: 14px;
+  background: var(--navy-950);
+}
+
+.destino-actual strong {
+  color: var(--white);
+  font-size: 1.02rem;
+  line-height: 1.25;
 }
 
 .destino-actual span,
 .lugar-boton span {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.79rem;
 }
 
 .seleccion-ayuda,
 .accesibilidad-item p {
-  font-size: 0.84rem;
+  font-size: 0.83rem;
+}
+
+/* Botones */
+
+ion-button {
+  --border-radius: 12px;
+  --background: var(--cyan);
+  --background-hover: var(--cyan-light);
+  --background-activated: #079bb6;
+  --color: var(--navy-950);
+  --box-shadow: none;
+
+  min-height: 45px;
+  font-weight: 800;
+  text-transform: none;
+}
+
+ion-button ion-icon {
+  font-size: 1.15rem;
+}
+
+ion-button[fill='outline'] {
+  --background: transparent;
+  --background-hover:
+    rgba(16, 183, 212, 0.1);
+  --background-activated:
+    rgba(16, 183, 212, 0.16);
+  --border-color:
+    rgba(99, 213, 232, 0.65);
+  --border-width: 1px;
+  --color: var(--cyan-light);
 }
 
 .qr-acciones,
 .lugares-grid,
 .recorrido-controles {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -133,56 +340,162 @@ ion-select {
   margin: 0;
 }
 
-.estado-ubicacion,
-.puntos-panel {
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: rgba(56, 128, 255, 0.08);
+.qr-acciones ion-button:first-child {
+  --background:
+    linear-gradient(
+      135deg,
+      #087d9d,
+      var(--cyan)
+    );
+  --color: var(--white);
 }
 
+.puntos-boton {
+  --border-color: var(--gold);
+  --color: var(--gold-light);
+  --background-hover:
+    rgba(215, 180, 106, 0.1);
+}
+
+.calcular-boton {
+  --background:
+    linear-gradient(
+      135deg,
+      #c49a49,
+      var(--gold-light)
+    );
+  --color: var(--navy-950);
+
+  min-height: 52px;
+  font-size: 0.98rem;
+}
+
+/* Estado de lectura QR */
+
 .estado-ubicacion {
-  border-left: 4px solid #3880ff;
+  padding: 15px 16px;
+  border: 1px solid
+    rgba(56, 201, 135, 0.25);
+  border-left: 4px solid var(--success);
+  border-radius: 12px;
+  background: rgba(56, 201, 135, 0.08);
+}
+
+.estado-ubicacion strong {
+  color: #7ee1b0;
 }
 
 .estado-ubicacion p {
   margin: 5px 0 0;
+  color: var(--text);
 }
 
+/* Selector de puntos */
+
 .puntos-panel {
-  border: 1px solid var(--border);
+  padding: 18px;
+  border: 1px solid
+    rgba(215, 180, 106, 0.27);
+  border-radius: 18px;
+  background: var(--navy-950);
 }
 
 .puntos-panel h2,
 .puntos-panel h3 {
-  margin: 0 0 10px;
-  color: var(--text);
+  margin: 0 0 12px;
+  color: var(--white);
   font-size: 1rem;
 }
 
 .puntos-panel h3 {
-  margin-top: 18px;
-  font-size: 0.9rem;
+  margin-top: 20px;
+  color: var(--gold-light);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .niveles-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
 .niveles-grid ion-button {
+  --border-color:
+    rgba(215, 180, 106, 0.45);
+  --color: var(--muted);
+
+  min-width: 0;
   margin: 0;
 }
 
+.niveles-grid ion-button[fill='solid'] {
+  --background: var(--gold-light);
+  --color: var(--navy-950);
+}
+
+/* Lugares */
+
+.lugares-grid {
+  align-items: stretch;
+}
+
 .lugar-boton {
-  min-height: 72px;
-  padding: 12px;
-  border: 1px solid rgba(88, 97, 116, 0.25);
-  border-radius: 12px;
-  background: var(--surface);
+  position: relative;
+  min-height: 82px;
+  padding: 14px 38px 14px 58px;
+  border: 1px solid
+    rgba(99, 213, 232, 0.15);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 183, 212, 0.06),
+      transparent
+    ),
+    var(--navy-850);
   color: var(--text);
   font: inherit;
   text-align: left;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.lugar-boton::after {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  color: var(--cyan-light);
+  font-size: 1.25rem;
+  line-height: 1;
+  transform: translateY(-50%);
+  content: '›';
+}
+
+.lugar-boton > ion-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  width: 31px;
+  height: 31px;
+  padding: 7px;
+  border-radius: 10px;
+  background:
+    rgba(16, 183, 212, 0.14);
+  color: var(--cyan-light);
+  font-size: 1.1rem;
+  transform: translateY(-50%);
+}
+
+.lugar-boton:hover {
+  border-color: var(--cyan);
+  background: var(--navy-800);
+  transform: translateY(-2px);
 }
 
 .lugar-boton strong,
@@ -190,14 +503,52 @@ ion-select {
   display: block;
 }
 
+.lugar-boton strong {
+  color: var(--white);
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
 .lugar-boton span {
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .lugar-seleccionado,
 .lugar-boton:focus-visible {
-  border-color: #3880ff;
-  outline: 2px solid rgba(56, 128, 255, 0.15);
+  border-color: var(--gold);
+  outline: 2px solid
+    rgba(215, 180, 106, 0.18);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(215, 180, 106, 0.16),
+      transparent
+    ),
+    var(--navy-850);
+}
+
+.lugar-seleccionado > ion-icon {
+  background:
+    rgba(215, 180, 106, 0.18);
+  color: var(--gold-light);
+}
+
+/* Resultado y recorrido */
+
+.resultado-card,
+.recorrido-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 183, 212, 0.05),
+      transparent 45%
+    ),
+    var(--surface);
+}
+
+.resultado-card p {
+  color: var(--text);
+  line-height: 1.5;
 }
 
 .recorrido-encabezado,
@@ -209,18 +560,43 @@ ion-select {
 }
 
 .recorrido-contador {
-  padding: 6px 10px;
+  padding: 6px 11px;
+  border: 1px solid
+    rgba(215, 180, 106, 0.3);
   border-radius: 20px;
-  background: rgba(56, 128, 255, 0.14);
-  color: #2457a7;
-  font-size: 0.78rem;
-  font-weight: 700;
+  background:
+    rgba(215, 180, 106, 0.1);
+  color: var(--gold-light);
+  font-size: 0.77rem;
+  font-weight: 800;
 }
 
 .recorrido-progreso {
   width: 100%;
-  height: 12px;
-  margin-top: 7px;
+  height: 11px;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 20px;
+  background:
+    rgba(168, 186, 198, 0.18);
+  appearance: none;
+}
+
+.recorrido-progreso::-webkit-progress-bar {
+  border-radius: 20px;
+  background:
+    rgba(168, 186, 198, 0.18);
+}
+
+.recorrido-progreso::-webkit-progress-value {
+  border-radius: 20px;
+  background: var(--cyan);
+}
+
+.recorrido-progreso::-moz-progress-bar {
+  border-radius: 20px;
+  background: var(--cyan);
 }
 
 .recorrido-instruccion {
@@ -229,33 +605,57 @@ ion-select {
   gap: 16px;
   margin: 20px 0;
   padding: 18px;
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(56, 128, 255, 0.1);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 183, 212, 0.11),
+      rgba(16, 183, 212, 0.025)
+    );
 }
 
 .recorrido-instruccion p {
   margin: 0;
+  color: var(--white);
   font-weight: 650;
+  line-height: 1.4;
 }
 
 .recorrido-numero {
   display: grid;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
   place-items: center;
-  border-radius: 50%;
-  background: #3880ff;
-  color: #fff;
-  font-weight: 800;
+  border: 1px solid
+    rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      #087d9d,
+      var(--cyan)
+    );
+  color: var(--white);
+  font-weight: 900;
+  box-shadow:
+    0 8px 20px
+    rgba(16, 183, 212, 0.2);
 }
 
 .recorrido-llegada .recorrido-numero {
-  background: #20a85d;
+  background:
+    linear-gradient(
+      135deg,
+      #229760,
+      var(--success)
+    );
 }
 
 .recorrido-controles {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
 }
 
 .recorrido-controles ion-button {
@@ -263,22 +663,93 @@ ion-select {
   margin: 0;
 }
 
+/* Mapa */
+
 app-mapa-ruta {
-  margin: 20px 0;
+  display: block;
+  max-width: 920px;
+  margin: 22px auto;
+  overflow: hidden;
+  border: 1px solid
+    rgba(215, 180, 106, 0.27);
+  border-radius: 20px;
+  background: var(--navy-950);
+  box-shadow:
+    0 18px 45px
+    rgba(0, 0, 0, 0.24);
 }
 
+/* Escritorio */
+
+@media (min-width: 760px) {
+  .navegacion-card ion-card-content {
+    padding: 28px;
+  }
+
+  .lugares-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Teléfono */
+
 @media (max-width: 620px) {
+  ion-content {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+
+  ion-title {
+    font-size: 0.92rem;
+  }
+
+  .pagina-encabezado {
+    margin-top: 5px;
+    padding: 20px 17px;
+  }
+
   .pagina-encabezado h1 {
-    font-size: 1.45rem;
+    font-size: 1.55rem;
   }
 
   .navegacion-card ion-card-content {
-    padding: 16px;
+    gap: 17px;
+    padding: 14px;
   }
 
-  .qr-acciones,
-  .lugares-grid,
+  .seleccion-bloque,
+  .puntos-panel {
+    padding: 14px;
+  }
+
+  .qr-acciones {
+    grid-template-columns: 1fr;
+  }
+
+  .lugares-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .niveles-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
   .recorrido-controles {
     grid-template-columns: 1fr;
+  }
+
+  .recorrido-instruccion {
+    align-items: flex-start;
+    padding: 15px;
+  }
+}
+
+/* Accesibilidad */
+
+@media (prefers-reduced-motion: reduce) {
+  .lugar-boton {
+    transition: none;
   }
 }
