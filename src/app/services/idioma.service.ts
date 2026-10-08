@@ -1,11 +1,14 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable
+} from '@angular/core';
 
 export type Idioma =
   | 'es'
   | 'en'
   | 'pt';
 
-const IDIOMA_PREDETERMINADO: Idioma = 'es';
+const IDIOMA_PREDETERMINADO:
+  Idioma = 'es';
 
 const CLAVE_ALMACENAMIENTO =
   'navinside-idioma';
@@ -21,7 +24,8 @@ const TRADUCCIONES: Record<
     portugues: 'Portugués',
 
     tituloAplicacion: 'NavInside',
-    tituloPagina: 'Navegación interior',
+    tituloPagina:
+      'Navegación interior',
     instrucciones:
       'Selecciona tu punto de origen y destino.',
 
@@ -71,54 +75,71 @@ const TRADUCCIONES: Record<
     ocultarMapaRuta:
       'Ocultar mapa de la ruta',
 
-    rutaAccesible: 'Ruta accesible',
+    rutaAccesible:
+      'Ruta accesible',
     descripcionRutaAccesible:
       'Evita escaleras y utiliza conexiones aptas.',
 
-    leerQr: 'Leer QR con cámara',
-    simularQr: 'Simular lectura QR',
-    calcularRuta: 'Calcular ruta',
+    leerQr:
+      'Leer QR con cámara',
+    simularQr:
+      'Simular lectura QR',
+    calcularRuta:
+      'Calcular ruta',
 
     estadoUbicacion:
       'Estado de ubicación',
     resultadoRuta:
       'Resultado de la ruta',
-    tipoRuta: 'Tipo de ruta',
-    rutaNormal: 'Normal',
+    tipoRuta:
+      'Tipo de ruta',
+    rutaNormal:
+      'Normal',
     rutaAccesibleSinEscaleras:
       'Accesible, sin escaleras',
     distanciaSimulada:
       'Distancia medida',
-    unidades: 'm',
+    unidades:
+      'm',
 
     mapaPreliminar:
       'Mapa navegable preliminar',
-    nivel: 'Nivel',
+    nivel:
+      'Nivel',
     datosSimulados:
       'Mediciones de referencia',
     mapaAria:
       'Grafo navegable del nivel {nivel}',
     mapaSinDatos:
       'No existen nodos disponibles para el nivel {nivel}.',
-    nodo: 'Nodo',
+    nodo:
+      'Nodo',
     rutaCalculada:
       'Ruta calculada',
     ubicacionActual:
       'Ubicación actual',
 
-    guiaRuta: 'Guía paso a paso',
+    guiaRuta:
+      'Guía paso a paso',
     pasoDe:
       'Paso {actual} de {total}',
     progresoRuta:
       'Progreso del recorrido',
-    pasoAnterior: 'Anterior',
-    pasoSiguiente: 'Siguiente',
-    reiniciarRuta: 'Reiniciar',
+    pasoAnterior:
+      'Anterior',
+    pasoSiguiente:
+      'Siguiente',
+    reiniciarRuta:
+      'Reiniciar',
 
     inicioRuta:
       'Comienza en {nombre}.',
     continuarHacia:
       'Continúa hacia {nombre}.',
+    girarIzquierdaHacia:
+      'Gira a la izquierda hacia {nombre}.',
+    girarDerechaHacia:
+      'Gira a la derecha hacia {nombre}.',
     subirAscensor:
       'Utiliza el ascensor para subir al nivel {nivel}.',
     bajarAscensor:
@@ -144,7 +165,8 @@ const TRADUCCIONES: Record<
 
     apuntarCamara:
       'Apunta la cámara al código QR',
-    escanear: 'Escanear',
+    escanear:
+      'Escanear',
 
     lecturaCancelada:
       'La lectura fue cancelada o no se detectó un código QR.',
@@ -177,8 +199,10 @@ const TRADUCCIONES: Record<
     ingles: 'English',
     portugues: 'Portuguese',
 
-    tituloAplicacion: 'NavInside',
-    tituloPagina: 'Indoor navigation',
+    tituloAplicacion:
+      'NavInside',
+    tituloPagina:
+      'Indoor navigation',
     instrucciones:
       'Select your starting point and destination.',
 
@@ -201,10 +225,12 @@ const TRADUCCIONES: Record<
     corregirErroresMapa:
       'Routes cannot be calculated until these errors are corrected:',
 
-    origen: 'Starting point',
+    origen:
+      'Starting point',
     seleccionarOrigen:
       'Select starting point',
-    destino: 'Destination',
+    destino:
+      'Destination',
     seleccionarDestino:
       'Select destination',
     origenQrDescripcion:
@@ -228,54 +254,71 @@ const TRADUCCIONES: Record<
     ocultarMapaRuta:
       'Hide route map',
 
-    rutaAccesible: 'Accessible route',
+    rutaAccesible:
+      'Accessible route',
     descripcionRutaAccesible:
       'Avoids stairs and uses accessible connections.',
 
-    leerQr: 'Scan QR with camera',
-    simularQr: 'Simulate QR scan',
-    calcularRuta: 'Calculate route',
+    leerQr:
+      'Scan QR with camera',
+    simularQr:
+      'Simulate QR scan',
+    calcularRuta:
+      'Calculate route',
 
     estadoUbicacion:
       'Location status',
     resultadoRuta:
       'Route result',
-    tipoRuta: 'Route type',
-    rutaNormal: 'Normal',
+    tipoRuta:
+      'Route type',
+    rutaNormal:
+      'Normal',
     rutaAccesibleSinEscaleras:
       'Accessible, without stairs',
     distanciaSimulada:
       'Measured distance',
-    unidades: 'm',
+    unidades:
+      'm',
 
     mapaPreliminar:
       'Preliminary navigation map',
-    nivel: 'Level',
+    nivel:
+      'Level',
     datosSimulados:
       'Reference measurements',
     mapaAria:
       'Navigable graph for level {nivel}',
     mapaSinDatos:
       'No nodes are available for level {nivel}.',
-    nodo: 'Node',
+    nodo:
+      'Node',
     rutaCalculada:
       'Calculated route',
     ubicacionActual:
       'Current location',
 
-    guiaRuta: 'Step-by-step guidance',
+    guiaRuta:
+      'Step-by-step guidance',
     pasoDe:
       'Step {actual} of {total}',
     progresoRuta:
       'Route progress',
-    pasoAnterior: 'Previous',
-    pasoSiguiente: 'Next',
-    reiniciarRuta: 'Restart',
+    pasoAnterior:
+      'Previous',
+    pasoSiguiente:
+      'Next',
+    reiniciarRuta:
+      'Restart',
 
     inicioRuta:
       'Start at {nombre}.',
     continuarHacia:
       'Continue towards {nombre}.',
+    girarIzquierdaHacia:
+      'Turn left towards {nombre}.',
+    girarDerechaHacia:
+      'Turn right towards {nombre}.',
     subirAscensor:
       'Use the elevator to go up to level {nivel}.',
     bajarAscensor:
@@ -301,7 +344,8 @@ const TRADUCCIONES: Record<
 
     apuntarCamara:
       'Point the camera at the QR code',
-    escanear: 'Scan',
+    escanear:
+      'Scan',
 
     lecturaCancelada:
       'The scan was cancelled or no QR code was detected.',
@@ -329,13 +373,19 @@ const TRADUCCIONES: Record<
   },
 
   pt: {
-    idioma: 'Idioma',
-    espanol: 'Espanhol',
-    ingles: 'Inglês',
-    portugues: 'Português',
+    idioma:
+      'Idioma',
+    espanol:
+      'Espanhol',
+    ingles:
+      'Inglês',
+    portugues:
+      'Português',
 
-    tituloAplicacion: 'NavInside',
-    tituloPagina: 'Navegação interna',
+    tituloAplicacion:
+      'NavInside',
+    tituloPagina:
+      'Navegação interna',
     instrucciones:
       'Selecione o ponto de origem e o destino.',
 
@@ -358,10 +408,12 @@ const TRADUCCIONES: Record<
     corregirErroresMapa:
       'Não é possível calcular rotas até que estes erros sejam corrigidos:',
 
-    origen: 'Origem',
+    origen:
+      'Origem',
     seleccionarOrigen:
       'Selecionar origem',
-    destino: 'Destino',
+    destino:
+      'Destino',
     seleccionarDestino:
       'Selecionar destino',
     origenQrDescripcion:
@@ -385,54 +437,71 @@ const TRADUCCIONES: Record<
     ocultarMapaRuta:
       'Ocultar mapa da rota',
 
-    rutaAccesible: 'Rota acessível',
+    rutaAccesible:
+      'Rota acessível',
     descripcionRutaAccesible:
       'Evita escadas e utiliza conexões acessíveis.',
 
-    leerQr: 'Ler QR com a câmera',
-    simularQr: 'Simular leitura de QR',
-    calcularRuta: 'Calcular rota',
+    leerQr:
+      'Ler QR com a câmera',
+    simularQr:
+      'Simular leitura de QR',
+    calcularRuta:
+      'Calcular rota',
 
     estadoUbicacion:
       'Estado da localização',
     resultadoRuta:
       'Resultado da rota',
-    tipoRuta: 'Tipo de rota',
-    rutaNormal: 'Normal',
+    tipoRuta:
+      'Tipo de rota',
+    rutaNormal:
+      'Normal',
     rutaAccesibleSinEscaleras:
       'Acessível, sem escadas',
     distanciaSimulada:
       'Distância medida',
-    unidades: 'm',
+    unidades:
+      'm',
 
     mapaPreliminar:
       'Mapa de navegação preliminar',
-    nivel: 'Nível',
+    nivel:
+      'Nível',
     datosSimulados:
       'Medições de referência',
     mapaAria:
       'Grafo navegável do nível {nivel}',
     mapaSinDatos:
       'Não há nós disponíveis para o nível {nivel}.',
-    nodo: 'Nó',
+    nodo:
+      'Nó',
     rutaCalculada:
       'Rota calculada',
     ubicacionActual:
       'Localização atual',
 
-    guiaRuta: 'Guia passo a passo',
+    guiaRuta:
+      'Guia passo a passo',
     pasoDe:
       'Passo {actual} de {total}',
     progresoRuta:
       'Progresso da rota',
-    pasoAnterior: 'Anterior',
-    pasoSiguiente: 'Próximo',
-    reiniciarRuta: 'Reiniciar',
+    pasoAnterior:
+      'Anterior',
+    pasoSiguiente:
+      'Próximo',
+    reiniciarRuta:
+      'Reiniciar',
 
     inicioRuta:
       'Comece em {nombre}.',
     continuarHacia:
       'Continue até {nombre}.',
+    girarIzquierdaHacia:
+      'Vire à esquerda até {nombre}.',
+    girarDerechaHacia:
+      'Vire à direita até {nombre}.',
     subirAscensor:
       'Use o elevador para subir ao nível {nivel}.',
     bajarAscensor:
@@ -458,7 +527,8 @@ const TRADUCCIONES: Record<
 
     apuntarCamara:
       'Aponte a câmera para o código QR',
-    escanear: 'Escanear',
+    escanear:
+      'Escanear',
 
     lecturaCancelada:
       'A leitura foi cancelada ou nenhum código QR foi detectado.',
@@ -521,9 +591,9 @@ export class IdiomaService {
     > = {}
   ): string {
     let texto =
-      TRADUCCIONES[this.idiomaActual][
-        clave
-      ] ??
+      TRADUCCIONES[
+        this.idiomaActual
+      ][clave] ??
       TRADUCCIONES[
         IDIOMA_PREDETERMINADO
       ][clave] ??
@@ -542,7 +612,8 @@ export class IdiomaService {
     return texto;
   }
 
-  private obtenerIdiomaInicial(): Idioma {
+  private obtenerIdiomaInicial():
+    Idioma {
     const idiomaGuardado =
       this.obtenerIdiomaGuardado();
 
@@ -550,7 +621,10 @@ export class IdiomaService {
       return idiomaGuardado;
     }
 
-    if (typeof navigator === 'undefined') {
+    if (
+      typeof navigator ===
+      'undefined'
+    ) {
       return IDIOMA_PREDETERMINADO;
     }
 

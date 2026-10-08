@@ -149,7 +149,7 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'ascensor-central-nivel-1',
     nombre: 'Salida Ascensor Central - Nivel 1',
-    x: 0,
+    x: -10,
     y: 0,
     tipo: 'ascensor',
     nivel: 1,
@@ -158,18 +158,18 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   },
   {
     id: 'zona-kid-nivel-1',
-    nombre: 'Zona Kid',
-    x: 2,
-    y: -4,
+    nombre: 'Zona Mini Club Kids',
+    x: -10,
+    y: -5,
     tipo: 'servicio',
     nivel: 1,
     restringido: false
   },
   {
     id: 'zona-juego-adulto-nivel-1',
-    nombre: 'Zona Juego Adulto',
-    x: 2,
-    y: -2,
+    nombre: 'Zona Juegos Adultos',
+    x: -10,
+    y: 5,
     tipo: 'servicio',
     nivel: 1,
     restringido: false
@@ -177,8 +177,8 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'zona-play-nivel-1',
     nombre: 'Zona Play',
-    x: 2,
-    y: 0,
+    x: -5,
+    y: -4,
     tipo: 'servicio',
     nivel: 1,
     restringido: false
@@ -186,7 +186,7 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'hall-nivel-1',
     nombre: 'Hall',
-    x: 4,
+    x: 0,
     y: 0,
     tipo: 'pasillo',
     nivel: 1,
@@ -195,7 +195,7 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'mini-market-proa-nivel-1',
     nombre: 'Mini Market Proa',
-    x: 7,
+    x: 10,
     y: -4,
     tipo: 'servicio',
     nivel: 1,
@@ -204,8 +204,8 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'gimnasio-nivel-1',
     nombre: 'Gimnasio',
-    x: 7,
-    y: -2,
+    x: 15,
+    y: 4,
     tipo: 'gimnasio',
     nivel: 1,
     restringido: false
@@ -213,8 +213,8 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'salon-eventos-montemar-nivel-1',
     nombre: 'Salón Eventos Montemar',
-    x: 7,
-    y: 0,
+    x: 32,
+    y: 4,
     tipo: 'salon',
     nivel: 1,
     restringido: false
@@ -222,8 +222,17 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'salon-eventos-terramar-nivel-1',
     nombre: 'Salón Eventos Terramar',
-    x: 7,
-    y: 2,
+    x: 13,
+    y: 4,
+    tipo: 'salon',
+    nivel: 1,
+    restringido: true
+  },
+  {
+    id: 'salon-eventos-altamar-nivel-1',
+    nombre: 'Salón de Eventos Altamar',
+    x: 20,
+    y: -4,
     tipo: 'salon',
     nivel: 1,
     restringido: false
@@ -231,7 +240,7 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'alma-spa-nivel-1',
     nombre: 'Alma Spa',
-    x: 7,
+    x: 26,
     y: 4,
     tipo: 'spa',
     nivel: 1,
@@ -240,7 +249,7 @@ export const NODOS_HIPPOCAMPUS: Nodo[] = [
   {
     id: 'ascensor-habitaciones-nivel-1',
     nombre: 'Ascensor Edificio Habitaciones - Nivel 1',
-    x: 10,
+    x: 37,
     y: 0,
     tipo: 'ascensor',
     nivel: 1,
@@ -475,6 +484,14 @@ export const CONEXIONES_HIPPOCAMPUS: Conexion[] = [
   },
   {
     origen: 'hall-nivel-1',
+    destino: 'salon-eventos-altamar-nivel-1',
+    distancia: 32.184,
+    tipo: 'pasillo',
+    restringida: false,
+    habilitada: true
+  },
+  {
+    origen: 'hall-nivel-1',
     destino: 'alma-spa-nivel-1',
     distancia: 26.521,
     tipo: 'pasillo',
@@ -507,29 +524,40 @@ export const CONEXIONES_HIPPOCAMPUS: Conexion[] = [
   }
 ];
 
-export const LUGARES_HIPPOCAMPUS_PRELIMINARES: LugarPlano[] =
-  NODOS_HIPPOCAMPUS.map(nodo => ({
-    id: nodo.id,
-    nombre: nodo.nombre,
-    tipo: nodo.tipo,
-    nivel: nodo.nivel ?? null,
-    sector: nodo.sector ?? null,
-    x: nodo.x,
-    y: nodo.y,
-    accesible: nodo.accesible ?? null,
-    restringido: nodo.restringido ?? null,
-    estado:
-      nodo.accesible === undefined
-        ? 'pendiente-validacion'
-        : 'confirmado'
-  }));
+export const LUGARES_HIPPOCAMPUS_PRELIMINARES:
+  LugarPlano[] =
+  NODOS_HIPPOCAMPUS.map(
+    nodo => ({
+      id: nodo.id,
+      nombre: nodo.nombre,
+      tipo: nodo.tipo,
+      nivel:
+        nodo.nivel ?? null,
+      sector:
+        nodo.sector ?? null,
+      x: nodo.x,
+      y: nodo.y,
+      accesible:
+        nodo.accesible ?? null,
+      restringido:
+        nodo.restringido ?? null,
+      estado:
+        nodo.accesible ===
+        undefined
+          ? 'pendiente-validacion'
+          : 'confirmado'
+    })
+  );
 
-export const MAPA_ACTIVO: MapaNavegacion = {
+export const MAPA_ACTIVO:
+  MapaNavegacion = {
   id: 'hippocampus-resort',
-  nombre: 'Hippocampus Resort & Club',
+  nombre:
+    'Hippocampus Resort & Club',
   descripcion:
     'Grafo de referencia construido con mediciones realizadas en terreno.',
   estado: 'referencia',
   nodos: NODOS_HIPPOCAMPUS,
-  conexiones: CONEXIONES_HIPPOCAMPUS
+  conexiones:
+    CONEXIONES_HIPPOCAMPUS
 };

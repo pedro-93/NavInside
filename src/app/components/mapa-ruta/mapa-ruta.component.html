@@ -1,197 +1,653 @@
 <section class="mapa-contenedor">
   <header class="mapa-encabezado">
     <div>
-      <p class="mapa-etiqueta">
-        {{ textoEtiqueta }}
-      </p>
-
-      <h2>
-        {{ textoNivel }} {{ nivel }}
-      </h2>
+      <p class="mapa-etiqueta">{{ textoEtiqueta }}</p>
+      <h2>{{ textoNivel }} {{ nivel }}</h2>
     </div>
 
-    <span class="mapa-estado">
-      {{ textoEstado }}
-    </span>
+    <span class="mapa-estado">{{ textoEstado }}</span>
   </header>
 
   @if (hayDatosNivel) {
-  <div class="mapa-superficie">
-    <svg
-      [attr.viewBox]="
-        '0 0 ' +
-        anchoVista +
-        ' ' +
-        altoVista
-      "
-      role="img"
-      [attr.aria-label]="textoAriaMapa"
+    <div
+      class="mapa-superficie"
+      [class.mapa-superficie-nivel-uno]="mostrarOrientacionNivelUno"
     >
-      <defs>
-        <filter
-          id="brilloRuta"
-          x="-50%"
-          y="-50%"
-          width="200%"
-          height="200%"
-        >
-          <feGaussianBlur
-            stdDeviation="7"
-            result="desenfoque"
-          />
-
-          <feMerge>
-            <feMergeNode in="desenfoque" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-
-        <filter
-          id="brilloActual"
-          x="-75%"
-          y="-75%"
-          width="250%"
-          height="250%"
-        >
-          <feGaussianBlur
-            stdDeviation="10"
-            result="desenfoqueActual"
-          />
-
-          <feMerge>
-            <feMergeNode
-              in="desenfoqueActual"
-            />
-
-            <feMergeNode
-              in="SourceGraphic"
-            />
-          </feMerge>
-        </filter>
-      </defs>
-
-      <g class="conexiones">
-        @for (
-          conexion of conexionesVisuales;
-          track identificarConexion($index, conexion)
-        ) {
-        <line
-          [attr.x1]="conexion.origen.xVisual"
-          [attr.y1]="conexion.origen.yVisual"
-          [attr.x2]="conexion.destino.xVisual"
-          [attr.y2]="conexion.destino.yVisual"
-          [ngClass]="{
-            'conexion-ruta':
-              conexion.perteneceRuta &&
-              conexion.habilitada,
-            'conexion-base':
-              !conexion.perteneceRuta &&
-              conexion.habilitada,
-            'conexion-accesible':
-              conexion.accesible &&
-              conexion.habilitada,
-            'conexion-cerrada':
-              !conexion.habilitada
-          }"
-        />
-        }
-      </g>
-
-      @for (
-        nodoVisual of nodosVisuales;
-        track identificarNodo($index, nodoVisual)
-      ) {
-      <g
-        class="nodo"
-        [attr.transform]="
-          'translate(' +
-          nodoVisual.xVisual +
-          ' ' +
-          nodoVisual.yVisual +
-          ')'
-        "
+      <svg
+        [attr.viewBox]="'0 0 ' + anchoVista + ' ' + altoVista"
+        role="img"
+        [attr.aria-label]="textoAriaMapa"
       >
-        <circle
-          r="18"
-          [ngClass]="{
-            'nodo-base':
-              !nodoVisual.perteneceRuta,
-            'nodo-ruta':
-              nodoVisual.perteneceRuta,
-            'nodo-origen':
-              nodoVisual.esOrigen,
-            'nodo-destino':
-              nodoVisual.esDestino,
-            'nodo-actual':
-              nodoVisual.esActual
-          }"
+        <defs>
+          <filter
+            id="brilloRuta"
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+          >
+            <feGaussianBlur
+              stdDeviation="7"
+              result="desenfoque"
+            />
+
+            <feMerge>
+              <feMergeNode in="desenfoque" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          <filter
+            id="sombraCursor"
+            x="-100%"
+            y="-100%"
+            width="300%"
+            height="300%"
+          >
+            <feDropShadow
+              dx="0"
+              dy="5"
+              stdDeviation="7"
+              flood-color="#000000"
+              flood-opacity="0.65"
+            />
+          </filter>
+
+          <pattern
+            id="cuadriculaMapa"
+            width="32"
+            height="32"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 32 0 L 0 0 0 32"
+              class="cuadricula-linea"
+            />
+          </pattern>
+
+          <linearGradient
+            id="degradadoCursor"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              stop-color="#7de9f7"
+            />
+
+            <stop
+              offset="55%"
+              stop-color="#13c4ff"
+            />
+
+            <stop
+              offset="100%"
+              stop-color="#087d9c"
+            />
+          </linearGradient>
+        </defs>
+
+        <rect
+          x="0"
+          y="0"
+          [attr.width]="anchoVista"
+          [attr.height]="altoVista"
+          class="mapa-fondo"
         />
 
-        @if (
-            nodoVisual.esOrigen ||
-            nodoVisual.esDestino ||
-            nodoVisual.esActual
-        ) {
-        <circle
-          r="28"
-          [ngClass]="{
-            'nodo-pulso':
-              !nodoVisual.esActual,
-            'nodo-pulso-actual':
-              nodoVisual.esActual
-          }"
-        />
+        @if (!mostrarOrientacionNivelUno) {
+          <rect
+            x="0"
+            y="0"
+            [attr.width]="anchoVista"
+            [attr.height]="altoVista"
+            fill="url(#cuadriculaMapa)"
+            class="mapa-cuadricula"
+          />
         }
 
-        <text
-          x="0"
-          [attr.y]="
-            -34 -
-            (
-              nodoVisual.lineasNombre.length -
-              1
-            ) * 24
-          "
-          text-anchor="middle"
-          class="nodo-nombre"
-          [ngClass]="{
-            'nodo-nombre-actual':
-              nodoVisual.esActual
-          }"
-        >
-          @for (
-            linea of nodoVisual.lineasNombre;
-            track $index
-          ) {
-            <tspan
-              x="0"
-              [attr.dy]="$index === 0 ? 0 : 24"
-            >
-              {{ linea }}
-            </tspan>
-          }
-        </text>
-
-        @if (nodoVisual.esActual) {
-          <text
-            x="0"
-            y="5"
-            text-anchor="middle"
-            class="nodo-marcador-actual"
+        @if (mostrarOrientacionNivelUno) {
+          <g
+            class="plano-nivel-uno"
             aria-hidden="true"
           >
-            ●
-          </text>
+            <path
+              d="M45 75 H1435 V625 H1280 V665 H45 Z"
+              class="plano-contorno"
+            />
+
+            <path
+              d="M205 327 H535 V145 H902 M535 327 H1370 M205 327 V150 M205 327 V548"
+              class="plano-pasillo"
+            />
+
+            <path
+              d="M535 327 V548 H1370"
+              class="plano-pasillo"
+            />
+
+            <g class="plano-recintos-superiores">
+              <rect
+                x="82"
+                y="105"
+                width="245"
+                height="110"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="350"
+                y="105"
+                width="165"
+                height="110"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="555"
+                y="85"
+                width="185"
+                height="130"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="770"
+                y="85"
+                width="265"
+                height="130"
+                rx="8"
+                class="plano-recinto"
+              />
+            </g>
+
+            <g class="plano-recintos-inferiores">
+              <rect
+                x="82"
+                y="475"
+                width="245"
+                height="115"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="555"
+                y="475"
+                width="175"
+                height="115"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="750"
+                y="475"
+                width="145"
+                height="115"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="915"
+                y="475"
+                width="155"
+                height="115"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="1090"
+                y="475"
+                width="170"
+                height="115"
+                rx="8"
+                class="plano-recinto"
+              />
+
+              <rect
+                x="1280"
+                y="455"
+                width="120"
+                height="135"
+                rx="8"
+                class="plano-recinto plano-ascensor"
+              />
+            </g>
+
+            <rect
+              x="125"
+              y="260"
+              width="160"
+              height="135"
+              rx="16"
+              class="plano-nucleo"
+            />
+
+            <rect
+              x="458"
+              y="260"
+              width="155"
+              height="135"
+              rx="16"
+              class="plano-hall"
+            />
+
+            <g class="plano-puertas">
+              <path
+                d="M205 215 V245 M327 160 H345 M515 160 H548 M740 150 H765"
+              />
+
+              <path
+                d="M205 395 V468 M535 395 V468 M730 548 H745 M895 548 H910"
+              />
+
+              <path
+                d="M1070 548 H1085 M1260 548 H1275"
+              />
+            </g>
+
+            <g class="plano-textos">
+              <text
+                x="205"
+                y="145"
+                text-anchor="middle"
+              >
+                MINI CLUB KIDS
+              </text>
+
+              <text
+                x="432"
+                y="145"
+                text-anchor="middle"
+              >
+                ZONA PLAY
+              </text>
+
+              <text
+                x="648"
+                y="135"
+                text-anchor="middle"
+              >
+                MINI MARKET PROA
+              </text>
+
+              <text
+                x="902"
+                y="135"
+                text-anchor="middle"
+              >
+                SALÓN ALTAMAR
+              </text>
+
+              <text
+                x="205"
+                y="320"
+                text-anchor="middle"
+              >
+                ASCENSORES
+              </text>
+
+              <text
+                x="205"
+                y="344"
+                text-anchor="middle"
+              >
+                PRINCIPALES
+              </text>
+
+              <text
+                x="535"
+                y="334"
+                text-anchor="middle"
+              >
+                HALL
+              </text>
+
+              <text
+                x="205"
+                y="525"
+                text-anchor="middle"
+              >
+                JUEGOS ADULTOS
+              </text>
+
+              <text
+                x="642"
+                y="525"
+                text-anchor="middle"
+              >
+                SALÓN TERRAMAR
+              </text>
+
+              <text
+                x="822"
+                y="525"
+                text-anchor="middle"
+              >
+                GIMNASIO
+              </text>
+
+              <text
+                x="992"
+                y="525"
+                text-anchor="middle"
+              >
+                ALMA SPA
+              </text>
+
+              <text
+                x="1175"
+                y="525"
+                text-anchor="middle"
+              >
+                SALÓN MONTEMAR
+              </text>
+
+              <text
+                x="1340"
+                y="510"
+                text-anchor="middle"
+              >
+                ASCENSOR
+              </text>
+
+              <text
+                x="1340"
+                y="534"
+                text-anchor="middle"
+              >
+                HABITACIONES
+              </text>
+
+              <text
+                x="718"
+                y="253"
+                text-anchor="middle"
+                class="plano-direccion"
+              >
+                PASILLO IZQUIERDO
+              </text>
+
+              <text
+                x="970"
+                y="445"
+                text-anchor="middle"
+                class="plano-direccion"
+              >
+                PASILLO DERECHO
+              </text>
+
+              <text
+                x="1468"
+                y="350"
+                text-anchor="middle"
+                class="plano-mirador"
+                transform="rotate(-90 1468 350)"
+              >
+                MIRADOR HACIA EL MAR
+              </text>
+            </g>
+          </g>
         }
-      </g>
-      }
-    </svg>
-  </div>
+
+        <g class="conexiones-base">
+          @for (
+            conexion of conexionesVisuales;
+            track identificarConexion(
+              $index,
+              conexion
+            )
+          ) {
+            @if (
+              conexion.habilitada &&
+              !conexion.perteneceRuta &&
+              !mostrarOrientacionNivelUno
+            ) {
+              <line
+                [attr.x1]="conexion.origen.xVisual"
+                [attr.y1]="conexion.origen.yVisual"
+                [attr.x2]="conexion.destino.xVisual"
+                [attr.y2]="conexion.destino.yVisual"
+                class="conexion-base"
+                [class.conexion-accesible]="
+                  conexion.accesible
+                "
+              />
+            }
+
+            @if (!conexion.habilitada) {
+              <line
+                [attr.x1]="conexion.origen.xVisual"
+                [attr.y1]="conexion.origen.yVisual"
+                [attr.x2]="conexion.destino.xVisual"
+                [attr.y2]="conexion.destino.yVisual"
+                class="conexion-cerrada"
+              />
+            }
+          }
+        </g>
+
+        <g class="conexiones-ruta">
+          @for (
+            conexion of conexionesVisuales;
+            track identificarConexion(
+              $index,
+              conexion
+            )
+          ) {
+            @if (
+              conexion.perteneceRuta &&
+              conexion.habilitada
+            ) {
+              <line
+                [attr.x1]="conexion.origen.xVisual"
+                [attr.y1]="conexion.origen.yVisual"
+                [attr.x2]="conexion.destino.xVisual"
+                [attr.y2]="conexion.destino.yVisual"
+                class="conexion-ruta-sombra"
+              />
+
+              <line
+                [attr.x1]="conexion.origen.xVisual"
+                [attr.y1]="conexion.origen.yVisual"
+                [attr.x2]="conexion.destino.xVisual"
+                [attr.y2]="conexion.destino.yVisual"
+                class="conexion-ruta"
+                [class.conexion-accesible]="
+                  conexion.accesible
+                "
+              />
+            }
+          }
+        </g>
+
+        @if (!mostrarOrientacionNivelUno) {
+          <g class="distancias">
+            @for (
+              conexion of conexionesVisuales;
+              track identificarConexion(
+                $index,
+                conexion
+              )
+            ) {
+              <g
+                [attr.transform]="
+                  'translate(' +
+                  conexion.xEtiqueta +
+                  ' ' +
+                  conexion.yEtiqueta +
+                  ')'
+                "
+              >
+                <rect
+                  x="-47"
+                  y="-16"
+                  width="94"
+                  height="31"
+                  rx="15"
+                  class="distancia-fondo"
+                  [class.distancia-fondo-ruta]="
+                    conexion.perteneceRuta
+                  "
+                />
+
+                <text
+                  x="0"
+                  y="6"
+                  text-anchor="middle"
+                  class="conexion-distancia"
+                  [class.conexion-distancia-ruta]="
+                    conexion.perteneceRuta
+                  "
+                >
+                  {{
+                    formatearDistancia(
+                      conexion.distancia
+                    )
+                  }}
+                </text>
+              </g>
+            }
+          </g>
+        }
+
+        <g class="nodos">
+          @for (
+            nodoVisual of nodosVisuales;
+            track identificarNodo(
+              $index,
+              nodoVisual
+            )
+          ) {
+            @if (
+              !mostrarOrientacionNivelUno ||
+              nodoVisual.perteneceRuta ||
+              nodoVisual.esOrigen ||
+              nodoVisual.esDestino ||
+              nodoVisual.esActual
+            ) {
+              <g
+                class="nodo"
+                [attr.transform]="
+                  'translate(' +
+                  nodoVisual.xVisual +
+                  ' ' +
+                  nodoVisual.yVisual +
+                  ')'
+                "
+              >
+                @if (!nodoVisual.esActual) {
+                  <circle
+                    r="17"
+                    [ngClass]="{
+                      'nodo-base':
+                        !nodoVisual.perteneceRuta,
+                      'nodo-ruta':
+                        nodoVisual.perteneceRuta,
+                      'nodo-origen':
+                        nodoVisual.esOrigen,
+                      'nodo-destino':
+                        nodoVisual.esDestino
+                    }"
+                  />
+                }
+
+                @if (nodoVisual.esDestino) {
+                  <circle
+                    r="28"
+                    class="nodo-destino-pulso"
+                  />
+                }
+
+                @if (!mostrarOrientacionNivelUno) {
+                  <text
+                    [attr.x]="nodoVisual.xEtiqueta"
+                    [attr.y]="
+                      nodoVisual.yEtiqueta -
+                      (
+                        nodoVisual.lineasNombre.length -
+                        1
+                      ) * 12
+                    "
+                    text-anchor="middle"
+                    class="nodo-nombre"
+                    [class.nodo-nombre-ruta]="
+                      nodoVisual.perteneceRuta
+                    "
+                  >
+                    @for (
+                      linea of nodoVisual.lineasNombre;
+                      track $index
+                    ) {
+                      <tspan
+                        [attr.x]="nodoVisual.xEtiqueta"
+                        [attr.dy]="
+                          $index === 0
+                            ? 0
+                            : 24
+                        "
+                      >
+                        {{ linea }}
+                      </tspan>
+                    }
+                  </text>
+                }
+              </g>
+            }
+          }
+        </g>
+
+        @if (cursorVisual) {
+          <g
+            class="cursor-navegacion"
+            [attr.transform]="
+              'translate(' +
+              cursorVisual.x +
+              ' ' +
+              cursorVisual.y +
+              ') rotate(' +
+              cursorVisual.angulo +
+              ')'
+            "
+            aria-hidden="true"
+          >
+            <circle
+              r="35"
+              class="cursor-halo"
+            />
+
+            <circle
+              r="25"
+              class="cursor-fondo"
+            />
+
+            <path
+              d="M 0 -20 L 15 17 L 0 11 L -15 17 Z"
+              fill="url(#degradadoCursor)"
+              class="cursor-flecha"
+            />
+
+            <circle
+              cx="0"
+              cy="2"
+              r="4"
+              class="cursor-centro"
+            />
+          </g>
+        }
+      </svg>
+    </div>
   } @else {
     <div class="mapa-vacio">
-      <p>
-        {{ textoSinDatos }}
-      </p>
+      <p>{{ textoSinDatos }}</p>
     </div>
   }
 

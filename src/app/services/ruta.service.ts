@@ -8,6 +8,7 @@ import {
   Nodo,
   TipoConexion
 } from '../models/nodo.model';
+
 import {
   MapaService
 } from './mapa.service';
@@ -22,6 +23,10 @@ export type DireccionNivel =
   | 'subir'
   | 'bajar';
 
+export type DireccionHorizontal =
+  | 'izquierda'
+  | 'derecha';
+
 export interface PasoRuta {
   orden: number;
   tipo: TipoPasoRuta;
@@ -29,6 +34,8 @@ export interface PasoRuta {
   desde?: Nodo;
   medio?: TipoConexion;
   direccionNivel?: DireccionNivel;
+  direccionHorizontal?:
+    DireccionHorizontal;
   destinoEsPiso?: boolean;
 }
 
@@ -38,6 +45,7 @@ export interface PasoRuta {
 export class RutaService {
   private readonly mapaService =
     inject(MapaService);
+
   private nodos: Nodo[];
   private conexiones: Conexion[];
 
@@ -353,7 +361,12 @@ export class RutaService {
         nodo:
           nodoSiguiente,
         medio:
-          conexion?.tipo
+          conexion?.tipo,
+        direccionHorizontal:
+          this.obtenerDireccionHorizontal(
+            nodoActual.id,
+            nodoSiguiente.id
+          )
       });
     }
 
@@ -399,6 +412,45 @@ export class RutaService {
       origen.nivel!
       ? 'subir'
       : 'bajar';
+  }
+
+  private obtenerDireccionHorizontal(
+    origenId: string,
+    destinoId: string
+  ): DireccionHorizontal | undefined {
+    const direcciones:
+      Record<
+        string,
+        DireccionHorizontal
+      > = {
+        'ascensor-central-nivel-1|zona-kid-nivel-1':
+          'izquierda',
+
+        'ascensor-central-nivel-1|zona-play-nivel-1':
+          'izquierda',
+
+        'ascensor-central-nivel-1|hall-nivel-1':
+          'izquierda',
+
+        'ascensor-central-nivel-1|zona-juego-adulto-nivel-1':
+          'derecha',
+
+        'hall-nivel-1|salon-eventos-altamar-nivel-1':
+          'izquierda',
+
+        'hall-nivel-1|gimnasio-nivel-1':
+          'derecha',
+
+        'hall-nivel-1|alma-spa-nivel-1':
+          'derecha',
+
+        'hall-nivel-1|salon-eventos-montemar-nivel-1':
+          'derecha'
+      };
+
+    return direcciones[
+      `${origenId}|${destinoId}`
+    ];
   }
 
   private calcularHeuristica(

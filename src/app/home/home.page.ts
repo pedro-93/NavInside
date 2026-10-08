@@ -1,13 +1,22 @@
 import {
+  CommonModule
+} from '@angular/common';
+
+import {
   Component,
   inject
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+
+import {
+  FormsModule
+} from '@angular/forms';
+
 import {
   CapacitorBarcodeScanner,
   CapacitorBarcodeScannerCameraDirection,
   CapacitorBarcodeScannerTypeHint
 } from '@capacitor/barcode-scanner';
+
 import {
   IonButton,
   IonCard,
@@ -16,75 +25,65 @@ import {
   IonCardTitle,
   IonContent,
   IonHeader,
-  IonIcon,
   IonItem,
   IonSelect,
   IonSelectOption,
-  IonTitle,
   IonToggle,
   IonToolbar
 } from '@ionic/angular';
-import {
-  addIcons
-} from 'ionicons';
-import {
-  accessibilityOutline,
-  arrowBackOutline,
-  arrowForwardOutline,
-  bedOutline,
-  businessOutline,
-  cartOutline,
-  enterOutline,
-  fitnessOutline,
-  gameControllerOutline,
-  locationOutline,
-  navigateOutline,
-  phonePortraitOutline,
-  qrCodeOutline,
-  refreshOutline,
-  restaurantOutline,
-  scanOutline,
-  sparklesOutline,
-  waterOutline
-} from 'ionicons/icons';
 
 import {
   MapaRutaComponent
 } from '../components/mapa-ruta/mapa-ruta.component';
+
 import {
   obtenerNombreNodo
 } from '../data/nombres-nodos.data';
+
 import {
   Conexion,
   LugarPlano,
   Nodo
 } from '../models/nodo.model';
+
 import {
   Idioma,
   IdiomaService
 } from '../services/idioma.service';
+
 import {
   MapaService
 } from '../services/mapa.service';
+
 import {
   MapaValidadorService,
   ProblemaMapa,
   ResultadoValidacionMapa
 } from '../services/mapa-validador.service';
+
 import {
   QrService
 } from '../services/qr.service';
+
 import {
   PasoRuta,
   RutaService
 } from '../services/ruta.service';
 
+import {
+  VozGuiaService
+} from '../services/voz-guia.service';
+
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl:
+    'home.page.html',
+  styleUrls: [
+    'home.page.scss'
+  ],
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MapaRutaComponent,
     IonButton,
@@ -94,11 +93,9 @@ import {
     IonCardTitle,
     IonContent,
     IonHeader,
-    IonIcon,
     IonItem,
     IonSelect,
     IonSelectOption,
-    IonTitle,
     IonToggle,
     IonToolbar
   ]
@@ -117,76 +114,89 @@ export class HomePage {
     inject(MapaService);
 
   private readonly mapaValidadorService =
-    inject(MapaValidadorService);
+    inject(
+      MapaValidadorService
+    );
 
-  conexionesMapa: Conexion[] = [];
-  lugares: Nodo[] = [];
-  nodosMapa: Nodo[] = [];
-  lugaresReferencia: LugarPlano[] = [];
+  private readonly vozGuiaService =
+    inject(VozGuiaService);
 
-  erroresMapa: ProblemaMapa[] = [];
-  advertenciasMapa: ProblemaMapa[] = [];
+  conexionesMapa:
+    Conexion[] = [];
+
+  lugares:
+    Nodo[] = [];
+
+  nodosMapa:
+    Nodo[] = [];
+
+  lugaresReferencia:
+    LugarPlano[] = [];
+
+  erroresMapa:
+    ProblemaMapa[] = [];
+
+  advertenciasMapa:
+    ProblemaMapa[] = [];
+
   mapaEsValido = true;
-
   origen = '';
   destino = '';
   modoAccesible = false;
-  idiomaSeleccionado: Idioma;
+
+  idiomaSeleccionado:
+    Idioma;
+
   mensajeUbicacion = '';
   resultado = '';
-  distanciaTotal: number | null = null;
-  rutaCalculada: Nodo[] = [];
-  pasosRuta: PasoRuta[] = [];
+
+  distanciaTotal:
+    number | null = null;
+
+  rutaCalculada:
+    Nodo[] = [];
+
+  pasosRuta:
+    PasoRuta[] = [];
+
   pasoActualIndice = 0;
   nivelVisualizado = 1;
-  selectorPuntosAbierto = false;
+
+  selectorPuntosAbierto =
+    false;
 
   selectorPuntosTipo:
-    | 'origen'
-    | 'destino'
-    | null = null;
+    'origen' |
+    'destino' |
+    null = null;
 
   nivelPuntosSeleccionado:
     number | null = null;
 
-  constructor() {
-    addIcons({
-      accessibilityOutline,
-      arrowBackOutline,
-      arrowForwardOutline,
-      bedOutline,
-      businessOutline,
-      cartOutline,
-      enterOutline,
-      fitnessOutline,
-      gameControllerOutline,
-      locationOutline,
-      navigateOutline,
-      phonePortraitOutline,
-      qrCodeOutline,
-      refreshOutline,
-      restaurantOutline,
-      scanOutline,
-      sparklesOutline,
-      waterOutline
-    });
+  guiaVozHabilitada = true;
 
+  constructor() {
     this.idiomaSeleccionado =
-      this.idiomaService.idiomaActual;
+      this.idiomaService
+        .idiomaActual;
 
     this.actualizarDatosMapa();
+
     void this.cargarMapaInicial();
   }
 
-  get origenId(): string | null {
+  get origenId():
+    string | null {
     return this.origen || null;
   }
 
-  get destinoId(): string | null {
+  get destinoId():
+    string | null {
     return this.destino || null;
   }
 
-  get pasoActual(): PasoRuta | null {
+  get pasoActual():
+    PasoRuta | null {
     return (
       this.pasosRuta[
         this.pasoActualIndice
@@ -194,7 +204,8 @@ export class HomePage {
     );
   }
 
-  get instruccionActual(): string {
+  get instruccionActual():
+    string {
     if (!this.pasoActual) {
       return '';
     }
@@ -204,27 +215,37 @@ export class HomePage {
     );
   }
 
-  get nodoActualId(): string | null {
+  get nodoActualId():
+    string | null {
     return (
       this.pasoActual?.nodo.id ??
       null
     );
   }
 
-  get numeroPasoActual(): number {
-    if (this.pasosRuta.length === 0) {
+  get numeroPasoActual():
+    number {
+    if (
+      this.pasosRuta.length === 0
+    ) {
       return 0;
     }
 
-    return this.pasoActualIndice + 1;
+    return (
+      this.pasoActualIndice + 1
+    );
   }
 
-  get totalPasos(): number {
+  get totalPasos():
+    number {
     return this.pasosRuta.length;
   }
 
-  get progresoRuta(): number {
-    if (this.totalPasos === 0) {
+  get progresoRuta():
+    number {
+    if (
+      this.totalPasos === 0
+    ) {
       return 0;
     }
 
@@ -236,11 +257,15 @@ export class HomePage {
     );
   }
 
-  get esPrimerPaso(): boolean {
-    return this.pasoActualIndice === 0;
+  get esPrimerPaso():
+    boolean {
+    return (
+      this.pasoActualIndice === 0
+    );
   }
 
-  get esUltimoPaso(): boolean {
+  get esUltimoPaso():
+    boolean {
     return (
       this.totalPasos > 0 &&
       this.pasoActualIndice ===
@@ -248,31 +273,119 @@ export class HomePage {
     );
   }
 
-  get instruccionesRuta(): string[] {
+  get instruccionesRuta():
+    string[] {
     return this.pasosRuta.map(
       paso =>
-        this.traducirPaso(paso)
+        this.traducirPaso(
+          paso
+        )
     );
   }
 
-  get nivelesPuntos(): number[] {
-    const niveles: number[] = [];
+  get vozGuiaDisponible():
+    boolean {
+    return (
+      this.vozGuiaService
+        .estaDisponible
+    );
+  }
 
-    for (const lugar of this.lugares) {
+  get distanciaRestante():
+    number {
+    return (
+      this.distanciaTotal ?? 0
+    );
+  }
+
+  get tiempoRestanteMinutos():
+    number {
+    if (
+      this.distanciaRestante <= 0
+    ) {
+      return 0;
+    }
+
+    const metrosPorSegundo =
+      1.2;
+
+    return Math.max(
+      1,
+      Math.ceil(
+        this.distanciaRestante /
+        metrosPorSegundo /
+        60
+      )
+    );
+  }
+
+  get distanciaSiguienteTramo():
+    number {
+    if (
+      this.rutaCalculada.length <
+      2
+    ) {
+      return 0;
+    }
+
+    const origen =
+      this.rutaCalculada[0].id;
+
+    const destino =
+      this.rutaCalculada[1].id;
+
+    const conexion =
+      this.conexionesMapa.find(
+        tramo =>
+          (
+            tramo.origen ===
+              origen &&
+            tramo.destino ===
+              destino
+          ) ||
+          (
+            tramo.origen ===
+              destino &&
+            tramo.destino ===
+              origen
+          )
+      );
+
+    return (
+      conexion?.distancia ?? 0
+    );
+  }
+
+  get nivelesPuntos():
+    number[] {
+    const niveles:
+      number[] = [];
+
+    for (
+      const lugar of
+        this.lugares
+    ) {
       if (
-        lugar.nivel !== undefined &&
-        !niveles.includes(lugar.nivel)
+        lugar.nivel !==
+          undefined &&
+        !niveles.includes(
+          lugar.nivel
+        )
       ) {
-        niveles.push(lugar.nivel);
+        niveles.push(
+          lugar.nivel
+        );
       }
     }
 
     return niveles;
   }
 
-  get lugaresNivelSeleccionado(): Nodo[] {
+  get lugaresNivelSeleccionado():
+    Nodo[] {
     if (
-      this.nivelPuntosSeleccionado === null
+      this.nivelPuntosSeleccionado ===
+      null
     ) {
       return [];
     }
@@ -290,14 +403,20 @@ export class HomePage {
           this.selectorPuntosTipo ===
           'origen'
         ) {
-          return lugar.id !== this.destino;
+          return (
+            lugar.id !==
+            this.destino
+          );
         }
 
         if (
           this.selectorPuntosTipo ===
           'destino'
         ) {
-          return lugar.id !== this.origen;
+          return (
+            lugar.id !==
+            this.origen
+          );
         }
 
         return true;
@@ -305,20 +424,24 @@ export class HomePage {
     );
   }
 
-  get origenSeleccionado(): Nodo | null {
+  get origenSeleccionado():
+    Nodo | null {
     return (
       this.lugares.find(
         lugar =>
-          lugar.id === this.origen
+          lugar.id ===
+          this.origen
       ) ?? null
     );
   }
 
-  get destinoSeleccionado(): Nodo | null {
+  get destinoSeleccionado():
+    Nodo | null {
     return (
       this.lugares.find(
         lugar =>
-          lugar.id === this.destino
+          lugar.id ===
+          this.destino
       ) ?? null
     );
   }
@@ -330,13 +453,21 @@ export class HomePage {
       string | number
     > = {}
   ): string {
-    return this.idiomaService.traducir(
-      clave,
-      parametros
+    return (
+      this.idiomaService.traducir(
+        clave,
+        parametros
+      )
     );
   }
 
-  nombreNodo(nodo: Nodo): string {
+  nombreNodo(
+    nodo: Nodo | null
+  ): string {
+    if (!nodo) {
+      return '';
+    }
+
     return obtenerNombreNodo(
       nodo.id,
       this.idiomaSeleccionado,
@@ -354,85 +485,23 @@ export class HomePage {
     );
   }
 
-  iconoLugar(lugar: Nodo): string {
-    const id = lugar.id.toLowerCase();
-
-    if (
-      id.includes('piscina') ||
-      id.includes('tinaja')
-    ) {
-      return 'water-outline';
-    }
-
-    if (
-      id.includes('restaurant')
-    ) {
-      return 'restaurant-outline';
-    }
-
-    if (
-      id.includes('gimnasio')
-    ) {
-      return 'fitness-outline';
-    }
-
-    if (
-      id.includes('market')
-    ) {
-      return 'cart-outline';
-    }
-
-    if (
-      id.includes('habitacion')
-    ) {
-      return 'bed-outline';
-    }
-
-    if (
-      id.includes('juego') ||
-      id.includes('play') ||
-      id.includes('kid')
-    ) {
-      return 'game-controller-outline';
-    }
-
-    if (
-      id.includes('spa') ||
-      id.includes('salon')
-    ) {
-      return 'sparkles-outline';
-    }
-
-    if (
-      id.includes('entrada') ||
-      id.includes('puerta') ||
-      id.includes('acceso')
-    ) {
-      return 'enter-outline';
-    }
-
-    if (
-      id.includes('recepcion') ||
-      id.includes('ascensor')
-    ) {
-      return 'business-outline';
-    }
-
-    return 'location-outline';
-  }
-
   cambiarIdioma(): void {
-    this.idiomaService.establecerIdioma(
-      this.idiomaSeleccionado
-    );
+    this.vozGuiaService.detener();
+
+    this.idiomaService
+      .establecerIdioma(
+        this.idiomaSeleccionado
+      );
 
     this.actualizarDatosMapa();
     this.mensajeUbicacion = '';
 
     if (
-      this.rutaCalculada.length > 0
+      this.rutaCalculada.length >
+      0
     ) {
       this.actualizarResultadoRuta();
+      this.anunciarPasoActual();
       return;
     }
 
@@ -440,31 +509,59 @@ export class HomePage {
     this.distanciaTotal = null;
   }
 
+  alternarGuiaVoz(): void {
+    this.guiaVozHabilitada =
+      this.vozGuiaService
+        .alternar();
+
+    if (
+      this.guiaVozHabilitada &&
+      this.instruccionActual
+    ) {
+      this.anunciarPasoActual();
+    }
+  }
+
+  repetirInstruccion(): void {
+    this.anunciarPasoActual();
+  }
+
   cambiarSeleccionRuta(): void {
     this.limpiarRuta();
   }
 
   alternarSelectorPuntos(
-    tipo: 'origen' | 'destino'
+    tipo:
+      'origen' |
+      'destino'
   ): void {
     if (
       this.selectorPuntosAbierto &&
-      this.selectorPuntosTipo === tipo
+      this.selectorPuntosTipo ===
+        tipo
     ) {
-      this.selectorPuntosAbierto = false;
-      this.selectorPuntosTipo = null;
+      this.selectorPuntosAbierto =
+        false;
+
+      this.selectorPuntosTipo =
+        null;
+
       return;
     }
 
-    this.selectorPuntosTipo = tipo;
-    this.selectorPuntosAbierto = true;
+    this.selectorPuntosTipo =
+      tipo;
+
+    this.selectorPuntosAbierto =
+      true;
 
     if (
       this.nivelPuntosSeleccionado ===
       null
     ) {
       this.nivelPuntosSeleccionado =
-        this.nivelesPuntos[0] ?? null;
+        this.nivelesPuntos[0] ??
+        null;
     }
   }
 
@@ -483,6 +580,7 @@ export class HomePage {
       'origen'
     ) {
       this.origen = lugar.id;
+
       this.nivelVisualizado =
         lugar.nivel ?? 1;
     } else if (
@@ -494,8 +592,12 @@ export class HomePage {
       return;
     }
 
-    this.selectorPuntosAbierto = false;
-    this.selectorPuntosTipo = null;
+    this.selectorPuntosAbierto =
+      false;
+
+    this.selectorPuntosTipo =
+      null;
+
     this.nivelPuntosSeleccionado =
       lugar.nivel ?? null;
 
@@ -507,16 +609,21 @@ export class HomePage {
   ): string {
     return nivel === 6
       ? this.traducir(
-        'pisoNumero',
-        { numero: nivel }
-      )
+          'pisoNumero',
+          {
+            numero: nivel
+          }
+        )
       : this.traducir(
-        'nivelNumero',
-        { numero: nivel }
-      );
+          'nivelNumero',
+          {
+            numero: nivel
+          }
+        );
   }
 
-  async leerQrReal(): Promise<void> {
+  async leerQrReal():
+    Promise<void> {
     this.mensajeUbicacion = '';
 
     try {
@@ -526,21 +633,27 @@ export class HomePage {
             hint:
               CapacitorBarcodeScannerTypeHint
                 .QR_CODE,
+
             cameraDirection:
               CapacitorBarcodeScannerCameraDirection
                 .BACK,
+
             scanInstructions:
               this.traducir(
                 'apuntarCamara'
               ),
+
             scanButton: true,
+
             scanText:
               this.traducir(
                 'escanear'
               )
           });
 
-      if (!lectura.ScanResult) {
+      if (
+        !lectura.ScanResult
+      ) {
         this.mensajeUbicacion =
           this.traducir(
             'lecturaCancelada'
@@ -581,6 +694,31 @@ export class HomePage {
     );
   }
 
+  simularSiguientePunto(): void {
+    if (
+      this.rutaCalculada.length <
+        2 ||
+      this.esUltimoPaso
+    ) {
+      return;
+    }
+
+    const siguienteNodo =
+      this.rutaCalculada[1];
+
+    const contenidoQr =
+      JSON.stringify({
+        sistema: 'navinside',
+        version: 1,
+        nodoId:
+          siguienteNodo.id
+      });
+
+    this.procesarLecturaQr(
+      contenidoQr
+    );
+  }
+
   calcularRuta(): void {
     this.limpiarRuta();
 
@@ -604,7 +742,8 @@ export class HomePage {
     }
 
     if (
-      this.origen === this.destino
+      this.origen ===
+      this.destino
     ) {
       this.resultado =
         this.traducir(
@@ -639,11 +778,12 @@ export class HomePage {
     }
 
     const ruta =
-      this.rutaService.calcularRuta(
-        nodoOrigen.id,
-        nodoDestino.id,
-        this.modoAccesible
-      );
+      this.rutaService
+        .calcularRuta(
+          nodoOrigen.id,
+          nodoDestino.id,
+          this.modoAccesible
+        );
 
     if (
       ruta.length === 0
@@ -651,11 +791,11 @@ export class HomePage {
       this.resultado =
         this.modoAccesible
           ? this.traducir(
-            'rutaAccesibleNoDisponible'
-          )
+              'rutaAccesibleNoDisponible'
+            )
           : this.traducir(
-            'rutaNoDisponible'
-          );
+              'rutaNoDisponible'
+            );
 
       return;
     }
@@ -665,54 +805,8 @@ export class HomePage {
     );
   }
 
-  avanzarPaso(): void {
-    if (
-      this.pasosRuta.length === 0 ||
-      this.esUltimoPaso
-    ) {
-      return;
-    }
-
-    this.pasoActualIndice++;
-    this.sincronizarPasoActual();
-  }
-
-  retrocederPaso(): void {
-    if (
-      this.pasosRuta.length === 0 ||
-      this.esPrimerPaso
-    ) {
-      return;
-    }
-
-    this.pasoActualIndice--;
-    this.sincronizarPasoActual();
-  }
-
-  reiniciarRecorrido(): void {
-    if (
-      this.pasosRuta.length === 0
-    ) {
-      return;
-    }
-
-    this.pasoActualIndice = 0;
-    this.sincronizarPasoActual();
-  }
-
   cambiarModoAccesible(): void {
     this.limpiarRuta();
-  }
-
-  private sincronizarPasoActual(): void {
-    const paso = this.pasoActual;
-
-    if (!paso) {
-      return;
-    }
-
-    this.nivelVisualizado =
-      paso.nodo.nivel ?? 1;
   }
 
   private procesarLecturaQr(
@@ -741,7 +835,8 @@ export class HomePage {
     }
 
     const debeRecalcular =
-      this.rutaCalculada.length > 0 &&
+      this.rutaCalculada.length >
+        0 &&
       this.destino !== '';
 
     this.origen =
@@ -808,6 +903,7 @@ export class HomePage {
 
       this.pasoActualIndice = 0;
       this.distanciaTotal = 0;
+
       this.actualizarResultadoRuta();
       this.sincronizarPasoActual();
 
@@ -844,11 +940,11 @@ export class HomePage {
       this.mensajeUbicacion =
         this.modoAccesible
           ? this.traducir(
-            'rutaAccesibleNoDisponible'
-          )
+              'rutaAccesibleNoDisponible'
+            )
           : this.traducir(
-            'rutaNoDisponible'
-          );
+              'rutaNoDisponible'
+            );
 
       return;
     }
@@ -877,10 +973,14 @@ export class HomePage {
 
     this.pasosRuta =
       this.rutaService
-        .generarPasos(ruta);
+        .generarPasos(
+          ruta
+        );
 
     this.pasoActualIndice =
-      0;
+      this.pasosRuta.length > 1
+        ? 1
+        : 0;
 
     this.distanciaTotal =
       this.rutaService
@@ -890,6 +990,53 @@ export class HomePage {
 
     this.sincronizarPasoActual();
     this.actualizarResultadoRuta();
+  }
+
+  private sincronizarPasoActual():
+    void {
+    const paso =
+      this.pasoActual;
+
+    if (!paso) {
+      return;
+    }
+
+    this.nivelVisualizado =
+      paso.nodo.nivel ?? 1;
+
+    this.anunciarPasoActual();
+  }
+
+  private anunciarPasoActual():
+    void {
+    if (
+      !this.guiaVozHabilitada ||
+      !this.instruccionActual
+    ) {
+      return;
+    }
+
+    const distancia =
+      this.distanciaRestante
+        .toLocaleString(
+          'es-CL',
+          {
+            maximumFractionDigits:
+              1
+          }
+        );
+
+    const anuncio =
+      this.texto(
+        `${this.instruccionActual}. Distancia restante ${distancia} metros. Escanea el código QR al llegar al siguiente punto.`,
+        `${this.instruccionActual}. Remaining distance ${distancia} meters. Scan the QR code when you reach the next point.`,
+        `${this.instruccionActual}. Distância restante ${distancia} metros. Leia o código QR ao chegar ao próximo ponto.`
+      );
+
+    this.vozGuiaService.hablar(
+      anuncio,
+      this.idiomaSeleccionado
+    );
   }
 
   private async cargarMapaInicial():
@@ -903,7 +1050,8 @@ export class HomePage {
     }
   }
 
-  private actualizarDatosMapa(): void {
+  private actualizarDatosMapa():
+    void {
     const mapaActivo =
       this.mapaService
         .obtenerMapaActivo();
@@ -932,7 +1080,8 @@ export class HomePage {
     this.lugares =
       mapaActivo.nodos.filter(
         nodo =>
-          nodo.restringido !== true
+          nodo.restringido !==
+          true
       );
 
     this.conexionesMapa =
@@ -978,7 +1127,8 @@ export class HomePage {
     );
   }
 
-  private actualizarResultadoRuta(): void {
+  private actualizarResultadoRuta():
+    void {
     this.resultado =
       this.rutaCalculada
         .map(
@@ -1003,7 +1153,9 @@ export class HomePage {
     ) {
       return this.traducir(
         'inicioRuta',
-        { nombre }
+        {
+          nombre
+        }
       );
     }
 
@@ -1012,16 +1164,44 @@ export class HomePage {
     ) {
       return this.traducir(
         'llegadaRuta',
-        { nombre }
+        {
+          nombre
+        }
       );
     }
 
     if (
       paso.tipo === 'avance'
     ) {
+      if (
+        paso.direccionHorizontal ===
+        'izquierda'
+      ) {
+        return this.traducir(
+          'girarIzquierdaHacia',
+          {
+            nombre
+          }
+        );
+      }
+
+      if (
+        paso.direccionHorizontal ===
+        'derecha'
+      ) {
+        return this.traducir(
+          'girarDerechaHacia',
+          {
+            nombre
+          }
+        );
+      }
+
       return this.traducir(
         'continuarHacia',
-        { nombre }
+        {
+          nombre
+        }
       );
     }
 
@@ -1036,31 +1216,38 @@ export class HomePage {
       ) {
         return this.traducir(
           paso.direccionNivel ===
-            'subir'
+          'subir'
             ? 'subirAscensorPiso'
             : 'bajarAscensorPiso',
-          { nivel }
+          {
+            nivel
+          }
         );
       }
 
       return this.traducir(
         paso.direccionNivel ===
-          'subir'
+        'subir'
           ? 'subirAscensor'
           : 'bajarAscensor',
-        { nivel }
+        {
+          nivel
+        }
       );
     }
 
     if (
-      paso.medio === 'escalera'
+      paso.medio ===
+      'escalera'
     ) {
       return this.traducir(
         paso.direccionNivel ===
-          'subir'
+        'subir'
           ? 'subirEscalera'
           : 'bajarEscalera',
-        { nivel }
+        {
+          nivel
+        }
       );
     }
 
@@ -1069,16 +1256,18 @@ export class HomePage {
     ) {
       return this.traducir(
         paso.direccionNivel ===
-          'subir'
+        'subir'
           ? 'subirRampa'
           : 'bajarRampa',
-        { nivel }
+        {
+          nivel
+        }
       );
     }
 
     return this.traducir(
       paso.direccionNivel ===
-        'subir'
+      'subir'
         ? 'cambiarNivelSubir'
         : 'cambiarNivelBajar',
       {
@@ -1110,7 +1299,10 @@ export class HomePage {
     return espanol;
   }
 
-  private limpiarRuta(): void {
+  private limpiarRuta():
+    void {
+    this.vozGuiaService.detener();
+
     this.resultado = '';
     this.distanciaTotal = null;
     this.rutaCalculada = [];

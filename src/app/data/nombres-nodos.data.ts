@@ -10,9 +10,11 @@ const NOMBRES_NODOS: Record<
     entrada: 'Entrada',
     recepcion: 'Recepción',
     pasillo: 'Pasillo principal',
-    'habitacion-101': 'Habitación 101',
+    'habitacion-101':
+      'Habitación 101',
     baño: 'Baño',
-    ascensor: 'Ascensor nivel 1',
+    ascensor:
+      'Ascensor nivel 1',
     'escalera-nivel-1':
       'Escalera nivel 1',
     'ascensor-nivel-3':
@@ -55,9 +57,9 @@ const NOMBRES_NODOS: Record<
     'ascensor-central-nivel-1':
       'Salida Ascensor Central - Nivel 1',
     'zona-kid-nivel-1':
-      'Zona Kid',
+      'Zona Mini Club Kids',
     'zona-juego-adulto-nivel-1':
-      'Zona Juego Adulto',
+      'Zona Juegos Adultos',
     'zona-play-nivel-1':
       'Zona Play',
     'hall-nivel-1':
@@ -70,6 +72,8 @@ const NOMBRES_NODOS: Record<
       'Salón Eventos Montemar',
     'salon-eventos-terramar-nivel-1':
       'Salón Eventos Terramar',
+    'salon-eventos-altamar-nivel-1':
+      'Salón de Eventos Altamar',
     'alma-spa-nivel-1':
       'Alma Spa',
     'ascensor-habitaciones-nivel-1':
@@ -86,9 +90,11 @@ const NOMBRES_NODOS: Record<
     entrada: 'Entrance',
     recepcion: 'Reception',
     pasillo: 'Main corridor',
-    'habitacion-101': 'Room 101',
+    'habitacion-101':
+      'Room 101',
     baño: 'Restroom',
-    ascensor: 'Elevator level 1',
+    ascensor:
+      'Elevator level 1',
     'escalera-nivel-1':
       'Stairs level 1',
     'ascensor-nivel-3':
@@ -131,7 +137,7 @@ const NOMBRES_NODOS: Record<
     'ascensor-central-nivel-1':
       'Central Elevator Exit - Level 1',
     'zona-kid-nivel-1':
-      'Kids Area',
+      'Mini Club Kids Area',
     'zona-juego-adulto-nivel-1':
       'Adult Games Area',
     'zona-play-nivel-1':
@@ -146,6 +152,8 @@ const NOMBRES_NODOS: Record<
       'Montemar Event Hall',
     'salon-eventos-terramar-nivel-1':
       'Terramar Event Hall',
+    'salon-eventos-altamar-nivel-1':
+      'Altamar Event Hall',
     'alma-spa-nivel-1':
       'Alma Spa',
     'ascensor-habitaciones-nivel-1':
@@ -162,9 +170,11 @@ const NOMBRES_NODOS: Record<
     entrada: 'Entrada',
     recepcion: 'Recepção',
     pasillo: 'Corredor principal',
-    'habitacion-101': 'Quarto 101',
+    'habitacion-101':
+      'Quarto 101',
     baño: 'Banheiro',
-    ascensor: 'Elevador nível 1',
+    ascensor:
+      'Elevador nível 1',
     'escalera-nivel-1':
       'Escada nível 1',
     'ascensor-nivel-3':
@@ -207,7 +217,7 @@ const NOMBRES_NODOS: Record<
     'ascensor-central-nivel-1':
       'Saída do Elevador Central - Nível 1',
     'zona-kid-nivel-1':
-      'Área Infantil',
+      'Área Mini Club Infantil',
     'zona-juego-adulto-nivel-1':
       'Área de Jogos para Adultos',
     'zona-play-nivel-1':
@@ -222,6 +232,8 @@ const NOMBRES_NODOS: Record<
       'Salão de Eventos Montemar',
     'salon-eventos-terramar-nivel-1':
       'Salão de Eventos Terramar',
+    'salon-eventos-altamar-nivel-1':
+      'Salão de Eventos Altamar',
     'alma-spa-nivel-1':
       'Alma Spa',
     'ascensor-habitaciones-nivel-1':
